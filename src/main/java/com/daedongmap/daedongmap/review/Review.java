@@ -14,8 +14,12 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JoinColumn(name="user_id")
+    @ManyToOne
     private User user;
 
+    @JoinColumn(name="place_id")
+    @ManyToOne
     private Place place;
 
     private String title;
