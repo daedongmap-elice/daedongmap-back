@@ -1,14 +1,13 @@
-package com.daedongmap.daedongmap.review;
+package com.daedongmap.daedongmap.comment.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-public class Review {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,15 +17,9 @@ public class Review {
     @ManyToOne
     private User user;
 
-    @JoinColumn(name="place_id")
-    @ManyToOne
-    private Place place;
-
-    private String title;
-
     private String content;
 
-    private int rating;
+    private Long parentCommentId;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;

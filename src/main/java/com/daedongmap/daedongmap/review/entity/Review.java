@@ -1,4 +1,4 @@
-package com.daedongmap.daedongmap.comment;
+package com.daedongmap.daedongmap.review.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-public class Comment {
+public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,9 +17,15 @@ public class Comment {
     @ManyToOne
     private User user;
 
+    @JoinColumn(name="place_id")
+    @ManyToOne
+    private Place place;
+
+    private String title;
+
     private String content;
 
-    private Long parentCommentId;
+    private float rating;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;

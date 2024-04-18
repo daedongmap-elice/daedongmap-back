@@ -1,4 +1,4 @@
-package com.daedongmap.daedongmap.likes;
+package com.daedongmap.daedongmap.likes.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

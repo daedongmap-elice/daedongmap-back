@@ -1,6 +1,6 @@
-package com.daedongmap.daedongmap.mediafile;
+package com.daedongmap.daedongmap.mediafile.entity;
 
-import com.daedongmap.daedongmap.review.Review;
+import com.daedongmap.daedongmap.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
 
