@@ -32,7 +32,6 @@ public class UserService {
 
         User newUser = User.builder()
                 .nickName(userRegisterDto.getNickName())
-                .status(userRegisterDto.getStatus())
                 .email(userRegisterDto.getEmail())
                 .build();
         newUser.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
