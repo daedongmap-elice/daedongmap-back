@@ -1,5 +1,6 @@
 package com.daedongmap.daedongmap.comment.entity;
 
+import com.daedongmap.daedongmap.user.domain.Users;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -15,7 +16,7 @@ public class Comment {
 
     @JoinColumn(name="user_id")
     @ManyToOne
-    private User user;
+    private Users user;
 
     private String content;
 

@@ -1,6 +1,7 @@
 package com.daedongmap.daedongmap.mediafile.entity;
 
-import com.daedongmap.daedongmap.review.entity.Review;
+import com.daedongmap.daedongmap.review.domain.Review;
+import com.daedongmap.daedongmap.user.domain.Users;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -16,7 +17,7 @@ public class Mediafile {
 
     @JoinColumn(name="user_id")
     @ManyToOne
-    private User user;
+    private Users user;
 
 //    미디어 파일은 리뷰에 등록하는 거니까 장소 정보가 필요없을 수 있음
 //    private Place place;
