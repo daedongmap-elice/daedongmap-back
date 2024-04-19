@@ -4,17 +4,12 @@ import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.jwt.TokenProvider;
 import com.daedongmap.daedongmap.user.domain.Users;
-import com.daedongmap.daedongmap.user.dto.AuthResponse;
-import com.daedongmap.daedongmap.user.dto.UserLoginDto;
-import com.daedongmap.daedongmap.user.dto.UserRegisterDto;
-import com.daedongmap.daedongmap.user.dto.UserUpdateDto;
+import com.daedongmap.daedongmap.user.dto.*;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,10 +49,40 @@ public class UserService {
         return new AuthResponse(foundUser.getNickName(), tokenProvider.createToken(foundUser));
     }
 
+    public String retrieveUserId(String phoneNumber) {
+        Users foundUser = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        return foundUser.getEmail();
+    }
+
+    public UserResponseDto findUserById(String userId) {
+        Users foundUser = userRepository.findByEmail(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        return new UserResponseDto(foundUser);
+    }
+
+    @Transactional
     public Users updateUser(UserUpdateDto userUpdateDto) {
         Users foundUser = userRepository.findByEmail(userUpdateDto.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        foundUser.updateUser(userUpdateDto);
+        userRepository.save(foundUser);
+
         return foundUser;
     }
+
+    @Transactional
+    public String deleteUser(String userId) {
+
+        Users deletedUser = userRepository.findByEmail(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        userRepository.deleteByEmail(userId);
+
+        return deletedUser.getNickName();
+    }
+
 }
