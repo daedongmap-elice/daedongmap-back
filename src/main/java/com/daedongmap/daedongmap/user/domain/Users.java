@@ -18,7 +18,7 @@ import java.util.Date;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
-public class User {
+public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +41,9 @@ public class User {
     @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
 
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
+
     @Column(name = "created_at")
     @CreatedDate
     private Date createdAt;
@@ -50,10 +53,11 @@ public class User {
     private Date modifiedAt;
 
     @Builder
-    public User(String nickName, String email, String status) {
+    public Users(String nickName, String email, String status) {
         this.nickName = nickName;
         this.status = status;
         this.email = email;
+        this.authority = Authority.ROLE_USER;
     }
 
     public void updateUser(UserUpdateDto userUpdateDto) {

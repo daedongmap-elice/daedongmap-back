@@ -9,4 +9,5 @@ import lombok.*;
 public class AuthResponse {
 
     private String nickName;
+    private String token;
 }
