@@ -1,4 +1,4 @@
-package com.daedongmap.daedongmap.review.api;
+package com.daedongmap.daedongmap.review.controller;
 
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.dto.ReviewBasicInfoDto;
