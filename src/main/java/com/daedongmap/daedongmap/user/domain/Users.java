@@ -3,6 +3,7 @@ package com.daedongmap.daedongmap.user.domain;
 import com.daedongmap.daedongmap.user.dto.UserUpdateDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -41,6 +42,11 @@ public class Users {
     @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
 
+    @Column(name = "phone_number")
+    @NotBlank(message = "전화번호를 입력해주세요")
+    @Pattern(regexp = "([0-9]{10,11})")
+    private String phoneNumber;
+
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
@@ -53,10 +59,11 @@ public class Users {
     private Date modifiedAt;
 
     @Builder
-    public Users(String nickName, String email, String status) {
+    public Users(String nickName, String email, String status, String phoneNumber) {
         this.nickName = nickName;
         this.status = status;
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.authority = Authority.ROLE_USER;
     }
 
@@ -64,6 +71,7 @@ public class Users {
         this.nickName = userUpdateDto.getNickName();
         this.status = userUpdateDto.getStatus();
         this.password = userUpdateDto.getPassword();
+        this.phoneNumber = userUpdateDto.getPhoneNumber();
         this.email = userUpdateDto.getEmail();
     }
 }
