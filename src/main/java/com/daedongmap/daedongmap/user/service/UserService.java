@@ -45,7 +45,7 @@ public class UserService {
 
         Users foundUser = userRepository.findByEmail(userLoginDto.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        
+
         // matches(입력된 비밀번호, 암호화된 비밀번호)
         if(!passwordEncoder.matches(userLoginDto.getPassword(), foundUser.getPassword())) {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);

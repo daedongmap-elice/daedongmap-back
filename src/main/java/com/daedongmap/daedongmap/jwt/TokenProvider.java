@@ -31,7 +31,7 @@ public class TokenProvider {
 
     private static final String BEARER_TYPE = "bearer";
     private static final long validTime = 30 * 60 * 1000L;
-    
+
     // secretKey 인코딩
     @PostConstruct
     protected void init() {
