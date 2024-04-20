@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: daedongmap
+
+  datasource:
+    #        H2
+    url: jdbc:h2:mem:community-db
+    username: sa
+
+  #        MySQL
+  #        driver-class-name: com.mysql.cj.jdbc.Driver
+  #        url: jdbc:mysql://localhost:3306/daedongmap
+  #        username: ${USER}
+  #        password: ${PASSWORD}
+
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format-sql: true
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
