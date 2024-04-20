@@ -27,7 +27,7 @@
 ## ERD
 - - -
 ### 사용자
-![사용자](./markdown-images/user.png)
+![사용자](./markdown-images/users.png)
 
 ### 리뷰, 댓글, MediaFile
 ![리뷰ERD](./markdown-images/post.png)
