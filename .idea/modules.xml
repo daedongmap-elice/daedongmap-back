@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/daedongmap.iml" filepath="$PROJECT_DIR$/.idea/modules/daedongmap.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/daedongmap.main.iml" filepath="$PROJECT_DIR$/.idea/modules/daedongmap.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/daedongmap.test.iml" filepath="$PROJECT_DIR$/.idea/modules/daedongmap.test.iml" />
     </modules>
   </component>
 </project>
