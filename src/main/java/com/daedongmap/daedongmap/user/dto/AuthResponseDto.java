@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AuthResponse {
+public class AuthResponseDto {
 
     private String nickName;
     private String token;

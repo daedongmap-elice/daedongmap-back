@@ -20,24 +20,24 @@ public class UserController {
 
     @PostMapping("/register")
     @Operation(summary = "사용자 등록", description = "userRegisterDto를 통해 받은 정보로 사용자 정보를 DB에 저장")
-    public ResponseEntity<AuthResponse> register(@RequestBody @Valid UserRegisterDto userRegisterDto) {
+    public ResponseEntity<AuthResponseDto> register(@RequestBody @Valid UserRegisterDto userRegisterDto) {
 
-        AuthResponse authResponse = userService.registerUser(userRegisterDto);
+        AuthResponseDto authResponseDto = userService.registerUser(userRegisterDto);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(authResponse);
+                .body(authResponseDto);
     }
 
     @PostMapping("/login")
     @Operation(summary = "사용자 로그인", description = "userLoginDto를 통해 받은 정보로 사용자 로그인, jwt 반환")
-    public ResponseEntity<AuthResponse> doLogin(@RequestBody @Valid UserLoginDto userLoginDto) {
+    public ResponseEntity<AuthResponseDto> doLogin(@RequestBody @Valid UserLoginDto userLoginDto) {
 
-        AuthResponse authResponse = userService.loginUser(userLoginDto);
+        AuthResponseDto authResponseDto = userService.loginUser(userLoginDto);
 
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
-                .body(authResponse);
+                .body(authResponseDto);
     }
 
     @GetMapping("/accountId")
@@ -54,7 +54,7 @@ public class UserController {
     // 질문할 것 - id를 @PathVariable 로 받아오는 것이 적절한가
     @GetMapping("/{userId}")
     @Operation(summary = "사용자 정보 조회", description = "userId를 통해 사용자에 대한 정보를 출력")
-    public ResponseEntity<UserResponseDto> findUserById(@PathVariable String userId) {
+    public ResponseEntity<UserResponseDto> findUserById(@PathVariable Long userId) {
 
         UserResponseDto userResponseDto = userService.findUserById(userId);
 
@@ -65,9 +65,10 @@ public class UserController {
 
     @PutMapping("/{userId}")
     @Operation(summary = "사용자 정보 업데이트", description = "UserUpdateDto를 통해 업데이트할 정보를 전달")
-    public ResponseEntity<Users> updateUser(@RequestBody UserUpdateDto userUpdateDto) {
+    public ResponseEntity<Users> updateUser(@PathVariable Long userId,
+                                            @RequestBody UserUpdateDto userUpdateDto) {
 
-        Users user = userService.updateUser(userUpdateDto);
+        Users user = userService.updateUser(userId, userUpdateDto);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -76,7 +77,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     @Operation(summary = "사용자 삭제", description = "이메일(PK)을 통해 사용자 조회 확인 후 삭제, 삭제된 사용자의 닉네임 반환")
-    public ResponseEntity<String> deleteUser(@PathVariable String userId) {
+    public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
 
         String deletedUser = userService.deleteUser(userId);
 
