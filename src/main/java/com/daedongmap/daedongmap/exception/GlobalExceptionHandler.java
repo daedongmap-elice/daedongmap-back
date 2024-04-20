@@ -1,7 +1,6 @@
 package com.daedongmap.daedongmap.exception;
 
 
-import com.daedongmap.daedongmap.user.dto.AuthResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

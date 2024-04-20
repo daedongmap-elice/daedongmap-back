@@ -20,7 +20,7 @@ public class UserService {
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public AuthResponse registerUser(UserRegisterDto userRegisterDto) {
+    public AuthResponseDto registerUser(UserRegisterDto userRegisterDto) {
 
         userRepository.findByEmail(userRegisterDto.getEmail()).ifPresent(e -> {
             throw new CustomException(ErrorCode.EMAIL_IN_USE);
@@ -33,10 +33,10 @@ public class UserService {
         newUsers.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
         userRepository.save(newUsers);
 
-        return new AuthResponse(newUsers.getNickName(), null);
+        return new AuthResponseDto(newUsers.getNickName(), null);
     }
 
-    public AuthResponse loginUser(UserLoginDto userLoginDto) {
+    public AuthResponseDto loginUser(UserLoginDto userLoginDto) {
 
         Users foundUser = userRepository.findByEmail(userLoginDto.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -46,7 +46,7 @@ public class UserService {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
 
-        return new AuthResponse(foundUser.getNickName(), tokenProvider.createToken(foundUser));
+        return new AuthResponseDto(foundUser.getNickName(), tokenProvider.createToken(foundUser));
     }
 
     public String retrieveUserId(String phoneNumber) {
@@ -56,16 +56,16 @@ public class UserService {
         return foundUser.getEmail();
     }
 
-    public UserResponseDto findUserById(String userId) {
-        Users foundUser = userRepository.findByEmail(userId)
+    public UserResponseDto findUserById(Long userId) {
+        Users foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return new UserResponseDto(foundUser);
     }
 
     @Transactional
-    public Users updateUser(UserUpdateDto userUpdateDto) {
-        Users foundUser = userRepository.findByEmail(userUpdateDto.getEmail())
+    public Users updateUser(Long userId, UserUpdateDto userUpdateDto) {
+        Users foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         foundUser.updateUser(userUpdateDto);
@@ -75,12 +75,12 @@ public class UserService {
     }
 
     @Transactional
-    public String deleteUser(String userId) {
+    public String deleteUser(Long userId) {
 
-        Users deletedUser = userRepository.findByEmail(userId)
+        Users deletedUser = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        userRepository.deleteByEmail(userId);
+        userRepository.deleteById(userId);
 
         return deletedUser.getNickName();
     }
