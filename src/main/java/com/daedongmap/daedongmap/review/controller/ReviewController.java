@@ -6,6 +6,7 @@ import com.daedongmap.daedongmap.review.dto.ReviewCreateDto;
 import com.daedongmap.daedongmap.review.dto.ReviewUpdateDto;
 import com.daedongmap.daedongmap.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +17,10 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class ReviewController {
 
-    @Autowired
-    private ReviewService reviewService;
+    private final ReviewService reviewService;
 
     @PostMapping("/api/reviews")
     @Operation(summary = "리뷰 작성", description = "리뷰를 작성합니다.")
@@ -32,6 +33,13 @@ public class ReviewController {
     @Operation(summary = "사용자별 리뷰 조회", description = "사용자별 리뷰를 모두 조회합니다.")
     public ResponseEntity<List<ReviewBasicInfoDto>> getReviewsByUser(@PathVariable Long userId) {
         List<ReviewBasicInfoDto> findReviewDtos = reviewService.findReviewsByUser(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(findReviewDtos);
+    }
+
+    @GetMapping("/api/reviews/places/{placeId}")
+    @Operation(summary = "음식점별 리뷰 조회", description = "음식점별 리뷰를 모두 조회합니다.")
+    public ResponseEntity<List<ReviewBasicInfoDto>> getReviewsByPlace(@PathVariable Long placeId) {
+        List<ReviewBasicInfoDto> findReviewDtos = reviewService.findReviewsByPlace(placeId);
         return ResponseEntity.status(HttpStatus.OK).body(findReviewDtos);
     }
 
@@ -60,5 +68,6 @@ public class ReviewController {
     public void deleteReview(@PathVariable Long reviewId) {
         reviewService.deleteReview(reviewId);
     }
+
 
 }

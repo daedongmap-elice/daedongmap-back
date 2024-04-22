@@ -2,6 +2,8 @@ package com.daedongmap.daedongmap.review.service;
 
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
+import com.daedongmap.daedongmap.place.domain.Place;
+import com.daedongmap.daedongmap.place.repository.PlaceRepository;
 import com.daedongmap.daedongmap.review.dto.ReviewBasicInfoDto;
 import com.daedongmap.daedongmap.review.dto.ReviewCreateDto;
 import com.daedongmap.daedongmap.review.domain.Review;
@@ -10,8 +12,8 @@ import com.daedongmap.daedongmap.review.repository.ReviewRepository;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.dto.UserBasicInfoDto;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,23 +23,31 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ReviewService {
 
-    @Autowired
-    private ReviewRepository reviewRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
+    private final PlaceRepository placeRepository;
 
 
+    // todo
+    // 1. 리뷰를 작성하고자하는 장소가 데이터에 있는 경우 -> 장소 찾아서 필드에 넣기
+    // 2. 리뷰를 작성하고자하는 장소가 데이터에 없는 경우 -> 장소 등록 후 1번 방식
     @Transactional
     public ReviewBasicInfoDto createReview(ReviewCreateDto reviewCreateDto) {
         Users user = userRepository.findById(reviewCreateDto.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Place place = placeRepository.findById(reviewCreateDto.getPlaceId()).orElseThrow(() -> new CustomException(ErrorCode.PLACE_NOT_FOUND));
 
         Review review = Review.builder()
                 .user(user)
+                .place(place)
                 .title(reviewCreateDto.getTitle())
                 .content(reviewCreateDto.getContent())
-                .rating(reviewCreateDto.getRating())
+                .hygieneRating(reviewCreateDto.getHygieneRating())
+                .tasteRating(reviewCreateDto.getTasteRating())
+                .kindnessRating(reviewCreateDto.getKindnessRating())
+                .averageRating(reviewCreateDto.getAverageRating())
                 .build();
 
         Review createdReview = reviewRepository.save(review);
@@ -47,6 +57,14 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public List<ReviewBasicInfoDto> findReviewsByUser(Long userId) {
         List<Review> reviews = reviewRepository.findAllByUserId(userId);
+        return reviews.stream()
+                .map(this::toReviewBasicInfoDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewBasicInfoDto> findReviewsByPlace(Long placeId) {
+        List<Review> reviews = reviewRepository.findAllByPlaceId(placeId);
         return reviews.stream()
                 .map(this::toReviewBasicInfoDto)
                 .collect(Collectors.toList());
@@ -74,6 +92,7 @@ public class ReviewService {
     private ReviewBasicInfoDto toReviewBasicInfoDto(Review review) {
         return ReviewBasicInfoDto.builder()
                 .id(review.getId())
+                .placeId(review.getPlace().getId())
                 .user(UserBasicInfoDto.builder()
                         .id(review.getUser().getId())
                         .nickName(review.getUser().getNickName())
@@ -81,9 +100,13 @@ public class ReviewService {
                         .build())
                 .title(review.getTitle())
                 .content(review.getContent())
-                .rating(review.getRating())
+                .hygieneRating(review.getHygieneRating())
+                .tasteRating(review.getTasteRating())
+                .kindnessRating(review.getKindnessRating())
+                .averageRating(review.getAverageRating())
                 .createdAt(review.getCreatedAt())
                 .updatedAt(review.getUpdatedAt())
                 .build();
     }
+
 }
