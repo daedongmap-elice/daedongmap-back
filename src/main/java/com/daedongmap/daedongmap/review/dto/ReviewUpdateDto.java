@@ -7,6 +7,9 @@ public class ReviewUpdateDto {
 
     private String title;
     private String content;
-    private float rating;
+    private float tasteRating;
+    private float hygieneRating;
+    private float kindnessRating;
+    private float averageRating;
 
 }
