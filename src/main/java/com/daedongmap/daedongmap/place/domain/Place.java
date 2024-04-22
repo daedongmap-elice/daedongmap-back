@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Entity
 @Getter
 public class Place {
     @Id

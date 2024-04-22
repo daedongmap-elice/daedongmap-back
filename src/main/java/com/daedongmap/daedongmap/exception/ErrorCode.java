@@ -18,7 +18,10 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 리뷰입니다."),
 
     /* Comment */
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 댓글입니다.");
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 댓글입니다."),
+
+    /* Place */
+    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 장소입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
