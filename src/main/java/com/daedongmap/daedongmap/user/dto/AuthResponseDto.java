@@ -9,5 +9,5 @@ import lombok.*;
 public class AuthResponseDto {
 
     private String nickName;
-    private String token;
+    private JwtTokenDto token;
 }

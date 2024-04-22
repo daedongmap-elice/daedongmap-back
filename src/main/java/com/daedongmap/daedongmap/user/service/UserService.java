@@ -69,7 +69,10 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         foundUser.updateUser(userUpdateDto);
-        userRepository.save(foundUser);
+
+        // @Transactional 어노테이션을 붙이면 JPA에서 트랜잭션이 끝나는 시점에서 변화가 생긴 엔티티를 모두 자동으로 반영
+        // 조회 시 스냅샷을 만들고 종료 시 스냅샷과 차이가 있다면 DB에 이를 반영한다.
+//        userRepository.save(foundUser);
 
         return foundUser;
     }

@@ -79,11 +79,9 @@ public class UserController {
     @Operation(summary = "사용자 삭제", description = "이메일(PK)을 통해 사용자 조회 확인 후 삭제, 삭제된 사용자의 닉네임 반환")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
 
-        String deletedUser = userService.deleteUser(userId);
-
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
-                .body(deletedUser);
+                .body(userService.deleteUser(userId));
 
     }
 
