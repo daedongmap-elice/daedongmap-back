@@ -42,7 +42,7 @@ public class Users extends BaseTimeEntity {
     @Size(max = 50, message = "상태는 50자 이내로 작성 가능합니다.")
     private String status;
 
-    @Column(name = "email")
+    @Column(unique = true, name = "email")
     @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
 
@@ -51,14 +51,13 @@ public class Users extends BaseTimeEntity {
     @Pattern(regexp = "([0-9]{10,11})")
     private String phoneNumber;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Builder.Default
-    private List<String> roles = new ArrayList<>();
-    @Override
-    public Collection<? extends GrantedAuthority> getAuth() {
-        return this.roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+    private List<Authority> roles = new ArrayList<>();
+
+    public void setRoles(List<Authority> role) {
+        this.roles = role;
+        role.forEach(o -> o.setUser(this));
     }
 
     @Builder
@@ -67,7 +66,6 @@ public class Users extends BaseTimeEntity {
         this.status = status;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.authority = Authority.ROLE_USER;
     }
 
     public void updateUser(UserUpdateDto userUpdateDto) {

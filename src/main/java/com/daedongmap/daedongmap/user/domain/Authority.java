@@ -1,13 +1,29 @@
 package com.daedongmap.daedongmap.user.domain;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Getter
-@RequiredArgsConstructor
-public enum Authority {
-    ROLE_USER("USER"),
-    ROLE_ADMIN("ADMIN");
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Authority {
 
-    private final String role;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
+    private Long id;
+
+    private String email;
+
+    @JoinColumn(name = "users")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Users user;
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
 }
