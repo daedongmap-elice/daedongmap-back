@@ -8,13 +8,10 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Entity
 @Getter
@@ -47,12 +44,11 @@ public class Users extends BaseTimeEntity {
     private String email;
 
     @Column(name = "phone_number")
-    @NotBlank(message = "전화번호를 입력해주세요")
-    @Pattern(regexp = "([0-9]{10,11})")
+//    @NotBlank(message = "전화번호를 입력해주세요")
+//    @Pattern(regexp = "([0-9]{10,11})")
     private String phoneNumber;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @Builder.Default
     private List<Authority> roles = new ArrayList<>();
 
     public void setRoles(List<Authority> role) {

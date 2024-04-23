@@ -3,6 +3,7 @@ package com.daedongmap.daedongmap.user.service;
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.jwt.TokenProvider;
+import com.daedongmap.daedongmap.user.domain.Authority;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.dto.*;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
@@ -10,6 +11,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +31,15 @@ public class UserService {
 
         Users newUsers = Users.builder()
                 .nickName(userRegisterDto.getNickName())
+                .status(userRegisterDto.getStatus())
                 .email(userRegisterDto.getEmail())
+                .phoneNumber(userRegisterDto.getPhoneNumber())
                 .build();
         newUsers.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
+        newUsers.setRoles(Collections.singletonList(Authority.builder().role("ROLE_USER").build()));
         userRepository.save(newUsers);
 
-        return new AuthResponseDto(newUsers.getNickName(), null);
+        return new AuthResponseDto(newUsers.getNickName(), null, null);
     }
 
     public AuthResponseDto loginUser(UserLoginDto userLoginDto) {
@@ -46,7 +52,11 @@ public class UserService {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
 
-        return new AuthResponseDto(foundUser.getNickName(), tokenProvider.createToken(foundUser));
+        return new AuthResponseDto(
+                foundUser.getNickName(),
+                tokenProvider.createToken(foundUser.getEmail(), foundUser.getRoles()),
+                foundUser.getRoles()
+        );
     }
 
     public String retrieveUserId(String phoneNumber) {

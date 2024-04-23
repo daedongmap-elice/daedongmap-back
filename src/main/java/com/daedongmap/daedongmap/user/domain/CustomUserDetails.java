@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+
+// UserDetails 상속, 인증 진행
 public class CustomUserDetails implements UserDetails {
 
     private final Users user;
@@ -23,7 +25,7 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getRoles().stream()
                 .map(o ->
-                        new SimpleGrantedAuthority(o.getEmail()))
+                        new SimpleGrantedAuthority(o.getRole()))
                 .collect(Collectors.toList());
     }
 

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Getter
 @Entity
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -16,7 +16,7 @@ public class Authority {
     @JsonIgnore
     private Long id;
 
-    private String email;
+    private String role;
 
     @JoinColumn(name = "users")
     @ManyToOne(fetch = FetchType.LAZY)

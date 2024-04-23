@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+// UserDetails 정보를 토대로 사용자 정보를 불러올 때 사용
 @Service
 @RequiredArgsConstructor
 public class UserDetailService implements UserDetailsService {
@@ -21,8 +22,7 @@ public class UserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         Users user = userRepository.findByEmail(email).orElseThrow(
-                () -> new CustomException(ErrorCode.USER_NOT_FOUND);
-        );
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return new CustomUserDetails(user);
     }
