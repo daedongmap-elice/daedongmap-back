@@ -10,7 +10,6 @@ import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.dto.ReviewUpdateDto;
 import com.daedongmap.daedongmap.review.repository.ReviewRepository;
 import com.daedongmap.daedongmap.user.domain.Users;
-import com.daedongmap.daedongmap.user.dto.UserBasicInfoDto;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,14 +50,14 @@ public class ReviewService {
                 .build();
 
         Review createdReview = reviewRepository.save(review);
-        return toReviewBasicInfoDto(createdReview);
+        return new ReviewBasicInfoDto(createdReview);
     }
 
     @Transactional(readOnly = true)
     public List<ReviewBasicInfoDto> findReviewsByUser(Long userId) {
         List<Review> reviews = reviewRepository.findAllByUserId(userId);
         return reviews.stream()
-                .map(this::toReviewBasicInfoDto)
+                .map(ReviewBasicInfoDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -66,7 +65,7 @@ public class ReviewService {
     public List<ReviewBasicInfoDto> findReviewsByPlace(Long placeId) {
         List<Review> reviews = reviewRepository.findAllByPlaceId(placeId);
         return reviews.stream()
-                .map(this::toReviewBasicInfoDto)
+                .map(ReviewBasicInfoDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -74,7 +73,7 @@ public class ReviewService {
     public ReviewBasicInfoDto findReviewById(Long reviewId) {
         Optional<Review> optionalReview = reviewRepository.findById(reviewId);
         Review review = optionalReview.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-        return toReviewBasicInfoDto(review);
+        return new ReviewBasicInfoDto(review);
     }
 
     @Transactional
@@ -86,27 +85,7 @@ public class ReviewService {
     public ReviewBasicInfoDto updateReview(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
         review.updateReview(reviewUpdateDto);
-        return toReviewBasicInfoDto(review);
-    }
-
-    private ReviewBasicInfoDto toReviewBasicInfoDto(Review review) {
-        return ReviewBasicInfoDto.builder()
-                .id(review.getId())
-                .placeId(review.getPlace().getId())
-                .user(UserBasicInfoDto.builder()
-                        .id(review.getUser().getId())
-                        .nickName(review.getUser().getNickName())
-                        .email(review.getUser().getEmail())
-                        .build())
-                .title(review.getTitle())
-                .content(review.getContent())
-                .hygieneRating(review.getHygieneRating())
-                .tasteRating(review.getTasteRating())
-                .kindnessRating(review.getKindnessRating())
-                .averageRating(review.getAverageRating())
-                .createdAt(review.getCreatedAt())
-                .updatedAt(review.getUpdatedAt())
-                .build();
+        return new ReviewBasicInfoDto(review);
     }
 
 }
