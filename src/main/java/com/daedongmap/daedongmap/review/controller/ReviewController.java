@@ -27,7 +27,7 @@ public class ReviewController {
     @PostMapping("/api/reviews")
     @Operation(summary = "리뷰 작성", description = "리뷰를 작성합니다.")
     public ResponseEntity<ReviewBasicInfoDto> createReview(@RequestPart(value="file") List<MultipartFile> multipartFileList,
-                                                           @RequestBody ReviewCreateDto reviewCreateDto) throws IOException {
+                                                           @RequestPart(value="request") ReviewCreateDto reviewCreateDto) throws IOException {
         ReviewBasicInfoDto createdReviewDto = reviewService.createReview(multipartFileList, reviewCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReviewDto);
     }

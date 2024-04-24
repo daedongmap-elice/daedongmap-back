@@ -16,8 +16,8 @@ public class LocalReviewImageService implements ReviewImageService{
         String filePath = "/images/" + fileName;
 
         // 로컬에 파일 저장
-        File file = new File(filePath);
-        reviewImage.transferTo(file);
+//        File file = new File(filePath);
+//        reviewImage.transferTo(file);
 
         return filePath;
     }
