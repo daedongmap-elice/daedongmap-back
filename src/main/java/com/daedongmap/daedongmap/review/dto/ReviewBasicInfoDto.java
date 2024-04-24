@@ -2,7 +2,6 @@ package com.daedongmap.daedongmap.review.dto;
 
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.user.dto.UserBasicInfoDto;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -10,7 +10,6 @@ import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.dto.ReviewUpdateDto;
 import com.daedongmap.daedongmap.review.repository.ReviewRepository;
 import com.daedongmap.daedongmap.user.domain.Users;
-import com.daedongmap.daedongmap.user.dto.UserBasicInfoDto;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
