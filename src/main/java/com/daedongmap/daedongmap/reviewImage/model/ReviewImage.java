@@ -1,16 +1,19 @@
-package com.daedongmap.daedongmap.mediafile.entity;
+package com.daedongmap.daedongmap.reviewImage.model;
 
 import com.daedongmap.daedongmap.common.entity.BaseTimeEntity;
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.user.domain.Users;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.net.URL;
 
 @Entity
 @Getter
-public class Mediafile extends BaseTimeEntity {
+@NoArgsConstructor
+public class ReviewImage extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +27,14 @@ public class Mediafile extends BaseTimeEntity {
     @ManyToOne
     private Review review;
 
+    @Column(nullable = false)
     private String filePath;
+
+    @Builder
+    public ReviewImage(Users user, Review review, String filePath) {
+        this.user = user;
+        this.review = review;
+        this.filePath = filePath;
+    }
 
 }

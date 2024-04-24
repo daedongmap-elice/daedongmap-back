@@ -1,18 +1,20 @@
 package com.daedongmap.daedongmap.review.controller;
 
+import com.daedongmap.daedongmap.review.dto.ReviewCreateDto;
+import com.daedongmap.daedongmap.reviewImage.model.ReviewImage;
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.dto.ReviewBasicInfoDto;
-import com.daedongmap.daedongmap.review.dto.ReviewCreateDto;
 import com.daedongmap.daedongmap.review.dto.ReviewUpdateDto;
 import com.daedongmap.daedongmap.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -24,8 +26,9 @@ public class ReviewController {
 
     @PostMapping("/api/reviews")
     @Operation(summary = "리뷰 작성", description = "리뷰를 작성합니다.")
-    public ResponseEntity<ReviewBasicInfoDto> createReview(@RequestBody ReviewCreateDto reviewCreateDto) {
-        ReviewBasicInfoDto createdReviewDto = reviewService.createReview(reviewCreateDto);
+    public ResponseEntity<ReviewBasicInfoDto> createReview(@RequestPart(value="file") List<MultipartFile> multipartFileList,
+                                                           @RequestBody ReviewCreateDto reviewCreateDto) throws IOException {
+        ReviewBasicInfoDto createdReviewDto = reviewService.createReview(multipartFileList, reviewCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReviewDto);
     }
 

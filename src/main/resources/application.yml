@@ -30,3 +30,16 @@ spring:
   sql:
     init:
       mode: always
+
+cloud:
+  aws:
+    s3:
+      bucket: daedongmap-bucket
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      instanceProfile: true
+      secret-key:
+      access-key:
