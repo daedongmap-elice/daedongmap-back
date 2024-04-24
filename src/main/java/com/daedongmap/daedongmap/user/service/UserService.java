@@ -5,7 +5,11 @@ import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.jwt.TokenProvider;
 import com.daedongmap.daedongmap.user.domain.Authority;
 import com.daedongmap.daedongmap.user.domain.Users;
-import com.daedongmap.daedongmap.user.dto.*;
+import com.daedongmap.daedongmap.user.dto.request.UserLoginDto;
+import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
+import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
+import com.daedongmap.daedongmap.user.dto.response.AuthResponseDto;
+import com.daedongmap.daedongmap.user.dto.response.UserResponseDto;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +35,11 @@ public class UserService {
 
         Users newUsers = Users.builder()
                 .nickName(userRegisterDto.getNickName())
-                .status(userRegisterDto.getStatus())
                 .email(userRegisterDto.getEmail())
+                .password(passwordEncoder.encode(userRegisterDto.getPassword()))
                 .phoneNumber(userRegisterDto.getPhoneNumber())
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
                 .build();
-        newUsers.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
-        newUsers.setRoles(Collections.singletonList(Authority.builder().role("ROLE_USER").build()));
         userRepository.save(newUsers);
 
         return new AuthResponseDto(newUsers.getNickName(), null, null);

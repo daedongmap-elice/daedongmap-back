@@ -1,4 +1,4 @@
-package com.daedongmap.daedongmap.user.dto;
+package com.daedongmap.daedongmap.user.dto.response;
 
 import lombok.*;
 

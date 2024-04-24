@@ -1,10 +1,9 @@
 package com.daedongmap.daedongmap.user.domain;
 
 import com.daedongmap.daedongmap.common.entity.BaseTimeEntity;
-import com.daedongmap.daedongmap.user.dto.UserUpdateDto;
+import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,7 +14,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -32,7 +30,7 @@ public class Users extends BaseTimeEntity {
 
     @Column(name = "password")
     @NotBlank(message = "비밀번호를 입력해주세요.")
-    @Size(min = 8, message = "비밀번호는 최소 8자리 이상이어야 합니다")
+    @Size(min = 7, message = "비밀번호는 최소 8자리 이상이어야 합니다")
     private String password;
 
     @Column(name = "status")
@@ -51,17 +49,15 @@ public class Users extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Authority> roles = new ArrayList<>();
 
-    public void setRoles(List<Authority> role) {
-        this.roles = role;
-        role.forEach(o -> o.setUser(this));
-    }
-
     @Builder
-    public Users(String nickName, String email, String status, String phoneNumber) {
+    public Users(String nickName, String email, String status, String phoneNumber, String password, List<Authority> role) {
         this.nickName = nickName;
         this.status = status;
         this.email = email;
+        this.password = password;
         this.phoneNumber = phoneNumber;
+        this.roles = role;
+        role.forEach(o -> o.setUser(this));
     }
 
     public void updateUser(UserUpdateDto userUpdateDto) {
