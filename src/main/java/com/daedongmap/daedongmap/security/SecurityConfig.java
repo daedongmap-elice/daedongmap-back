@@ -39,8 +39,6 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .requestMatchers(new AntPathRequestMatcher(""))
-                                .hasRole("")
                                 .requestMatchers(new AntPathRequestMatcher("/**"))
                                 .permitAll()
                                 .anyRequest()
