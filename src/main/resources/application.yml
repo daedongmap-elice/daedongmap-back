@@ -4,7 +4,7 @@ spring:
 
   datasource:
     #        H2
-    url: jdbc:h2:mem:community-db
+    url: jdbc:h2:mem:daedongmap-db
     username: sa
 
   #        MySQL
@@ -31,15 +31,5 @@ spring:
     init:
       mode: always
 
-cloud:
-  aws:
-    s3:
-      bucket: daedongmap-bucket
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
-    credentials:
-      instanceProfile: true
-      secret-key:
-      access-key:
+  profiles:
+    include: aws

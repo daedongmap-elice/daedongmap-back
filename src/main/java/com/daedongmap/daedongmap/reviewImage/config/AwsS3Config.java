@@ -1,4 +1,4 @@
-package com.daedongmap.daedongmap.aws;
+package com.daedongmap.daedongmap.reviewImage.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -25,7 +25,8 @@ public class AwsS3Config {
     @Bean
     public AmazonS3Client amazonS3Client() {
         BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(accessKey, secretKey);
-        return (AmazonS3Client) AmazonS3ClientBuilder.standard()
+        return (AmazonS3Client) AmazonS3ClientBuilder
+                .standard()
                 .withRegion(region)
                 .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials))
                 .build();
