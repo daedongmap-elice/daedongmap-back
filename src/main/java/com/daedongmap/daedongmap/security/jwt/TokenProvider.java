@@ -1,12 +1,15 @@
-package com.daedongmap.daedongmap.jwt;
+package com.daedongmap.daedongmap.security.jwt;
 
 import com.daedongmap.daedongmap.user.domain.Authority;
+import com.daedongmap.daedongmap.user.domain.Users;
+import com.daedongmap.daedongmap.user.dto.JwtParseDto;
 import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.service.UserDetailService;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +19,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TokenProvider {
@@ -35,71 +39,49 @@ public class TokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public JwtTokenDto createToken(String user, List<Authority> roles) {
+    public String createToken(Users user, List<Authority> roles) {
+
         Date now = new Date();
         Date accessExpire = new Date(now.getTime() + validTime);
 
-        Claims claims = Jwts.claims().setSubject(user);
+        Claims claims = Jwts.claims();
+        claims.put("id", user.getId());
+        claims.put("email", user.getEmail());
         claims.put("roles", roles);
 
-        String accessToken = Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+        return Jwts.builder()
+                .setSubject(user.getEmail())
                 .setClaims(claims)
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(accessExpire) // 토큰 유효시각 설정
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 암호화 알고리즘과, secret 값
                 .compact();
 
-        String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now.getTime() + 60 * 60 * 1000L))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-
-        return JwtTokenDto.builder()
-                .grantType("bearer")
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .accessTokenExpire(accessExpire.getTime())
-                .build();
+        //        String refreshToken = Jwts.builder()
+//                .setExpiration(new Date(now.getTime() + 60 * 60 * 1000L))
+//                .signWith(SignatureAlgorithm.HS256, secretKey)
+//                .compact();
     }
 
-    public Authentication getAuth(String token) {
-
-        UserDetails userDetails = userDetailService
-                .loadUserByUsername(this.getAccount(token));
-        return new UsernamePasswordAuthenticationToken(
-                userDetails, "", userDetails.getAuthorities()
-        );
-    }
-
-    public String getAccount(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
-
-    public String resolveToken(HttpServletRequest request) {
-        return request
-                .getHeader("Authorization");
+    public Long getUserID(String token) {
+        return parseJwt(token).get("id", Long.class);
     }
 
     public boolean validateToken(String token) {
         try {
-            if(!token.substring(0, "BEARER".length()).equalsIgnoreCase("BEARER ")) {
-                return false;
-            } else {
-                token = token.split(" ")[1].trim();
-            }
-            Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (Exception e) {
-            return false;
+            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            return true;
+        // TODO: 커스텀 예외처리 추가. 토큰 만료, 지원 불가 등에 대한 예외 추가
+        } catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
         }
+    }
+
+    public Claims parseJwt(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
