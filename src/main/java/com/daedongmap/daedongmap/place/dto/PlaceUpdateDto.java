@@ -1,15 +1,22 @@
 package com.daedongmap.daedongmap.place.dto;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
 public class PlaceUpdateDto {
-    private String name;
-    private String category;
+    private Long kakaoPlaceId;
+    private String placeName;
+    private String placeUrl;
+    private String categoryName;
+    private String addressName;
+    private String roadAddressName;
+    private String phone;
 
-    private String addrSigungu; //시군구
-    private String addrJibun; //지번 주소
-    private String addrRoad; //도로명 주소
-    private String addrDetail; //상세 주소
-
-    private Double latitude; // 위도
-    private Double longitude; // 경도
+    private Double x;
+    private Double y;
 
 }
