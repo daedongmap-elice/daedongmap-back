@@ -8,9 +8,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 
-import java.time.LocalDateTime;
+import java.net.URL;
 
 @Entity
 @Getter
