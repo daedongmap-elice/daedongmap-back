@@ -31,11 +31,14 @@ public class Comment extends BaseTimeEntity {
 
     private String content;
 
+    private Long parentId;
+
     @Builder
-    public Comment(Users user, Review review, String content) {
+    public Comment(Users user, Review review, String content, Long parentId) {
         this.user = user;
         this.review = review;
         this.content = content;
+        this.parentId = parentId;
     }
 
     public void updateComment(CommentUpdateDto commentUpdateDto) {

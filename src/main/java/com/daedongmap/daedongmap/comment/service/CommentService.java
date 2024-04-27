@@ -40,6 +40,7 @@ public class CommentService {
                 .user(user)
                 .review(review)
                 .content(commentCreateDto.getContent())
+                .parentId(commentCreateDto.getParentId())
                 .build();
 
         Comment createdComment = commentRepository.save(comment);
@@ -68,6 +69,7 @@ public class CommentService {
 
     private CommentBasicInfoDto toCommentBasicInfoDto(Comment comment) {
         return CommentBasicInfoDto.builder()
+                .id(comment.getId())
                 .user(UserBasicInfoDto.builder()
                         .id(comment.getUser().getId())
                         .nickName(comment.getUser().getNickName())
@@ -75,6 +77,7 @@ public class CommentService {
                         .build())
                 .reviewId(comment.getReview().getId())
                 .content(comment.getContent())
+                .parentId(comment.getParentId())
                 .build();
     }
 
