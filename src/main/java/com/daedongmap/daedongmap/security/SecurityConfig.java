@@ -1,6 +1,11 @@
 package com.daedongmap.daedongmap.security;
 
-import com.daedongmap.daedongmap.jwt.TokenProvider;
+import com.daedongmap.daedongmap.security.jwt.CustomAccessDeniedHandler;
+import com.daedongmap.daedongmap.security.jwt.CustomAuthEntryPoint;
+import com.daedongmap.daedongmap.security.jwt.JwtAuthenticationFilter;
+import com.daedongmap.daedongmap.security.jwt.TokenProvider;
+import com.daedongmap.daedongmap.user.service.UserDetailService;
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -13,10 +18,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -24,8 +27,10 @@ import java.util.Arrays;
 public class SecurityConfig implements WebMvcConfigurer {
 
     private final TokenProvider tokenProvider;
-//    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-//    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final UserDetailService userDetailService;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final CustomAuthEntryPoint authEntryPoint;
+
 
     @Bean
     public static BCryptPasswordEncoder bCryptEncoder() {
@@ -39,10 +44,29 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .requestMatchers(new AntPathRequestMatcher("/**"))
+
+                                .requestMatchers(
+                                        "/api/register",
+                                        "/api/login",
+                                        "/swagger-ui.html",
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs/**")
                                 .permitAll()
-                                .anyRequest()
-                                .authenticated())
+
+                                .requestMatchers(
+                                        "/api/user/**")
+                                .hasRole("USER")
+
+                                .anyRequest().permitAll()
+                )
+                .addFilterBefore(
+                        new JwtAuthenticationFilter(userDetailService, tokenProvider),
+                        UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling((handling) ->
+                        handling
+                                .authenticationEntryPoint(authEntryPoint)
+                                .accessDeniedHandler(accessDeniedHandler)
+                )
                 .headers(headers ->
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .sessionManagement(session ->
