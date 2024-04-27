@@ -8,5 +8,6 @@ public class CommentCreateDto {
     private Long userId;
     private Long reviewId;
     private String content;
+    private Long parentId;
 
 }
