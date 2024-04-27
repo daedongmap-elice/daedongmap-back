@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     public List<Comment> findAllByReviewId(Long reviewId);
+    public List<Comment> findAllByParentId(Long parentId);
     public void deleteById(Long id);
 }
