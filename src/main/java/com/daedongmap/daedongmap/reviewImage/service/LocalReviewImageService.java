@@ -10,17 +10,19 @@ import java.util.UUID;
 
 public class LocalReviewImageService implements ReviewImageService{
     @Override
-    public String uploadReviewImage(MultipartFile reviewImage) throws IOException {
+    public String uploadReviewImage(MultipartFile reviewImage, String fileName) throws IOException {
         // 이미지 파일 이름과 경로 생성
-        String fileName = UUID.randomUUID().toString();
-        String filePath = "/images/" + fileName;
-
-        return filePath;
+        return "/images/" + fileName;
     }
 
     @Override
     public List<ReviewImageDto> getReviewImage(Long reviewId) {
         return null;
+    }
+
+    @Override
+    public void deleteReviewImage(Long reviewId) {
+
     }
 
 }

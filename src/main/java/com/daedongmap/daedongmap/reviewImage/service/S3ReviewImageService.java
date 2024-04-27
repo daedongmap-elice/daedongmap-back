@@ -27,8 +27,8 @@ public class S3ReviewImageService implements ReviewImageService {
     private final ReviewImageRepository reviewImageRepository;
 
     @Override
-    public String uploadReviewImage(MultipartFile reviewImage) throws IOException {
-        String fileName = reviewImage.getOriginalFilename() + "_" + UUID.randomUUID();
+    public String uploadReviewImage(MultipartFile reviewImage, String fileName) throws IOException {
+//        String fileName = reviewImage.getOriginalFilename() + "_" + UUID.randomUUID();
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(reviewImage.getSize());
@@ -44,6 +44,18 @@ public class S3ReviewImageService implements ReviewImageService {
         return reviewImageList.stream()
                 .map(ReviewImageDto::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteReviewImage(Long reviewId) {
+        // s3 에서 이미지 파일 삭제
+        List<ReviewImage> reviewImageList = reviewImageRepository.findAllByReviewId(reviewId);
+        for (ReviewImage reviewImage : reviewImageList) {
+            amazonS3Client.deleteObject(bucket, reviewImage.getFileName());
+        }
+
+        // DB 에서 이미지 파일 정보 삭제
+        reviewImageRepository.deleteByReviewId(reviewId);
     }
 
 }

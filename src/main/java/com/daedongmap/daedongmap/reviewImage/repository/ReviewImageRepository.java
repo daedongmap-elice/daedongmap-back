@@ -6,5 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ReviewImageRepository extends JpaRepository<ReviewImage, Long> {
-    public List<ReviewImage> findAllByReviewId(Long reviewId);
+    List<ReviewImage> findAllByReviewId(Long reviewId);
+
+    void deleteByReviewId(Long reviewId);
 }

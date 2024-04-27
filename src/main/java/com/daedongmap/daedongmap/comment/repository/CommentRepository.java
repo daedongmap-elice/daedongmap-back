@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    public List<Comment> findAllByReviewId(Long reviewId);
-    public List<Comment> findAllByParentId(Long parentId);
-    public void deleteById(Long id);
+    List<Comment> findAllByReviewId(Long reviewId);
+    List<Comment> findAllByParentId(Long parentId);
+    void deleteByReviewId(Long reviewId);
 }

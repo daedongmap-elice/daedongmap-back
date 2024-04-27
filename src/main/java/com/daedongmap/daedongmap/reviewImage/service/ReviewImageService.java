@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ReviewImageService {
-    String uploadReviewImage(MultipartFile reviewImage) throws IOException;
+    String uploadReviewImage(MultipartFile reviewImage, String fileName) throws IOException;
     List<ReviewImageDto> getReviewImage(Long reviewId);
+    void deleteReviewImage(Long reviewId);
 }
