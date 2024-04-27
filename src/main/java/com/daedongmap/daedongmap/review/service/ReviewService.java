@@ -2,6 +2,7 @@ package com.daedongmap.daedongmap.review.service;
 
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
+import com.daedongmap.daedongmap.likes.repository.LikeRepository;
 import com.daedongmap.daedongmap.place.domain.Place;
 import com.daedongmap.daedongmap.place.repository.PlaceRepository;
 import com.daedongmap.daedongmap.review.dto.ReviewBasicInfoDto;
@@ -35,6 +36,7 @@ public class ReviewService {
     private final ReviewImageRepository reviewImageRepository;
     private final UserRepository userRepository;
     private final PlaceRepository placeRepository;
+    private final LikeRepository likeRepository;
     private final ReviewImageService reviewImageService;
 
     // todo
@@ -97,6 +99,7 @@ public class ReviewService {
 
         ReviewDetailDto reviewDetailDto = new ReviewDetailDto(review);
         reviewDetailDto.setReviewImageDtoList(reviewImageService.getReviewImage(reviewId));
+        reviewDetailDto.setLikeCount(likeRepository.countByReviewId(reviewId));
 
         return reviewDetailDto;
     }
