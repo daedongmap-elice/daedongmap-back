@@ -1,18 +1,14 @@
 package com.daedongmap.daedongmap.security.jwt;
 
+import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.user.domain.Authority;
 import com.daedongmap.daedongmap.user.domain.Users;
-import com.daedongmap.daedongmap.user.dto.JwtParseDto;
-import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.service.UserDetailService;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
@@ -67,14 +63,23 @@ public class TokenProvider {
         return parseJwt(token).get("id", Long.class);
     }
 
-    public boolean validateToken(String token) {
+    public HttpServletRequest validateToken(String token, HttpServletRequest request) {
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
-            return true;
-        // TODO: 커스텀 예외처리 추가. 토큰 만료, 지원 불가 등에 대한 예외 추가
-        } catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
+        } catch(MalformedJwtException e) {
+            log.info("인증되지 않은 토큰");
+            request.setAttribute("exception", ErrorCode.UNAUTHORIZED_TOKEN);
+        } catch(ExpiredJwtException e) {
+            log.info("만료된 토큰");
+            request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN);
+        } catch(UnsupportedJwtException e) {
+            log.info("지원되지 않는 토큰");
+            request.setAttribute("exception", ErrorCode.UNSUPPORTED_TOKEN);
+        } catch(Exception e) {
+            log.info("유효하지 않은 토큰");
+            request.setAttribute("exception", ErrorCode.INVALID_TOKEN);
         }
+        return request;
     }
 
     public Claims parseJwt(String token) {

@@ -1,11 +1,7 @@
 package com.daedongmap.daedongmap.security;
 
-import com.daedongmap.daedongmap.security.jwt.CustomAccessDeniedHandler;
-import com.daedongmap.daedongmap.security.jwt.CustomAuthEntryPoint;
-import com.daedongmap.daedongmap.security.jwt.JwtAuthenticationFilter;
-import com.daedongmap.daedongmap.security.jwt.TokenProvider;
+import com.daedongmap.daedongmap.security.jwt.*;
 import com.daedongmap.daedongmap.user.service.UserDetailService;
-import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -19,18 +15,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig implements WebMvcConfigurer {
+public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
     private final UserDetailService userDetailService;
+    private final CustomAuthEntryPoint customAuthEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
-    private final CustomAuthEntryPoint authEntryPoint;
-
 
     @Bean
     public static BCryptPasswordEncoder bCryptEncoder() {
@@ -39,6 +33,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
                 .csrf(csrf -> csrf.ignoringRequestMatchers(PathRequest.toH2Console()))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -59,19 +54,18 @@ public class SecurityConfig implements WebMvcConfigurer {
 
                                 .anyRequest().permitAll()
                 )
+                .exceptionHandling((exceptionConfig) ->
+                                exceptionConfig
+                                        .authenticationEntryPoint(customAuthEntryPoint)
+                                        .accessDeniedHandler(accessDeniedHandler)
+                )
                 .addFilterBefore(
                         new JwtAuthenticationFilter(userDetailService, tokenProvider),
                         UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling((handling) ->
-                        handling
-                                .authenticationEntryPoint(authEntryPoint)
-                                .accessDeniedHandler(accessDeniedHandler)
-                )
                 .headers(headers ->
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        ;
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
