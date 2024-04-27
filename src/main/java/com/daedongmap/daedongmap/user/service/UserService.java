@@ -2,7 +2,7 @@ package com.daedongmap.daedongmap.user.service;
 
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
-import com.daedongmap.daedongmap.jwt.TokenProvider;
+import com.daedongmap.daedongmap.security.jwt.TokenProvider;
 import com.daedongmap.daedongmap.user.domain.Authority;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.dto.request.UserLoginDto;
@@ -57,7 +57,7 @@ public class UserService {
 
         return new AuthResponseDto(
                 foundUser.getNickName(),
-                tokenProvider.createToken(foundUser.getEmail(), foundUser.getRoles()),
+                tokenProvider.createToken(foundUser, foundUser.getRoles()),
                 foundUser.getRoles()
         );
     }
