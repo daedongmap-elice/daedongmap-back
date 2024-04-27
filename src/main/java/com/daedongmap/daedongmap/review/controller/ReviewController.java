@@ -1,6 +1,7 @@
 package com.daedongmap.daedongmap.review.controller;
 
 import com.daedongmap.daedongmap.review.dto.ReviewCreateDto;
+import com.daedongmap.daedongmap.review.dto.ReviewDetailDto;
 import com.daedongmap.daedongmap.reviewImage.model.ReviewImage;
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.dto.ReviewBasicInfoDto;
@@ -55,9 +56,9 @@ public class ReviewController {
 
     @GetMapping("/api/reviews/{reviewId}")
     @Operation(summary = "리뷰 상세 조회", description = "리뷰를 상세조회합니다.")
-    public ResponseEntity<ReviewBasicInfoDto> getReviewById(@PathVariable Long reviewId) {
-        ReviewBasicInfoDto findReviewDto = reviewService.findReviewById(reviewId);
-        return ResponseEntity.status(HttpStatus.OK).body(findReviewDto);
+    public ResponseEntity<ReviewDetailDto> getReviewById(@PathVariable Long reviewId) {
+        ReviewDetailDto reviewDetailDto = reviewService.findReviewById(reviewId);
+        return ResponseEntity.status(HttpStatus.OK).body(reviewDetailDto);
     }
 
     // todo: 본인만 수정 가능, 토큰으로부터 가져온 id와 포스트 작성자의 id가 일치하는지 확인 후 수정

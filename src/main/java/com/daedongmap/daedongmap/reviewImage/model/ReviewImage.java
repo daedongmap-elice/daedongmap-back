@@ -27,13 +27,16 @@ public class ReviewImage extends BaseTimeEntity {
     @ManyToOne
     private Review review;
 
+    private String fileName;
+
     @Column(nullable = false)
     private String filePath;
 
     @Builder
-    public ReviewImage(Users user, Review review, String filePath) {
+    public ReviewImage(Users user, Review review, String filePath, String fileName) {
         this.user = user;
         this.review = review;
+        this.fileName = fileName;
         this.filePath = filePath;
     }
 

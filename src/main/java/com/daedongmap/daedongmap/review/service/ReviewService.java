@@ -1,12 +1,16 @@
 package com.daedongmap.daedongmap.review.service;
 
+import com.daedongmap.daedongmap.comment.domain.Comment;
+import com.daedongmap.daedongmap.comment.repository.CommentRepository;
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
+import com.daedongmap.daedongmap.likes.repository.LikeRepository;
 import com.daedongmap.daedongmap.place.domain.Place;
 import com.daedongmap.daedongmap.place.repository.PlaceRepository;
 import com.daedongmap.daedongmap.review.dto.ReviewBasicInfoDto;
 import com.daedongmap.daedongmap.review.dto.ReviewCreateDto;
 import com.daedongmap.daedongmap.review.domain.Review;
+import com.daedongmap.daedongmap.review.dto.ReviewDetailDto;
 import com.daedongmap.daedongmap.review.dto.ReviewUpdateDto;
 import com.daedongmap.daedongmap.review.repository.ReviewRepository;
 import com.daedongmap.daedongmap.reviewImage.model.ReviewImage;
@@ -23,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,6 +39,8 @@ public class ReviewService {
     private final ReviewImageRepository reviewImageRepository;
     private final UserRepository userRepository;
     private final PlaceRepository placeRepository;
+    private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
     private final ReviewImageService reviewImageService;
 
     // todo
@@ -59,12 +66,14 @@ public class ReviewService {
 
         for (MultipartFile multipartFile : multipartFileList) {
             // 이미지를 저장하고 파일 경로를 반환
-            String filePath = reviewImageService.uploadReviewImage(multipartFile);
+            String fileName = multipartFile.getOriginalFilename() + "_" + UUID.randomUUID();
+            String filePath = reviewImageService.uploadReviewImage(multipartFile, fileName);
 
             ReviewImage reviewImage = ReviewImage.builder()
                     .user(user)
                     .review(createdReview)
                     .filePath(filePath)
+                    .fileName(fileName)
                     .build();
 
             reviewImageRepository.save(reviewImage);
@@ -90,14 +99,29 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewBasicInfoDto findReviewById(Long reviewId) {
+    public ReviewDetailDto findReviewById(Long reviewId) {
         Optional<Review> optionalReview = reviewRepository.findById(reviewId);
         Review review = optionalReview.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-        return new ReviewBasicInfoDto(review);
+
+        ReviewDetailDto reviewDetailDto = new ReviewDetailDto(review);
+        reviewDetailDto.setReviewImageDtoList(reviewImageService.getReviewImage(reviewId));
+        reviewDetailDto.setLikeCount(likeRepository.countByReviewId(reviewId));
+
+        return reviewDetailDto;
     }
 
     @Transactional
     public void deleteReview(Long reviewId) {
+        // 리뷰에 해당되는 댓글 삭제
+        List<Comment> comments = commentRepository.findAllByReviewId(reviewId);
+        for (Comment comment : comments) {
+            commentRepository.deleteById(comment.getId());
+        }
+
+        // 리뷰에 해당되는 이미지 파일 삭제
+        reviewImageService.deleteReviewImage(reviewId);
+
+        // 리뷰 삭제
         reviewRepository.deleteById(reviewId);
     }
 

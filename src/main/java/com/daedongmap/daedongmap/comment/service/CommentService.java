@@ -87,17 +87,4 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
-//    private CommentDto toCommentBasicInfoDto(Comment comment) {
-//        return CommentDto.builder()
-//                .id(comment.getId())
-//                .user(UserBasicInfoDto.builder()
-//                        .id(comment.getUser().getId())
-//                        .nickName(comment.getUser().getNickName())
-//                        .email(comment.getUser().getEmail())
-//                        .build())
-//                .content(comment.getContent())
-//                .parentId(comment.getParentId())
-//                .build();
-//    }
-
 }
