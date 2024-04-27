@@ -7,6 +7,7 @@ import com.daedongmap.daedongmap.place.repository.PlaceRepository;
 import com.daedongmap.daedongmap.review.dto.ReviewBasicInfoDto;
 import com.daedongmap.daedongmap.review.dto.ReviewCreateDto;
 import com.daedongmap.daedongmap.review.domain.Review;
+import com.daedongmap.daedongmap.review.dto.ReviewDetailDto;
 import com.daedongmap.daedongmap.review.dto.ReviewUpdateDto;
 import com.daedongmap.daedongmap.review.repository.ReviewRepository;
 import com.daedongmap.daedongmap.reviewImage.model.ReviewImage;
@@ -90,10 +91,14 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewBasicInfoDto findReviewById(Long reviewId) {
+    public ReviewDetailDto findReviewById(Long reviewId) {
         Optional<Review> optionalReview = reviewRepository.findById(reviewId);
         Review review = optionalReview.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-        return new ReviewBasicInfoDto(review);
+
+        ReviewDetailDto reviewDetailDto = new ReviewDetailDto(review);
+        reviewDetailDto.setReviewImageDtoList(reviewImageService.getReviewImage(reviewId));
+
+        return reviewDetailDto;
     }
 
     @Transactional
