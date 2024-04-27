@@ -1,17 +1,24 @@
 package com.daedongmap.daedongmap.comment.dto;
 
+import com.daedongmap.daedongmap.comment.domain.Comment;
 import com.daedongmap.daedongmap.user.dto.UserBasicInfoDto;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@Builder
 public class CommentDto {
 
     private Long id;
     private UserBasicInfoDto user;
-    private Long reviewId;
     private String content;
     private Long parentId;
+
+    public CommentDto (Comment comment) {
+        this.id = comment.getId();
+        this.user = new UserBasicInfoDto(comment.getUser());
+        this.content = comment.getContent();
+        this.parentId = comment.getParentId();
+    }
 
 }

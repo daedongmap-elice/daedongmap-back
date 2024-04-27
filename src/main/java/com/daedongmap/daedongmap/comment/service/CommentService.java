@@ -13,6 +13,7 @@ import com.daedongmap.daedongmap.review.repository.ReviewRepository;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.dto.UserBasicInfoDto;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,14 +24,12 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CommentService {
 
-    @Autowired
-    private CommentRepository commentRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ReviewRepository reviewRepository;
+    private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
 
     @Transactional
     public CommentDto createComment(CommentCreateDto commentCreateDto) {
@@ -45,14 +44,14 @@ public class CommentService {
                 .build();
 
         Comment createdComment = commentRepository.save(comment);
-        return toCommentBasicInfoDto(createdComment);
+        return new CommentDto(createdComment);
     }
 
     @Transactional(readOnly = true)
     public List<CommentWithRepliesDto> findCommentsByReview(Long reviewId) {
         List<Comment> comments = commentRepository.findAllByReviewId(reviewId);
         List<CommentDto> commentDtos = comments.stream()
-                .map(this::toCommentBasicInfoDto)
+                .map(CommentDto::new)
                 .collect(Collectors.toList());
 
         List<CommentWithRepliesDto> commentWithRepliesDtoList = new ArrayList<>();
@@ -76,7 +75,7 @@ public class CommentService {
     public CommentDto updateComment(Long commentId, CommentUpdateDto commentUpdateDto) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         comment.updateComment(commentUpdateDto);
-        return toCommentBasicInfoDto(comment);
+        return new CommentDto(comment);
     }
 
     @Transactional
@@ -88,18 +87,17 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
-    private CommentDto toCommentBasicInfoDto(Comment comment) {
-        return CommentDto.builder()
-                .id(comment.getId())
-                .user(UserBasicInfoDto.builder()
-                        .id(comment.getUser().getId())
-                        .nickName(comment.getUser().getNickName())
-                        .email(comment.getUser().getEmail())
-                        .build())
-                .reviewId(comment.getReview().getId())
-                .content(comment.getContent())
-                .parentId(comment.getParentId())
-                .build();
-    }
+//    private CommentDto toCommentBasicInfoDto(Comment comment) {
+//        return CommentDto.builder()
+//                .id(comment.getId())
+//                .user(UserBasicInfoDto.builder()
+//                        .id(comment.getUser().getId())
+//                        .nickName(comment.getUser().getNickName())
+//                        .email(comment.getUser().getEmail())
+//                        .build())
+//                .content(comment.getContent())
+//                .parentId(comment.getParentId())
+//                .build();
+//    }
 
 }
