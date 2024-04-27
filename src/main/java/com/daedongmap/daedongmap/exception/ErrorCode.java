@@ -14,7 +14,10 @@ public enum ErrorCode {
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "틀린 비밀번호입니다."),
 
     /* Token */
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "인증되지 않은 토큰입니다."),
+    UNAUTHORIZED_TOKEN(HttpStatus.FORBIDDEN, "인증되지 않은 토큰입니다."),
+    EXPIRED_TOKEN(HttpStatus.NOT_ACCEPTABLE, "만료된 토큰입니다."),
+    UNSUPPORTED_TOKEN(HttpStatus.BAD_REQUEST, "지원되지 않는 토큰입니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
 
     /* Review */
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 리뷰입니다."),
@@ -27,4 +30,5 @@ public enum ErrorCode {
 
     private final HttpStatus httpStatus;
     private final String message;
+
 }
