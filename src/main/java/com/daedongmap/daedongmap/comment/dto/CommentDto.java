@@ -12,7 +12,7 @@ public class CommentDto {
     private Long id;
     private UserBasicInfoDto user;
     private String content;
-    private Long parentId;
+    private Long parentId = null;
 
     public CommentDto (Comment comment) {
         this.id = comment.getId();
