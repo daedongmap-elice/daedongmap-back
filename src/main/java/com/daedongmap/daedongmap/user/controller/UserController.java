@@ -59,7 +59,6 @@ public class UserController {
                 .body(userId);
     }
 
-    // 질문할 것 - id를 @PathVariable 로 받아오는 것이 적절한가
     @GetMapping("/user/{userId}")
     @Operation(summary = "사용자 정보 조회", description = "userId를 통해 사용자에 대한 정보를 출력")
     public ResponseEntity<UserResponseDto> findUserById(@PathVariable(name = "userId") Long userId) {
