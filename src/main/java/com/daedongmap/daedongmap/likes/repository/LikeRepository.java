@@ -6,6 +6,6 @@ import com.daedongmap.daedongmap.user.domain.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LikeRepository extends JpaRepository<Likes, Long> {
-    public Likes findByUserAndReview(Users user, Review review);
-    public Long countByReviewId(Long reviewId);
+    Likes findByUserAndReview(Users user, Review review);
+    Long countByReviewId(Long reviewId);
 }

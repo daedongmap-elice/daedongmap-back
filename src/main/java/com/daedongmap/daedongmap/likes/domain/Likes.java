@@ -3,10 +3,8 @@ package com.daedongmap.daedongmap.likes.domain;
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.user.domain.Users;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Entity
 @Getter

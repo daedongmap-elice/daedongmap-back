@@ -8,28 +8,30 @@ import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.repository.ReviewRepository;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class LikeService {
 
-    @Autowired
-    private LikeRepository likeRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ReviewRepository reviewRepository;
+    private final LikeRepository likeRepository;
+    private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
 
     @Transactional
     public void likeReview(Long userId, Long reviewId) {
         Users user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
-        likeRepository.save(new Likes(user, review));
+        if (checkUser(user, review)) {
+            likeRepository.save(new Likes(user, review));
+        } else {
+            throw new CustomException(ErrorCode.LIKE_NOT_ALLOWED_OWN_REVIEW);
+        }
     }
 
     @Transactional
@@ -40,4 +42,9 @@ public class LikeService {
 
         likeRepository.delete(likes);
     }
+
+    private boolean checkUser(Users user, Review review) {
+        return !user.getId().equals(review.getUser().getId());
+    }
+
 }
