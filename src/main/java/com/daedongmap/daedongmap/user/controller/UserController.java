@@ -8,22 +8,31 @@ import com.daedongmap.daedongmap.user.dto.request.UserLoginDto;
 import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
 import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
 import com.daedongmap.daedongmap.user.dto.response.AuthResponseDto;
+import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.dto.response.UserResponseDto;
+import com.daedongmap.daedongmap.user.service.TokenService;
 import com.daedongmap.daedongmap.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
+@Slf4j
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-    private final TokenProvider tokenProvider;
+    private final TokenService tokenService;
 
     @PostMapping("/register")
     @Operation(summary = "사용자 등록", description = "userRegisterDto를 통해 받은 정보로 사용자 정보를 DB에 저장")
@@ -45,6 +54,23 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
                 .body(authResponseDto);
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "사용자 로그아웃", description = "DB 로그아웃하는 사용자의 리프레시 토큰 삭제")
+    public ResponseEntity<String> logoutUser(HttpServletRequest request) {
+
+        String refreshToken = request.getHeader("Authorization");
+
+        Long userId = tokenService.validate(refreshToken);
+
+        String deleteMessage = tokenService.deleteByUserId(userId);
+
+        log.info(deleteMessage);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(deleteMessage);
     }
     
     // post 메소드 사용
@@ -87,9 +113,11 @@ public class UserController {
     @Operation(summary = "사용자 삭제", description = "이메일(PK)을 통해 사용자 조회 확인 후 삭제, 삭제된 사용자의 닉네임 반환")
     public ResponseEntity<String> deleteUser(@PathVariable(name = "userId") Long userId) {
 
+        String deletedUser = userService.deleteUser(userId);
+
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body(userService.deleteUser(userId));
+                .status(HttpStatus.OK)
+                .body(deletedUser);
 
     }
 }

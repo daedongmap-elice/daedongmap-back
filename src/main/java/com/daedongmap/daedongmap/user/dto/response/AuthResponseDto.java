@@ -13,7 +13,7 @@ public class AuthResponseDto {
 
     private String nickName;
 //    private JwtTokenDto token;
-    private String token;
+    private JwtTokenDto token;
     private List<Authority> roles = new ArrayList<>();
 
 }
