@@ -27,11 +27,16 @@ public class LikeService {
         Users user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
-        if (checkUser(user, review)) {
-            likeRepository.save(new Likes(user, review));
-        } else {
+        Likes existingLike = likeRepository.findByUserAndReview(user, review);
+        if (existingLike != null) {
+            throw new CustomException(ErrorCode.ALREADY_LIKED);
+        }
+
+        if (!checkUser(user, review)) {
             throw new CustomException(ErrorCode.LIKE_NOT_ALLOWED_OWN_REVIEW);
         }
+
+        likeRepository.save(new Likes(user, review));
     }
 
     @Transactional
