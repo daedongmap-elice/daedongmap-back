@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class ReviewBasicInfoDto {
+public class ReviewDto {
 
     private Long id;
     private Long placeId;
@@ -23,7 +23,7 @@ public class ReviewBasicInfoDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public ReviewBasicInfoDto(Review review) {
+    public ReviewDto(Review review) {
         this.id = review.getId();
         this.placeId = review.getPlace().getId();
         this.user = new UserBasicInfoDto(review.getUser());

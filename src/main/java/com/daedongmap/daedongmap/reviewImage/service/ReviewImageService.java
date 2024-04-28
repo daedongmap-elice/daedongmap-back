@@ -1,13 +1,26 @@
 package com.daedongmap.daedongmap.reviewImage.service;
 
+
 import com.daedongmap.daedongmap.reviewImage.dto.ReviewImageDto;
-import org.springframework.web.multipart.MultipartFile;
+import com.daedongmap.daedongmap.reviewImage.model.ReviewImage;
+import com.daedongmap.daedongmap.reviewImage.repository.ReviewImageRepository;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public interface ReviewImageService {
-    String uploadReviewImage(MultipartFile reviewImage, String fileName) throws IOException;
-    List<ReviewImageDto> getReviewImage(Long reviewId);
-    void deleteReviewImage(Long reviewId);
+public abstract class ReviewImageService implements ImageFileService {
+
+    private final ReviewImageRepository reviewImageRepository;
+
+    public ReviewImageService(ReviewImageRepository reviewImageRepository) {
+        this.reviewImageRepository = reviewImageRepository;
+    }
+
+    public List<ReviewImageDto> getReviewImage(Long reviewId) {
+        List<ReviewImage> reviewImageList = reviewImageRepository.findAllByReviewId(reviewId);
+        return reviewImageList.stream()
+                .map(ReviewImageDto::new)
+                .collect(Collectors.toList());
+    }
+
 }
