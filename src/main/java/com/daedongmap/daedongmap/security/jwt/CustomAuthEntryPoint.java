@@ -3,6 +3,7 @@ package com.daedongmap.daedongmap.security.jwt;
 import com.daedongmap.daedongmap.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.Null;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.security.core.AuthenticationException;
@@ -21,7 +22,12 @@ public class CustomAuthEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException authException) throws IOException {
 
         String exception = null;
-        exception = request.getAttribute("exception").toString();
+
+        try {
+            exception = request.getAttribute("exception").toString();
+        } catch (NullPointerException e) {
+            log.info("토큰이 존재하지 않습니다.");
+        }
 
         if(exception == null) {
             setResponse(response, ErrorCode.INVALID_TOKEN);
