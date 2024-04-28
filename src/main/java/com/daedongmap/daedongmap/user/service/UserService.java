@@ -76,6 +76,13 @@ public class UserService {
         return new UserResponseDto(foundUser);
     }
 
+    public Users findUser(Long userId) {
+        Users foundUser = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        return foundUser;
+    }
+
     @Transactional
     public Users updateUser(Long userId, UserUpdateDto userUpdateDto) {
         Users foundUser = userRepository.findById(userId)

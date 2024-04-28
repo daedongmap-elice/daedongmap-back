@@ -18,6 +18,7 @@ public enum ErrorCode {
     EXPIRED_TOKEN(HttpStatus.NOT_ACCEPTABLE, "만료된 토큰입니다."),
     UNSUPPORTED_TOKEN(HttpStatus.BAD_REQUEST, "지원되지 않는 토큰입니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+    LOGIN_REQUIRED(HttpStatus.UNAUTHORIZED, "다시 로그인 해주세요."),
 
     /* Review */
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 리뷰입니다."),

@@ -8,14 +8,20 @@ import com.daedongmap.daedongmap.user.dto.request.UserLoginDto;
 import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
 import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
 import com.daedongmap.daedongmap.user.dto.response.AuthResponseDto;
+import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.dto.response.UserResponseDto;
 import com.daedongmap.daedongmap.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api")
@@ -23,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final TokenProvider tokenProvider;
 
     @PostMapping("/register")
     @Operation(summary = "사용자 등록", description = "userRegisterDto를 통해 받은 정보로 사용자 정보를 DB에 저장")
