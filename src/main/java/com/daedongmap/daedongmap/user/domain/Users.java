@@ -1,25 +1,24 @@
 package com.daedongmap.daedongmap.user.domain;
 
-import com.daedongmap.daedongmap.user.dto.UserUpdateDto;
+import com.daedongmap.daedongmap.common.entity.BaseTimeEntity;
+import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
-public class Users {
+public class Users extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,40 +30,34 @@ public class Users {
 
     @Column(name = "password")
     @NotBlank(message = "비밀번호를 입력해주세요.")
-    @Size(min = 8, message = "비밀번호는 최소 8자리 이상이어야 합니다")
+    @Size(min = 7, message = "비밀번호는 최소 8자리 이상이어야 합니다")
     private String password;
 
     @Column(name = "status")
     @Size(max = 50, message = "상태는 50자 이내로 작성 가능합니다.")
     private String status;
 
-    @Column(name = "email")
+    @Column(unique = true, name = "email")
     @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
 
     @Column(name = "phone_number")
-    @NotBlank(message = "전화번호를 입력해주세요")
-    @Pattern(regexp = "([0-9]{10,11})")
+//    @NotBlank(message = "전화번호를 입력해주세요")
+//    @Pattern(regexp = "([0-9]{10,11})")
     private String phoneNumber;
 
-    @Enumerated(EnumType.STRING)
-    private Authority authority;
-
-    @Column(name = "created_at")
-    @CreatedDate
-    private Date createdAt;
-
-    @Column(name = "modified_at")
-    @LastModifiedDate
-    private Date modifiedAt;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Authority> roles = new ArrayList<>();
 
     @Builder
-    public Users(String nickName, String email, String status, String phoneNumber) {
+    public Users(String nickName, String email, String status, String phoneNumber, String password, List<Authority> role) {
         this.nickName = nickName;
         this.status = status;
         this.email = email;
+        this.password = password;
         this.phoneNumber = phoneNumber;
-        this.authority = Authority.ROLE_USER;
+        this.roles = role;
+        role.forEach(o -> o.setUser(this));
     }
 
     public void updateUser(UserUpdateDto userUpdateDto) {

@@ -2,14 +2,21 @@ package com.daedongmap.daedongmap.user.service;
 
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
-import com.daedongmap.daedongmap.jwt.TokenProvider;
+import com.daedongmap.daedongmap.security.jwt.TokenProvider;
+import com.daedongmap.daedongmap.user.domain.Authority;
 import com.daedongmap.daedongmap.user.domain.Users;
-import com.daedongmap.daedongmap.user.dto.*;
+import com.daedongmap.daedongmap.user.dto.request.UserLoginDto;
+import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
+import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
+import com.daedongmap.daedongmap.user.dto.response.AuthResponseDto;
+import com.daedongmap.daedongmap.user.dto.response.UserResponseDto;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -29,11 +36,13 @@ public class UserService {
         Users newUsers = Users.builder()
                 .nickName(userRegisterDto.getNickName())
                 .email(userRegisterDto.getEmail())
+                .password(passwordEncoder.encode(userRegisterDto.getPassword()))
+                .phoneNumber(userRegisterDto.getPhoneNumber())
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
                 .build();
-        newUsers.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
         userRepository.save(newUsers);
 
-        return new AuthResponseDto(newUsers.getNickName(), null);
+        return new AuthResponseDto(newUsers.getNickName(), null, null);
     }
 
     public AuthResponseDto loginUser(UserLoginDto userLoginDto) {
@@ -46,7 +55,11 @@ public class UserService {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
 
-        return new AuthResponseDto(foundUser.getNickName(), tokenProvider.createToken(foundUser));
+        return new AuthResponseDto(
+                foundUser.getNickName(),
+                tokenProvider.createToken(foundUser, foundUser.getRoles()),
+                foundUser.getRoles()
+        );
     }
 
     public String retrieveUserId(String phoneNumber) {
@@ -63,13 +76,23 @@ public class UserService {
         return new UserResponseDto(foundUser);
     }
 
+    public Users findUser(Long userId) {
+        Users foundUser = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        return foundUser;
+    }
+
     @Transactional
     public Users updateUser(Long userId, UserUpdateDto userUpdateDto) {
         Users foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         foundUser.updateUser(userUpdateDto);
-        userRepository.save(foundUser);
+
+        // @Transactional 어노테이션을 붙이면 JPA에서 트랜잭션이 끝나는 시점에서 변화가 생긴 엔티티를 모두 자동으로 반영
+        // 조회 시 스냅샷을 만들고 종료 시 스냅샷과 차이가 있다면 DB에 이를 반영한다.
+//        userRepository.save(foundUser);
 
         return foundUser;
     }
