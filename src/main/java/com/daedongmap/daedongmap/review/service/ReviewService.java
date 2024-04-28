@@ -7,11 +7,8 @@ import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.likes.repository.LikeRepository;
 import com.daedongmap.daedongmap.place.domain.Place;
 import com.daedongmap.daedongmap.place.repository.PlaceRepository;
-import com.daedongmap.daedongmap.review.dto.ReviewBasicInfoDto;
-import com.daedongmap.daedongmap.review.dto.ReviewCreateDto;
+import com.daedongmap.daedongmap.review.dto.*;
 import com.daedongmap.daedongmap.review.domain.Review;
-import com.daedongmap.daedongmap.review.dto.ReviewDetailDto;
-import com.daedongmap.daedongmap.review.dto.ReviewUpdateDto;
 import com.daedongmap.daedongmap.review.repository.ReviewRepository;
 import com.daedongmap.daedongmap.reviewImage.model.ReviewImage;
 import com.daedongmap.daedongmap.reviewImage.repository.ReviewImageRepository;
@@ -80,6 +77,11 @@ public class ReviewService {
         }
 
         return new ReviewBasicInfoDto(createdReview);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewGalleryDto> findReviewsByTypeAndRegion(String type, String region) {
+        return null;
     }
 
     @Transactional(readOnly = true)
