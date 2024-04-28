@@ -1,11 +1,7 @@
 package com.daedongmap.daedongmap.review.controller;
 
-import com.daedongmap.daedongmap.review.dto.ReviewCreateDto;
-import com.daedongmap.daedongmap.review.dto.ReviewDetailDto;
-import com.daedongmap.daedongmap.reviewImage.model.ReviewImage;
+import com.daedongmap.daedongmap.review.dto.*;
 import com.daedongmap.daedongmap.review.domain.Review;
-import com.daedongmap.daedongmap.review.dto.ReviewBasicInfoDto;
-import com.daedongmap.daedongmap.review.dto.ReviewUpdateDto;
 import com.daedongmap.daedongmap.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +27,13 @@ public class ReviewController {
                                                            @RequestPart(value="request") ReviewCreateDto reviewCreateDto) throws IOException {
         ReviewBasicInfoDto createdReviewDto = reviewService.createReview(multipartFileList, reviewCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReviewDto);
+    }
+
+    @GetMapping("/api/reviews")
+    @Operation(summary = "리뷰 전체 조회", description = "갤러리 형식으로 리뷰 전체를 조회합니다. 리뷰 게시물의 첫 번째 사진과 id를 반환합니다.")
+    public ResponseEntity<List<ReviewGalleryDto>> getReviewGallery(@RequestParam(defaultValue = "recommended") String type,
+                                                                   @RequestParam(defaultValue = "nationwide") String region) {
+        return null;
     }
 
     @GetMapping("/api/reviews/users/{userId}")
@@ -74,6 +77,5 @@ public class ReviewController {
     public void deleteReview(@PathVariable Long reviewId) {
         reviewService.deleteReview(reviewId);
     }
-
 
 }
