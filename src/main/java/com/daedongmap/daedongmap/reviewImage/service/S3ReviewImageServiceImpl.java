@@ -41,14 +41,6 @@ public class S3ReviewImageServiceImpl extends ReviewImageService {
     }
 
     @Override
-    public List<ReviewImageDto> getReviewImage(Long reviewId) {
-        List<ReviewImage> reviewImageList = reviewImageRepository.findAllByReviewId(reviewId);
-        return reviewImageList.stream()
-                .map(ReviewImageDto::new)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public void deleteReviewImage(Long reviewId) {
         // s3 에서 이미지 파일 삭제
         List<ReviewImage> reviewImageList = reviewImageRepository.findAllByReviewId(reviewId);
