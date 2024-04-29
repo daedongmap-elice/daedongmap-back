@@ -68,8 +68,7 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(deleteMessage);
     }
-    
-    // post 메소드 사용
+
     @PostMapping("/user/accountId")
     @Operation(summary = "사용자 아이디 찾기", description = "회원가입 시 입력한 휴대폰 번호를 통해 아이디 찾기")
     public ResponseEntity<String> retrieveUserId(@RequestBody @Valid UserFindIdDto userFindIdDto) {
@@ -81,9 +80,9 @@ public class UserController {
                 .body(userId);
     }
 
-    // 다른 사용자의 정보 확인하기 - 마이페이지?
+    // 다른 사용자의 정보 확인하기 - 다른 사람의 마이페이지 조회
     @GetMapping("/user/{userId}")
-    @Operation(summary = "다른 사용자의 정보 조회", description = "userId를 통해 사용자에 대한 정보를 출력")
+    @Operation(summary = "다른 사용자의 정보 조회", description = "토큰의 userId를 통해 다른 사용자에 대한 정보를 출력")
     public ResponseEntity<UserResponseDto> findOtherUserById(@PathVariable(name = "userId") Long userId) {
 
         UserResponseDto userResponseDto = userService.findUserById(userId);
@@ -92,10 +91,10 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(userResponseDto);
     }
-    
+
     // 현재 로그인한 사용자의 정보 조회
     @GetMapping("/user")
-    @Operation(summary = "사용자 정보 조회", description = "userId를 통해 사용자에 대한 정보를 출력")
+    @Operation(summary = "사용자 정보 조회", description = "토큰의 userId를 통해 현재 사용자에 대한 정보를 출력")
     public ResponseEntity<UserResponseDto> findCurrentById(@AuthenticationPrincipal CustomUserDetails tokenUser) {
 
         UserResponseDto userResponseDto = userService.findUserById(tokenUser.getUser().getId());
