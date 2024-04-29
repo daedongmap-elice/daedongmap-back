@@ -21,7 +21,8 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 댓글입니다."),
 
     /* Place */
-    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 장소입니다.");
+    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 장소입니다."),
+    PLACE_KAKAO_ID_IN_USE(HttpStatus.CONFLICT, "등록된 장소입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
