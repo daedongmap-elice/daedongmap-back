@@ -31,7 +31,8 @@ public enum ErrorCode {
     ALREADY_LIKED(HttpStatus.BAD_REQUEST, "이미 해당 리뷰에 좋아요를 눌렀습니다."),
 
     /* Place */
-    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 장소입니다.");
+    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 장소입니다."),
+    PLACE_KAKAO_ID_IN_USE(HttpStatus.CONFLICT, "등록된 장소입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
