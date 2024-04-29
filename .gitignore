@@ -38,3 +38,4 @@ out/
 
 ### 설정 파일 ###
 application-aws.yml
+application.yml
