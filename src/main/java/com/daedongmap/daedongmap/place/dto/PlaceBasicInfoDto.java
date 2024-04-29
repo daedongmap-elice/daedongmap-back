@@ -1,5 +1,7 @@
 package com.daedongmap.daedongmap.place.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,10 +10,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Builder
+@JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class PlaceBasicInfoDto {
     private Long id;
-    private Long userId;
-    private Long kakaoPlaceId;
+    private String kakaoPlaceId;
     private String placeName;
     private String placeUrl;
     private String categoryName;
@@ -21,4 +23,6 @@ public class PlaceBasicInfoDto {
 
     private Double x;
     private Double y;
+
+    private float averageRating;
 }
