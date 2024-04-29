@@ -1,6 +1,5 @@
 package com.daedongmap.daedongmap.security.jwt;
 
-import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.user.service.UserDetailService;
 import io.jsonwebtoken.ExpiredJwtException;

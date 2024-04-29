@@ -1,14 +1,13 @@
 package com.daedongmap.daedongmap.user.controller;
 
 
-import com.daedongmap.daedongmap.security.jwt.TokenProvider;
+import com.daedongmap.daedongmap.user.domain.CustomUserDetails;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.dto.request.UserFindIdDto;
 import com.daedongmap.daedongmap.user.dto.request.UserLoginDto;
 import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
 import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
 import com.daedongmap.daedongmap.user.dto.response.AuthResponseDto;
-import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.dto.response.UserResponseDto;
 import com.daedongmap.daedongmap.user.service.TokenService;
 import com.daedongmap.daedongmap.user.service.UserService;
@@ -17,13 +16,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @Slf4j
 @RestController
@@ -85,10 +81,10 @@ public class UserController {
                 .body(userId);
     }
 
-    // 질문할 것 - id를 @PathVariable 로 받아오는 것이 적절한가
+    // 다른 사용자의 정보 확인하기 - 마이페이지?
     @GetMapping("/user/{userId}")
-    @Operation(summary = "사용자 정보 조회", description = "userId를 통해 사용자에 대한 정보를 출력")
-    public ResponseEntity<UserResponseDto> findUserById(@PathVariable(name = "userId") Long userId) {
+    @Operation(summary = "다른 사용자의 정보 조회", description = "userId를 통해 사용자에 대한 정보를 출력")
+    public ResponseEntity<UserResponseDto> findOtherUserById(@PathVariable(name = "userId") Long userId) {
 
         UserResponseDto userResponseDto = userService.findUserById(userId);
 
@@ -96,24 +92,37 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(userResponseDto);
     }
+    
+    // 현재 로그인한 사용자의 정보 조회
+    @GetMapping("/user")
+    @Operation(summary = "사용자 정보 조회", description = "userId를 통해 사용자에 대한 정보를 출력")
+    public ResponseEntity<UserResponseDto> findCurrentById(@AuthenticationPrincipal CustomUserDetails tokenUser) {
 
-    @PutMapping("/user/{userId}")
+        UserResponseDto userResponseDto = userService.findUserById(tokenUser.getUser().getId());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userResponseDto);
+    }
+
+    // Put or patch?
+    @PutMapping("/user")
     @Operation(summary = "사용자 정보 업데이트", description = "UserUpdateDto를 통해 업데이트할 정보를 전달")
-    public ResponseEntity<Users> updateUser(@PathVariable(name = "userId") Long userId,
-                                            @RequestBody UserUpdateDto userUpdateDto) {
+    public ResponseEntity<Users> updateUser(@RequestBody UserUpdateDto userUpdateDto,
+                                            @AuthenticationPrincipal CustomUserDetails tokenUser) {
 
-        Users user = userService.updateUser(userId, userUpdateDto);
+        Users user = userService.updateUser(tokenUser.getUser().getId(), userUpdateDto);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(user);
     }
 
-    @DeleteMapping("/user/{userId}")
+    @DeleteMapping("/user")
     @Operation(summary = "사용자 삭제", description = "이메일(PK)을 통해 사용자 조회 확인 후 삭제, 삭제된 사용자의 닉네임 반환")
-    public ResponseEntity<String> deleteUser(@PathVariable(name = "userId") Long userId) {
+    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal CustomUserDetails tokenUser) {
 
-        String deletedUser = userService.deleteUser(userId);
+        String deletedUser = userService.deleteUser(tokenUser.getUser().getId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
