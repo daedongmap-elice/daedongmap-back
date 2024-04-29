@@ -47,14 +47,14 @@ public class TokenController {
 
     // 헤더 토큰 정보로 로그인한 유저 아이디 조회
     // 헤더의 토큰 정보로 조회 - 인증, 인가 과정 불필요
-    @PostMapping("/user/current")
-    @Operation(summary = "현재 로그인한 유저의 아이디 조회")
-    public Long userIdFromToken(@AuthenticationPrincipal CustomUserDetails user) {
-
-        if(user == null) {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        } else {
-            return user.getUser().getId();
-        }
-    }
+//    @PostMapping("/user/current")
+//    @Operation(summary = "현재 로그인한 유저의 아이디 조회")
+//    public Long userIdFromToken(@AuthenticationPrincipal CustomUserDetails user) {
+//
+//        if(user == null) {
+//            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+//        } else {
+//            return user.getUser().getId();
+//        }
+//    }
 }
