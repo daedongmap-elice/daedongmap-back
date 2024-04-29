@@ -7,10 +7,10 @@ import com.daedongmap.daedongmap.follow.dto.FollowingDto;
 import com.daedongmap.daedongmap.follow.model.Follow;
 import com.daedongmap.daedongmap.follow.repository.FollowRepository;
 import com.daedongmap.daedongmap.user.domain.Users;
+import com.daedongmap.daedongmap.user.dto.UserBasicInfoDto;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +52,6 @@ public class FollowService {
         Follow follow = followRepository.findByFollowerAndFollowing(follower, following);
 
         if (follow != null) {
-            log.info("isFollowing:" + follow.toString());
             return true;
         }
         return false;
@@ -79,7 +78,8 @@ public class FollowService {
         List<FollowingDto> followingDtoList = new ArrayList<>();
         for (Follow follow : followingList) {
             boolean isFollower = followRepository.existsByFollowerAndFollowing(follow.getFollowing(), user);
-            FollowingDto followingDto = new FollowingDto(follow.getFollowing().getId(), isFollower);
+            UserBasicInfoDto followingUserInfo = new UserBasicInfoDto(follow.getFollowing());
+            FollowingDto followingDto = new FollowingDto(followingUserInfo, isFollower);
             followingDtoList.add(followingDto);
         }
 
@@ -96,7 +96,8 @@ public class FollowService {
         List<FollowerDto> followerDtoList = new ArrayList<>();
         for (Follow follow : followerList) {
             boolean isFollowing = followRepository.existsByFollowerAndFollowing(user, follow.getFollower());
-            FollowerDto followerDto = new FollowerDto(follow.getFollower().getId(), isFollowing);
+            UserBasicInfoDto followerInfo = new UserBasicInfoDto(follow.getFollower());
+            FollowerDto followerDto = new FollowerDto(followerInfo, isFollowing);
             followerDtoList.add(followerDto);
         }
 
