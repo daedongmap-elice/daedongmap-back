@@ -5,7 +5,6 @@ import com.daedongmap.daedongmap.user.domain.Authority;
 import com.daedongmap.daedongmap.user.domain.RefreshTokens;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
-import com.daedongmap.daedongmap.user.repository.TokenRepository;
 import com.daedongmap.daedongmap.user.service.TokenService;
 import com.daedongmap.daedongmap.user.service.UserDetailService;
 import io.jsonwebtoken.*;
