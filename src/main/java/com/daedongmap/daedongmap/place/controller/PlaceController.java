@@ -4,7 +4,6 @@ import com.daedongmap.daedongmap.place.dto.PlaceBasicInfoDto;
 import com.daedongmap.daedongmap.place.dto.PlaceCreateDto;
 import com.daedongmap.daedongmap.place.dto.PlaceUpdateDto;
 import com.daedongmap.daedongmap.place.service.PlaceService;
-import com.daedongmap.daedongmap.review.dto.ReviewBasicInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

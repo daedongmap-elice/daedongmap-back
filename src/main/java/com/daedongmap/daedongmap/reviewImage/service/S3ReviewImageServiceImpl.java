@@ -2,8 +2,7 @@ package com.daedongmap.daedongmap.reviewImage.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.daedongmap.daedongmap.reviewImage.dto.ReviewImageDto;
-import com.daedongmap.daedongmap.reviewImage.model.ReviewImage;
+import com.daedongmap.daedongmap.reviewImage.domain.ReviewImage;
 import com.daedongmap.daedongmap.reviewImage.repository.ReviewImageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Slf4j
