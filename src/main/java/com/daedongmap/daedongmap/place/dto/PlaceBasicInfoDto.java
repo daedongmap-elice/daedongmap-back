@@ -1,13 +1,24 @@
 package com.daedongmap.daedongmap.place.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 @Getter
 @Setter
+@AllArgsConstructor
+@Builder
 public class PlaceBasicInfoDto {
-    private Long Id;
-    private String name;
-    private String category;
-    private Double latitude; // 위도
-    private Double longitude; // 경도
+    private Long id;
+    private Long userId;
+    private Long kakaoPlaceId;
+    private String placeName;
+    private String placeUrl;
+    private String categoryName;
+    private String addressName;
+    private String roadAddressName;
+    private String phone;
+
+    private Double x;
+    private Double y;
 }
