@@ -1,9 +1,6 @@
 package com.daedongmap.daedongmap.user.controller;
 
-import com.daedongmap.daedongmap.exception.CustomException;
-import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.security.jwt.TokenProvider;
-import com.daedongmap.daedongmap.user.domain.CustomUserDetails;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.service.TokenService;
@@ -13,9 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,7 +31,7 @@ public class TokenController {
 
         Long userId = tokenService.validate(refreshToken);
 
-        Users user = userService.findUser(userId);
+        Users user = userService.findUserById(userId);
 
         JwtTokenDto newAccessToken = tokenProvider.createNewAccessToken(user, user.getRoles());
 

@@ -27,7 +27,7 @@ public class TokenProvider {
     // The signing key's size is 48 bits which is not secure enough for the HS256 algorithm
     // 영어 한단어당 8bit, 32글자 이상이어야 에러가 발생하지 않는다
     // 배포 단계에서는 노출되지 않도록 환경변수로 등록할 것
-    @Value("${spring.security.jwt.password.encoder}")
+    @Value("${jwt.encoder}")
     private String secretKey;
 
     private static final long validTime = 30 * 60 * 1000L;

@@ -18,4 +18,12 @@ public class UserRegisterDto {
     @NotBlank(message = "비밀번호를 입력해주세요.")
     @Size(min = 8, message = "비밀번호는 8자리 이상입니다!")
     private String password;
+
+    @Builder
+    public UserRegisterDto(String email, String nickName, String phoneNumber, String password) {
+        this.email = email;
+        this.nickName = nickName;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+    }
 }

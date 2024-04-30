@@ -9,7 +9,6 @@ import com.daedongmap.daedongmap.user.dto.request.UserLoginDto;
 import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
 import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
 import com.daedongmap.daedongmap.user.dto.response.AuthResponseDto;
-import com.daedongmap.daedongmap.user.dto.response.UserResponseDto;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +37,23 @@ public class UserService {
                 .nickName(userRegisterDto.getNickName())
                 .email(userRegisterDto.getEmail())
                 .password(passwordEncoder.encode(userRegisterDto.getPassword()))
+                .phoneNumber(userRegisterDto.getPhoneNumber())
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+        userRepository.save(newUsers);
+
+        return new AuthResponseDto(newUsers.getNickName(), null, null);
+    }
+
+    @Transactional
+    public AuthResponseDto registerOAuthUser(UserRegisterDto userRegisterDto) {
+        userRepository.findByEmail(userRegisterDto.getEmail()).ifPresent(e -> {
+            throw new CustomException(ErrorCode.EMAIL_IN_USE);
+        });
+
+        Users newUsers = Users.builder()
+                .nickName(userRegisterDto.getNickName())
+                .email(userRegisterDto.getEmail())
                 .phoneNumber(userRegisterDto.getPhoneNumber())
                 .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
                 .build();
@@ -69,18 +86,18 @@ public class UserService {
         return foundUser.getEmail();
     }
 
-    public UserResponseDto findUserById(Long userId) {
-        Users foundUser = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public Users findUserById(Long userId) {
 
-        return new UserResponseDto(foundUser);
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
-    public Users findUser(Long userId) {
-        Users foundUser = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public Users findUserByEmail(String email) {
 
-        return foundUser;
+        Optional<Users> foundUser = userRepository.findByEmail(email);
+
+        return foundUser.orElse(null);
+
     }
 
     @Transactional
