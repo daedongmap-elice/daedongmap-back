@@ -1,7 +1,6 @@
 package com.daedongmap.daedongmap.reviewImage.dto;
 
-import com.daedongmap.daedongmap.review.domain.Review;
-import com.daedongmap.daedongmap.reviewImage.model.ReviewImage;
+import com.daedongmap.daedongmap.reviewImage.domain.ReviewImage;
 import lombok.Getter;
 import lombok.Setter;
 

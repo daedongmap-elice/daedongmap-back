@@ -10,7 +10,7 @@ import com.daedongmap.daedongmap.place.repository.PlaceRepository;
 import com.daedongmap.daedongmap.review.dto.*;
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.repository.ReviewRepository;
-import com.daedongmap.daedongmap.reviewImage.model.ReviewImage;
+import com.daedongmap.daedongmap.reviewImage.domain.ReviewImage;
 import com.daedongmap.daedongmap.reviewImage.repository.ReviewImageRepository;
 import com.daedongmap.daedongmap.reviewImage.service.ReviewImageService;
 import com.daedongmap.daedongmap.user.domain.Users;

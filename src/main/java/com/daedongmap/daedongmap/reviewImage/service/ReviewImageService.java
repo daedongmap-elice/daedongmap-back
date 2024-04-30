@@ -2,7 +2,7 @@ package com.daedongmap.daedongmap.reviewImage.service;
 
 
 import com.daedongmap.daedongmap.reviewImage.dto.ReviewImageDto;
-import com.daedongmap.daedongmap.reviewImage.model.ReviewImage;
+import com.daedongmap.daedongmap.reviewImage.domain.ReviewImage;
 import com.daedongmap.daedongmap.reviewImage.repository.ReviewImageRepository;
 
 import java.util.List;

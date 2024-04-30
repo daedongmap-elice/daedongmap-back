@@ -1,6 +1,6 @@
 package com.daedongmap.daedongmap.reviewImage.repository;
 
-import com.daedongmap.daedongmap.reviewImage.model.ReviewImage;
+import com.daedongmap.daedongmap.reviewImage.domain.ReviewImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

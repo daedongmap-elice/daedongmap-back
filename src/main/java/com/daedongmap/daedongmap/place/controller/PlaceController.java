@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/place")
 @RequiredArgsConstructor
@@ -22,6 +24,14 @@ public class PlaceController {
     public ResponseEntity<PlaceBasicInfoDto> createPlace(@RequestBody PlaceCreateDto placeCreateDto) {
         PlaceBasicInfoDto createdPlaceDto = placeService.createPlace(placeCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPlaceDto);
+    }
+
+    @GetMapping()
+    @Operation(summary = "음식점 조회", description = "카테고리별 음식점을 모두 조회합니다.")
+    public ResponseEntity<List<PlaceBasicInfoDto>> getCategoryPlace(@RequestParam String categoryName) {
+        System.out.println("categoryName = " + categoryName);
+        List<PlaceBasicInfoDto> findPlace = placeService.findPlaceByCategoryName(categoryName);
+        return ResponseEntity.status(HttpStatus.OK).body(findPlace);
     }
 
     @GetMapping("/{placeId}")

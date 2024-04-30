@@ -1,5 +1,6 @@
 package com.daedongmap.daedongmap.place.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class PlaceUpdateDto {
-    private Long kakaoPlaceId;
+    private String kakaoPlaceId;
     private String placeName;
     private String placeUrl;
     private String categoryName;
@@ -18,5 +19,7 @@ public class PlaceUpdateDto {
 
     private Double x;
     private Double y;
+
+    private float averageRating;
 
 }
