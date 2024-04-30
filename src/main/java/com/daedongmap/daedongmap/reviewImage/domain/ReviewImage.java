@@ -1,4 +1,4 @@
-package com.daedongmap.daedongmap.reviewImage.model;
+package com.daedongmap.daedongmap.reviewImage.domain;
 
 import com.daedongmap.daedongmap.common.entity.BaseTimeEntity;
 import com.daedongmap.daedongmap.review.domain.Review;
@@ -7,8 +7,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.net.URL;
 
 @Entity
 @Getter

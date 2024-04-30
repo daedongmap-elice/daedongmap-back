@@ -1,13 +1,13 @@
 package com.daedongmap.daedongmap.place.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
 public class PlaceCreateDto {
-    private Long userId;
-    private Long kakaoPlaceId;
+    private String kakaoPlaceId;
     private String placeName;
     private String placeUrl;
     private String categoryName;

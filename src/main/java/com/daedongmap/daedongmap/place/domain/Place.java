@@ -15,10 +15,7 @@ public class Place extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JoinColumn(name="user_id")
-    @ManyToOne
-    private Users user;
-    private Long kakaoPlaceId;
+    private String kakaoPlaceId;
     private String placeName;
     private String placeUrl;
     private String categoryName;
@@ -29,10 +26,11 @@ public class Place extends BaseTimeEntity {
     private Double x;
     private Double y;
 
+    private float averageRating;
+
     @Builder
-    public Place(Long id, Users user, Long kakaoPlaceId, String placeName, String placeUrl, String categoryName, String addressName, String roadAddressName, String phone, Double x, Double y) {
+    public Place(Long id, String kakaoPlaceId, String placeName, String placeUrl, String categoryName, String addressName, String roadAddressName, String phone, Double x, Double y, float averageRating) {
         this.id = id;
-        this.user = user;
         this.kakaoPlaceId = kakaoPlaceId;
         this.placeName = placeName;
         this.placeUrl = placeUrl;
@@ -42,6 +40,7 @@ public class Place extends BaseTimeEntity {
         this.phone = phone;
         this.x = x;
         this.y = y;
+        this.averageRating = averageRating;
     }
 
     public void updatePlace(PlaceUpdateDto placeUpdateDto) {
@@ -54,6 +53,7 @@ public class Place extends BaseTimeEntity {
         this.phone = placeUpdateDto.getPhone();
         this.x = placeUpdateDto.getX();
         this.y = placeUpdateDto.getY();
+        this.averageRating = placeUpdateDto.getAverageRating();
     }
 
 }

@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,9 +30,11 @@ public class PlaceService {
 
     @Transactional
     public PlaceBasicInfoDto createPlace(PlaceCreateDto placeCreateDto) {
-        Users user = userRepository.findById(placeCreateDto.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        placeRepository.findByKakaoPlaceId(placeCreateDto.getKakaoPlaceId()).ifPresent(e -> {
+            throw new CustomException(ErrorCode.PLACE_KAKAO_ID_IN_USE);
+        });
+
         Place place = Place.builder()
-                .user(user)
                 .kakaoPlaceId(placeCreateDto.getKakaoPlaceId())
                 .placeName(placeCreateDto.getPlaceName())
                 .placeUrl(placeCreateDto.getPlaceUrl())
@@ -66,7 +71,6 @@ public class PlaceService {
     private PlaceBasicInfoDto toPlaceBasicInfoDto(Place place) {
         return PlaceBasicInfoDto.builder()
                 .id(place.getId())
-                .userId(place.getUser().getId())
                 .kakaoPlaceId(place.getKakaoPlaceId())
                 .placeName(place.getPlaceName())
                 .placeUrl(place.getPlaceUrl())
@@ -76,5 +80,12 @@ public class PlaceService {
                 .x(place.getX())
                 .y(place.getY())
                 .build();
+    }
+
+    public List<PlaceBasicInfoDto> findPlaceByCategoryName(String category) {
+        List<Place> places = placeRepository.findByCategoryName(category);
+        return places.stream()
+                .map(this::toPlaceBasicInfoDto)
+                .collect(Collectors.toList());
     }
 }
