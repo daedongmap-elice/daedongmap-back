@@ -46,12 +46,11 @@ public class ReviewService {
     @Transactional
     public ReviewDto createReview(List<MultipartFile> multipartFileList, ReviewCreateDto reviewCreateDto) throws IOException {
         Users user = userRepository.findById(reviewCreateDto.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Place place = placeRepository.findById(reviewCreateDto.getPlaceId()).orElseThrow(() -> new CustomException(ErrorCode.PLACE_NOT_FOUND));
+        Place place = placeRepository.findByKakaoPlaceId(reviewCreateDto.getKakaoPlaceId()).orElseThrow(() -> new CustomException(ErrorCode.PLACE_NOT_FOUND));
 
         Review review = Review.builder()
                 .user(user)
                 .place(place)
-                .title(reviewCreateDto.getTitle())
                 .content(reviewCreateDto.getContent())
                 .hygieneRating(reviewCreateDto.getHygieneRating())
                 .tasteRating(reviewCreateDto.getTasteRating())
@@ -80,8 +79,8 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewGalleryDto> findReviewsByTypeAndRegion(String type, String region) {
-        return null;
+    public List<ReviewGalleryDto> findAllReviews(String type, String region) {
+       return null;
     }
 
     @Transactional(readOnly = true)
