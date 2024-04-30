@@ -42,18 +42,22 @@ public class Users extends BaseTimeEntity {
     private String email;
 
     @Column(name = "phone_number")
-//    @NotBlank(message = "전화번호를 입력해주세요")
+    @NotBlank(message = "전화번호를 입력해주세요")
 //    @Pattern(regexp = "([0-9]{10,11})")
     private String phoneNumber;
+
+    @Column(name = "web_site")
+    private String webSite;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Authority> roles = new ArrayList<>();
 
     @Builder
-    public Users(String nickName, String email, String status, String phoneNumber, String password, List<Authority> role) {
+    public Users(String nickName, String email, String webSite, String status, String phoneNumber, String password, List<Authority> role) {
         this.nickName = nickName;
         this.status = status;
         this.email = email;
+        this.webSite = webSite;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.roles = role;
@@ -63,8 +67,9 @@ public class Users extends BaseTimeEntity {
     public void updateUser(UserUpdateDto userUpdateDto) {
         this.nickName = userUpdateDto.getNickName();
         this.status = userUpdateDto.getStatus();
+        this.email = userUpdateDto.getEmail();
+        this.webSite = userUpdateDto.getWebSite();
         this.password = userUpdateDto.getPassword();
         this.phoneNumber = userUpdateDto.getPhoneNumber();
-        this.email = userUpdateDto.getEmail();
     }
 }
