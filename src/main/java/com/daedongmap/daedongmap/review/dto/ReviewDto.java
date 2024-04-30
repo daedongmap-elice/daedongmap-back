@@ -14,7 +14,6 @@ public class ReviewDto {
     private Long id;
     private Long placeId;
     private UserBasicInfoDto user;
-    private String title;
     private String content;
     private float tasteRating;
     private float hygieneRating;
@@ -27,7 +26,6 @@ public class ReviewDto {
         this.id = review.getId();
         this.placeId = review.getPlace().getId();
         this.user = new UserBasicInfoDto(review.getUser());
-        this.title = review.getTitle();
         this.content = review.getContent();
         this.hygieneRating = review.getHygieneRating();
         this.tasteRating = review.getTasteRating();
