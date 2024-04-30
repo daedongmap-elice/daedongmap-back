@@ -64,8 +64,8 @@ public class PlaceService {
     }
 
     @Transactional
-    public void deletePlace(Long reviewId) {
-        placeRepository.deleteById(reviewId);
+    public void deletePlace(Long placeId) {
+        placeRepository.deleteById(placeId);
     }
 
     private PlaceBasicInfoDto toPlaceBasicInfoDto(Place place) {
