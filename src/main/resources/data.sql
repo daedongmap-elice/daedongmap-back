@@ -1,11 +1,11 @@
 INSERT INTO
-    users(nickname, created_at, updated_at, password, status, email, phone_number, web_site, profile_image)
+    users(nickname, created_at, updated_at, password, status, email, phone_number, web_site, profile_image, is_member)
 VALUES
-    ('홍길동', NOW(), NOW(), '$2a$10$P04N91fpnmwXfiK6JA/OiOE/P/9UDRn4mFn2sJpTWsG4bc1WDTKy.', '맛집 찾아 삼만리', 'gildong@naver.com', '010-1234-1234', '아직 연결된 외부 사이트가 없습니다.', 'https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com'),
-    ('강호동', NOW(), NOW(), '$2a$10$REDzwMbjz2zj9laxqr.OpO.XTjogqRNFUDBi3CjpOjjY1ZUUBgI9a', '뭐든지 잘 먹습니다.', 'hodong@gmail.com', '010-1111-1234', 'https://www.naver.com', 'https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com'),
-    ('유재석', NOW(), NOW(), '$2a$10$Ly4G8YbB2Y0j5zFnyuQ9XeV8b1ZfrU.7DsQpBJqzhiumNVmHRGOhW', '맛있는 집 추천 받아요!', 'jaesuk@naver.com', '010-1234-1111', '아직 연결된 외부 사이트가 없습니다.', 'https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com'),
-    ('마동석', NOW(), NOW(), '$2a$10$QOTwD5aUTw5SqPLzBrKG4udn7X9/yNIFndk7g1lDEIxaX9DnyEVCO', '세상 모든 식당을 리뷰할 때까지', 'dongsuk@naver.com', '010-9876-1234', '아직 연결된 외부 사이트가 없습니다.', 'https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com'),
-    ('이순신', NOW(), NOW(), '$2a$10$.lKPR9zG9OTv2WxpP5T03.h6BXZPd6qQP1/C6Q/wvL9vSX8Hi3Phy', '단게 먹고 싶네요.', 'sunsin@gmail.com', '010-1234-9876', '아직 연결된 외부 사이트가 없습니다.', 'https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com');
+    ('홍길동', NOW(), NOW(), '$2a$10$P04N91fpnmwXfiK6JA/OiOE/P/9UDRn4mFn2sJpTWsG4bc1WDTKy.', '맛집 찾아 삼만리', 'gildong@naver.com', '010-1234-1234', '아직 연결된 외부 사이트가 없습니다.', 'https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com', true),
+    ('강호동', NOW(), NOW(), '$2a$10$REDzwMbjz2zj9laxqr.OpO.XTjogqRNFUDBi3CjpOjjY1ZUUBgI9a', '뭐든지 잘 먹습니다.', 'hodong@gmail.com', '010-1111-1234', 'https://www.naver.com', 'https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com', true),
+    ('유재석', NOW(), NOW(), '$2a$10$Ly4G8YbB2Y0j5zFnyuQ9XeV8b1ZfrU.7DsQpBJqzhiumNVmHRGOhW', '맛있는 집 추천 받아요!', 'jaesuk@naver.com', '010-1234-1111', '아직 연결된 외부 사이트가 없습니다.', 'https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com', true),
+    ('마동석', NOW(), NOW(), '$2a$10$QOTwD5aUTw5SqPLzBrKG4udn7X9/yNIFndk7g1lDEIxaX9DnyEVCO', '세상 모든 식당을 리뷰할 때까지', 'dongsuk@naver.com', '010-9876-1234', '아직 연결된 외부 사이트가 없습니다.', 'https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com', true),
+    ('이순신', NOW(), NOW(), '$2a$10$.lKPR9zG9OTv2WxpP5T03.h6BXZPd6qQP1/C6Q/wvL9vSX8Hi3Phy', '단게 먹고 싶네요.', 'sunsin@gmail.com', '010-1234-9876', '아직 연결된 외부 사이트가 없습니다.', 'https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com', true);
 
 INSERT INTO
     authority(role, users)
