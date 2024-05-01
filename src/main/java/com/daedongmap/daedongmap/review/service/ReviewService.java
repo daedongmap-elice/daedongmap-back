@@ -80,6 +80,7 @@ public class ReviewService {
                     .build();
 
             reviewImageRepository.save(reviewImage);
+            createdReview.addReviewImage(reviewImage);
         }
 
         return new ReviewDto(createdReview);
