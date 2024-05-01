@@ -1,5 +1,7 @@
 package com.daedongmap.daedongmap.review.controller;
 
+import com.daedongmap.daedongmap.place.dto.PlaceCreateDto;
+import com.daedongmap.daedongmap.place.service.PlaceService;
 import com.daedongmap.daedongmap.review.dto.*;
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.service.ReviewService;
@@ -20,12 +22,14 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final PlaceService placeService;
 
     @PostMapping("/api/reviews")
     @Operation(summary = "리뷰 작성", description = "리뷰를 작성합니다.")
     public ResponseEntity<ReviewDto> createReview(@RequestPart(value="file") List<MultipartFile> multipartFileList,
-                                                  @RequestPart(value="request") ReviewCreateDto reviewCreateDto) throws IOException {
-        ReviewDto createdReviewDto = reviewService.createReview(multipartFileList, reviewCreateDto);
+                                                  @RequestPart(value="reviewRequest") ReviewCreateDto reviewCreateDto,
+                                                  @RequestPart(value="placeRequest")PlaceCreateDto placeCreateDto) throws IOException {
+        ReviewDto createdReviewDto = reviewService.createReview(multipartFileList, reviewCreateDto, placeCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReviewDto);
     }
 
