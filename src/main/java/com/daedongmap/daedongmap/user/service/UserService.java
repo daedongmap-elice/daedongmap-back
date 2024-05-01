@@ -1,5 +1,7 @@
 package com.daedongmap.daedongmap.user.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.security.jwt.TokenProvider;
@@ -9,14 +11,17 @@ import com.daedongmap.daedongmap.user.dto.request.UserLoginDto;
 import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
 import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
 import com.daedongmap.daedongmap.user.dto.response.AuthResponseDto;
-import com.daedongmap.daedongmap.user.dto.response.UserResponseDto;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +30,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final AmazonS3Client amazonS3Client;
 
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    // TODO: OAuth 사용자의 경우 어떻게 저장할지 고민
     @Transactional
     public AuthResponseDto registerUser(UserRegisterDto userRegisterDto) {
 
@@ -35,9 +45,12 @@ public class UserService {
 
         Users newUsers = Users.builder()
                 .nickName(userRegisterDto.getNickName())
+                .status("안녕하세요! 반갑습니다!")
                 .email(userRegisterDto.getEmail())
-                .password(passwordEncoder.encode(userRegisterDto.getPassword()))
+                .webSite("아직 연결된 외부 사이트가 없습니다.")
                 .phoneNumber(userRegisterDto.getPhoneNumber())
+                .profileImage("기본프로필 이미지 링크")
+                .password(passwordEncoder.encode(userRegisterDto.getPassword()))
                 .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
                 .build();
         userRepository.save(newUsers);
@@ -45,6 +58,7 @@ public class UserService {
         return new AuthResponseDto(newUsers.getNickName(), null, null);
     }
 
+    @Transactional
     public AuthResponseDto loginUser(UserLoginDto userLoginDto) {
 
         Users foundUser = userRepository.findByEmail(userLoginDto.getEmail())
@@ -69,24 +83,38 @@ public class UserService {
         return foundUser.getEmail();
     }
 
-    public UserResponseDto findUserById(Long userId) {
-        Users foundUser = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public Users findUserById(Long userId) {
 
-        return new UserResponseDto(foundUser);
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
-    public Users findUser(Long userId) {
-        Users foundUser = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public Users findUserByEmail(String email) {
 
-        return foundUser;
+        Optional<Users> foundUser = userRepository.findByEmail(email);
+
+        return foundUser.orElse(null);
+
     }
 
     @Transactional
-    public Users updateUser(Long userId, UserUpdateDto userUpdateDto) {
+    public Users updateUser(Long userId, MultipartFile profileImage, UserUpdateDto userUpdateDto) throws IOException {
+
         Users foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(profileImage.getSize());
+        metadata.setContentType(profileImage.getContentType());
+
+        amazonS3Client.putObject(
+                bucket + "/profile",
+                foundUser.getEmail(),
+                profileImage.getInputStream(), metadata
+        );
+        String imageUrl = amazonS3Client.getUrl(bucket + "/profile", foundUser.getEmail()).toString();
+
+        userUpdateDto.setProfileImageLink(imageUrl);
 
         foundUser.updateUser(userUpdateDto);
 

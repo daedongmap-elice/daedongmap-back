@@ -30,6 +30,7 @@ spring:
   sql:
     init:
       mode: always
-
+  
+#  설정 파일 생성 시 까먹지 말고 include 하기
   profiles:
-    include: aws
+    include: aws, naver, secret
