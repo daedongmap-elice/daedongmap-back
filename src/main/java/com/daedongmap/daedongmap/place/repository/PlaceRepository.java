@@ -12,7 +12,7 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
 
     public void deleteById(Long id);
 
-    Optional<Place> findByKakaoPlaceId(String kakaoPlaceId);
+    Optional<Place> findByKakaoPlaceId(Long kakaoPlaceId);
 
     public List<Place> findByCategoryName(String categoryName);
 }

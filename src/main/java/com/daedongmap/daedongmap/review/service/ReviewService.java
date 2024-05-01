@@ -52,7 +52,7 @@ public class ReviewService {
         // 장소가 데이터에 없는 경우, 장소 등록
         if (place.isEmpty()) {
             PlaceBasicInfoDto placeBasicInfoDto = placeService.createPlace(placeCreateDto);
-            place = placeRepository.findById(placeBasicInfoDto.getId());
+            place = placeRepository.findByKakaoPlaceId(placeBasicInfoDto.getKakaoPlaceId());
         }
 
         Review review = Review.builder()
