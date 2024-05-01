@@ -78,3 +78,37 @@ VALUES
     ('2024-04-27 17:55:05.55', '2024-04-27 17:55:05.55', 5, 2, '디진다돈까스', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%B5%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%84%83%E1%85%A9%E1%86%AB%E1%84%80%E1%85%A1%E1%84%89%E1%85%B3.jpeg'),
     ('2024-04-26 19:30:05.55', '2024-04-26 19:30:05.55', 6, 4, '디진다돈까스', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%B5%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%84%83%E1%85%A9%E1%86%AB%E1%84%80%E1%85%A1%E1%84%89%E1%85%B3.jpeg');
 
+
+/* 댓글 */
+INSERT INTO COMMENT(CREATED_AT, UPDATED_AT, CONTENT, PARENT_ID, REVIEW_ID, USER_ID)
+VALUES
+    (NOW(), NOW(), '와 침나온다', null, 1, 2),
+    (NOW(), NOW(), 'ㄹㅇ', 1, 1, 3),
+    (NOW(), NOW(), '가고싶넹', 1, 1, 5),
+    (NOW(), NOW(), '역시 형님 맛잘알', null, 2, 1),
+    (NOW(), NOW(), '뜬끈한 국밥 하나~', null, 3, 5),
+    (NOW(), NOW(), '슴슴한게 존맛', null, 4, 3);
+
+
+/* 좋아요 */
+INSERT INTO LIKES(REVIEW_ID, USER_ID)
+VALUES
+    (4, 2),
+    (4, 3),
+    (4, 5),
+    (5, 1),
+    (6, 1),
+    (6, 2);
+
+
+/* 팔로우 */
+INSERT INTO FOLLOW(FOLLOWER_ID, FOLLOWING_ID)
+VALUES
+    (1, 4),
+    (4, 1),
+    (2, 1),
+    (3, 1),
+    (5, 2),
+    (2, 5),
+    (5, 4),
+    (4, 3);
