@@ -12,6 +12,7 @@ import com.daedongmap.daedongmap.user.dto.response.OAuthUserInfoDto;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,8 +50,8 @@ public class OauthService {
     private String type;
     private String clientId;
     private String redirectUri;
-    
-    // TODO: OAuth 사용자 DB 구축이 필요할까
+
+    @Transactional
     public JwtTokenDto signUpAndLogin(String code, String type) {
 
         if(type.equals("naver")) {
@@ -64,33 +65,26 @@ public class OauthService {
 
         OAuthUserInfoDto profile = getUserProfile(token);
 
-        System.out.println(profile);
-
         Users user = userService.findUserByEmail(profile.getEmail());
 
         if(user != null) {
-            tokenProvider.createNewAccessToken(user, user.getRoles());
+            tokenProvider.createToken(user, user.getRoles());
         }
 
-        Users newUser = Users.builder()
+        UserRegisterDto newUser = UserRegisterDto.builder()
                 .nickName(profile.getNickName())
-                .status("안녕하세요! 반갑습니다!")
                 .email(profile.getEmail())
-                .webSite("아직 연결된 외부 사이트가 없습니다.")
                 .phoneNumber(profile.getPhoneNumber())
-                .profileImage("기본프로필 이미지 링크")
-                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
                 .build();
-        
-        return tokenProvider.createNewAccessToken(newUser, newUser.getRoles());
 
-//        {
-//            "email": "\"sanghyun123452@gmail.com\"",
-//            "nickName": "\"평범한사람\"",
-//            "phoneNumber": "\"010-1234-1234\""
-//        }
+        userService.registerUser(newUser);
+
+        Users foundUser = userService.findUserByEmail(profile.getEmail());
+
+        return tokenProvider.createToken(foundUser, foundUser.getRoles());
     }
 
+    @Transactional
     public OAuthTokenResponseDto getToken(String code) {
 
         HttpHeaders headers = new HttpHeaders();
@@ -131,6 +125,7 @@ public class OauthService {
         }
     }
 
+    @Transactional
     private OAuthUserInfoDto getUserProfile(OAuthTokenResponseDto token) {
 
         HttpHeaders httpHeaders = new HttpHeaders();

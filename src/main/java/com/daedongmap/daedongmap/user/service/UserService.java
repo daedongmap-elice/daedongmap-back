@@ -43,6 +43,8 @@ public class UserService {
             throw new CustomException(ErrorCode.EMAIL_IN_USE);
         });
 
+        boolean isMember = userRegisterDto.getPassword() != null;
+
         Users newUsers = Users.builder()
                 .nickName(userRegisterDto.getNickName())
                 .status("안녕하세요! 반갑습니다!")
@@ -50,7 +52,8 @@ public class UserService {
                 .webSite("아직 연결된 외부 사이트가 없습니다.")
                 .phoneNumber(userRegisterDto.getPhoneNumber())
                 .profileImage("https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com")
-                .password(passwordEncoder.encode(userRegisterDto.getPassword()))
+                .password(encodePassword(userRegisterDto.getPassword()))
+                .isMember(isMember)
                 .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
                 .build();
         userRepository.save(newUsers);
@@ -59,10 +62,22 @@ public class UserService {
     }
 
     @Transactional
+    public String encodePassword(String password) {
+        if(password != null) {
+            return passwordEncoder.encode(password);
+        }
+        return null;
+    }
+
+    @Transactional
     public AuthResponseDto loginUser(UserLoginDto userLoginDto) {
 
         Users foundUser = userRepository.findByEmail(userLoginDto.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if(!foundUser.getIsMember()) {
+            throw new CustomException(ErrorCode.OAUTH_USER);
+        }
 
         // matches(입력된 비밀번호, 암호화된 비밀번호)
         if(!passwordEncoder.matches(userLoginDto.getPassword(), foundUser.getPassword())) {
@@ -103,8 +118,7 @@ public class UserService {
         Users foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        if(!amazonS3Client.getUrl(bucket + "/profile", foundUser.getEmail()).toString()
-                .equals("https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com")) {
+        if(profileImage != null) {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(profileImage.getSize());
             metadata.setContentType(profileImage.getContentType());
@@ -114,10 +128,13 @@ public class UserService {
                     foundUser.getEmail(),
                     profileImage.getInputStream(), metadata
             );
-            String imageUrl = amazonS3Client.getUrl(bucket + "/profile", foundUser.getEmail()).toString();
 
+            String imageUrl = amazonS3Client.getUrl(bucket + "/profile", foundUser.getEmail()).toString();
             userUpdateDto.setProfileImageLink(imageUrl);
+        } else {
+            userUpdateDto.setProfileImageLink(foundUser.getProfileImage());
         }
+        // TODO: 비밀번호 중복의 경우 어떻게 수정할지
         foundUser.updateUser(userUpdateDto);
 
         // @Transactional 어노테이션을 붙이면 JPA에서 트랜잭션이 끝나는 시점에서 변화가 생긴 엔티티를 모두 자동으로 반영
