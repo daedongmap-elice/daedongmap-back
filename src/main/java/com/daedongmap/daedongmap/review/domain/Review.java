@@ -24,7 +24,7 @@ public class Review extends BaseTimeEntity {
     @ManyToOne
     private Users user;
 
-    @JoinColumn(name="kakao_place_id")
+    @JoinColumn(name="kakao_place_id", referencedColumnName="kakaoPlaceId")
     @ManyToOne
     private Place place;
 
