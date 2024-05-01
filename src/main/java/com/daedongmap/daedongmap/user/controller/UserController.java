@@ -13,7 +13,6 @@ import com.daedongmap.daedongmap.user.service.TokenService;
 import com.daedongmap.daedongmap.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -118,9 +117,9 @@ public class UserController {
     }
 
     // Put or patch?
-    @PutMapping("/user")
+    @PatchMapping("/user")
     @Operation(summary = "사용자 정보 업데이트", description = "UserUpdateDto를 통해 업데이트할 정보를 전달")
-    public ResponseEntity<Users> updateUser(@RequestPart(value = "file") MultipartFile multipartFile,
+    public ResponseEntity<Users> updateUser(@RequestPart(value = "file", required = false) MultipartFile multipartFile,
                                             @RequestPart(value = "userUpdateDto") UserUpdateDto userUpdateDto,
                                             @AuthenticationPrincipal CustomUserDetails tokenUser) throws IOException {
 

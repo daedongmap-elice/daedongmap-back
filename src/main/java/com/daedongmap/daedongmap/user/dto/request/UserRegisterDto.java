@@ -14,7 +14,7 @@ public class UserRegisterDto {
     private String nickName;
     @NotBlank(message = "전화번호를 입력해주세요.")
     private String phoneNumber;
-    @NotBlank(message = "비밀번호를 입력해주세요.")
+
     @Size(min = 8, message = "비밀번호는 8자리 이상입니다!")
     private String password;
 
