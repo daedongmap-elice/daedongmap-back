@@ -53,6 +53,8 @@ insert into place(address_name,category_name,kakao_place_id,phone,place_name,pla
 insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 동작구 신대방동 395-69','뷔페','2041419925','02-835-6274','쿠우쿠우 보라매공원점','http://place.map.kakao.com/2041419925','서울 동작구 보라매로5가길 16','126.924094036542','37.4912743811746',0);
 insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 동작구 사당동 1041-5','한식','21827385','02-3472-0108','조가네갑오징어 사당점','http://place.map.kakao.com/21827385','서울 동작구 남부순환로271길 24','126.98020384145781','37.477895507340364',0);
 
+
+/* 리뷰 */
 INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID, CREATED_AT, UPDATED_AT)
 VALUES (3.3, '정말 맛있는 내장탕과 해장국집', 2.0, 3.0, 5.0, 27531028, 1,'2024-04-30 16:42:28.464849',  '2024-04-30 16:42:28.464849');
 
@@ -65,13 +67,19 @@ VALUES (3.7, '역시 중앙해장 간만에 오니 좋으네요. 근데 웨이�
 INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID, CREATED_AT, UPDATED_AT)
 VALUES (5, '하 평양냉면 1티어 진미', 5, 5, 5, 27584230, 1,'2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03');
 
-
 INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID, CREATED_AT, UPDATED_AT)
 VALUES (3.7, '웨이팅이 꽤 긴편인데 그럴만한 가치가 있는곳이긴 해요.', 3, 4, 4, 929624344, 1, '2024-04-27 12:55:05.55', '2024-04-27 12:55:05.55');
 
 INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID, CREATED_AT, UPDATED_AT)
 VALUES (4.3, '디진다돈까쓰!!!', 5, 4, 4, 27508076, 2, '2024-04-27 17:55:05.55', '2024-04-27 17:55:05.55');
 
-
 INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID, CREATED_AT, UPDATED_AT)
 VALUES (4, '진짜 마성의 맛. 조금 맵긴 하지만 ㅎ', 4, 4, 4, 1954563179, 4, '2024-04-26 19:30:05.55', '2024-04-26 19:30:05.55');
+
+
+/* 리뷰 이미지 */
+INSERT INTO REVIEW_IMAGE (FILE_NAME, FILE_PATH, REVIEW_ID, USER_ID, CREATED_AT, UPDATED_AT)
+VALUES ('감동식당', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%80%E1%85%A1%E1%86%B7%E1%84%83%E1%85%A9%E1%86%BC%E1%84%89%E1%85%B5%E1%86%A8%E1%84%83%E1%85%A1%E1%86%BC.jpeg_d685b5e3-e8b6-4ed9-bfb1-b32b3449e4c7', 1, 1, NOW(), NOW());
+
+INSERT INTO REVIEW_IMAGE (FILE_NAME, FILE_PATH, REVIEW_ID, USER_ID, CREATED_AT, UPDATED_AT)
+VALUES ('감동식당', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%80%E1%85%A1%E1%86%B7%E1%84%83%E1%85%A9%E1%86%BC%E1%84%89%E1%85%B5%E1%86%A8%E1%84%83%E1%85%A1%E1%86%BC.jpeg_d685b5e3-e8b6-4ed9-bfb1-b32b3449e4c7', 2, 2, NOW(), NOW());
