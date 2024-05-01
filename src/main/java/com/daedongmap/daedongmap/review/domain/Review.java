@@ -24,11 +24,9 @@ public class Review extends BaseTimeEntity {
     @ManyToOne
     private Users user;
 
-    @JoinColumn(name="place_id")
+    @JoinColumn(name="kakao_place_id", referencedColumnName="kakaoPlaceId")
     @ManyToOne
     private Place place;
-
-    private String title;
 
     private String content;
 
@@ -41,10 +39,9 @@ public class Review extends BaseTimeEntity {
     private float averageRating;
 
     @Builder
-    public Review(Users user, Place place, String title, String content, float hygieneRating, float tasteRating, float kindnessRating, float averageRating) {
+    public Review(Users user, Place place, String content, float hygieneRating, float tasteRating, float kindnessRating, float averageRating) {
         this.user = user;
         this.place = place;
-        this.title = title;
         this.content = content;
         this.hygieneRating = hygieneRating;
         this.tasteRating = tasteRating;
@@ -53,7 +50,6 @@ public class Review extends BaseTimeEntity {
     }
 
     public void updateReview(ReviewUpdateDto reviewUpdateDto) {
-        this.title = reviewUpdateDto.getTitle();
         this.content = reviewUpdateDto.getContent();
         this.hygieneRating = reviewUpdateDto.getHygieneRating();
         this.tasteRating = reviewUpdateDto.getTasteRating();

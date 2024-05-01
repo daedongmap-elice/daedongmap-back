@@ -15,7 +15,7 @@ public class Place extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String kakaoPlaceId;
+    private Long kakaoPlaceId;
     private String placeName;
     private String placeUrl;
     private String categoryName;
@@ -29,7 +29,7 @@ public class Place extends BaseTimeEntity {
     private float averageRating;
 
     @Builder
-    public Place(Long id, String kakaoPlaceId, String placeName, String placeUrl, String categoryName, String addressName, String roadAddressName, String phone, Double x, Double y, float averageRating) {
+    public Place(Long id, Long kakaoPlaceId, String placeName, String placeUrl, String categoryName, String addressName, String roadAddressName, String phone, Double x, Double y, float averageRating) {
         this.id = id;
         this.kakaoPlaceId = kakaoPlaceId;
         this.placeName = placeName;

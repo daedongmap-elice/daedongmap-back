@@ -29,7 +29,6 @@ public class Users extends BaseTimeEntity {
     private String nickName;
 
     @Column(name = "password")
-    @NotBlank(message = "비밀번호를 입력해주세요.")
     @Size(min = 7, message = "비밀번호는 최소 8자리 이상이어야 합니다")
     private String password;
 
@@ -49,17 +48,27 @@ public class Users extends BaseTimeEntity {
     @Column(name = "web_site")
     private String webSite;
 
+    @Column(name = "profile_image")
+    private String profileImage;
+
+    @Column(name = "is_member")
+    private Boolean isMember;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Authority> roles = new ArrayList<>();
 
     @Builder
-    public Users(String nickName, String email, String webSite, String status, String phoneNumber, String password, List<Authority> role) {
+    public Users(String nickName, String status, String email,
+                 String webSite, String phoneNumber, String profileImage,
+                 String password, Boolean isMember, List<Authority> role) {
         this.nickName = nickName;
         this.status = status;
         this.email = email;
         this.webSite = webSite;
-        this.password = password;
         this.phoneNumber = phoneNumber;
+        this.profileImage = profileImage;
+        this.password = password;
+        this.isMember = isMember;
         this.roles = role;
         role.forEach(o -> o.setUser(this));
     }
@@ -67,9 +76,7 @@ public class Users extends BaseTimeEntity {
     public void updateUser(UserUpdateDto userUpdateDto) {
         this.nickName = userUpdateDto.getNickName();
         this.status = userUpdateDto.getStatus();
-        this.email = userUpdateDto.getEmail();
         this.webSite = userUpdateDto.getWebSite();
-        this.password = userUpdateDto.getPassword();
-        this.phoneNumber = userUpdateDto.getPhoneNumber();
+        this.profileImage = userUpdateDto.getProfileImageLink();
     }
 }
