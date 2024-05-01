@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/login/oauth2")
 public class OAuthController {
 
     private final OauthService oauthService;
 
-    @PostMapping("/naver")
+    @GetMapping("/naver")
     public ResponseEntity<JwtTokenDto> naverLogin(@RequestParam(name = "code") String code,
                                                   @RequestParam(name = "state", required = false) String state) {
 
-        return ResponseEntity.ok().body(oauthService.signUp(code, "naver"));
+        return ResponseEntity.ok().body(oauthService.signUpAndLogin(code, "naver"));
     }
 }

@@ -3,11 +3,13 @@ package com.daedongmap.daedongmap.user.service;
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.security.jwt.TokenProvider;
+import com.daedongmap.daedongmap.user.domain.Authority;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
 import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.dto.response.OAuthTokenResponseDto;
 import com.daedongmap.daedongmap.user.dto.response.OAuthUserInfoDto;
+import com.daedongmap.daedongmap.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URLEncoder;
+import java.util.Collections;
 
 @Slf4j
 @Service
@@ -47,8 +49,9 @@ public class OauthService {
     private String type;
     private String clientId;
     private String redirectUri;
-
-    public JwtTokenDto signUp(String code, String type) {
+    
+    // TODO: OAuth 사용자 DB 구축이 필요할까
+    public JwtTokenDto signUpAndLogin(String code, String type) {
 
         if(type.equals("naver")) {
             clientId = NAVER_CLIENT_ID;
@@ -61,28 +64,31 @@ public class OauthService {
 
         OAuthUserInfoDto profile = getUserProfile(token);
 
+        System.out.println(profile);
+
         Users user = userService.findUserByEmail(profile.getEmail());
 
         if(user != null) {
-            return tokenProvider.createNewAccessToken(user, user.getRoles());
+            tokenProvider.createNewAccessToken(user, user.getRoles());
         }
 
-        UserRegisterDto userRegisterDto = UserRegisterDto.builder()
-                .email(profile.getEmail())
+        Users newUser = Users.builder()
                 .nickName(profile.getNickName())
+                .status("안녕하세요! 반갑습니다!")
+                .email(profile.getEmail())
+                .webSite("아직 연결된 외부 사이트가 없습니다.")
                 .phoneNumber(profile.getPhoneNumber())
+                .profileImage("기본프로필 이미지 링크")
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
                 .build();
-
-        userService.registerOAuthUser(userRegisterDto);
+        
+        return tokenProvider.createNewAccessToken(newUser, newUser.getRoles());
 
 //        {
 //            "email": "\"sanghyun123452@gmail.com\"",
 //            "nickName": "\"평범한사람\"",
-//            "phoneNumber": "\"010-9914-7520\""
+//            "phoneNumber": "\"010-1234-1234\""
 //        }
-
-        // TODO: OAuth 사용자의 경우 정보를 어떻게 저장해야할까
-        return null;
     }
 
     public OAuthTokenResponseDto getToken(String code) {

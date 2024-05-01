@@ -13,6 +13,7 @@ import com.daedongmap.daedongmap.user.service.TokenService;
 import com.daedongmap.daedongmap.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -88,6 +92,7 @@ public class UserController {
         Users user = userService.findUserById(userId);
 
         UserResponseDto userResponseDto = UserResponseDto.builder()
+
                 .user(user)
                 .build();
 
@@ -115,10 +120,11 @@ public class UserController {
     // Put or patch?
     @PutMapping("/user")
     @Operation(summary = "사용자 정보 업데이트", description = "UserUpdateDto를 통해 업데이트할 정보를 전달")
-    public ResponseEntity<Users> updateUser(@RequestBody UserUpdateDto userUpdateDto,
-                                            @AuthenticationPrincipal CustomUserDetails tokenUser) {
+    public ResponseEntity<Users> updateUser(@RequestPart(value = "file") MultipartFile multipartFile,
+                                            @RequestBody UserUpdateDto userUpdateDto,
+                                            @AuthenticationPrincipal CustomUserDetails tokenUser) throws IOException {
 
-        Users user = userService.updateUser(tokenUser.getUser().getId(), userUpdateDto);
+        Users user = userService.updateUser(tokenUser.getUser().getId(), multipartFile, userUpdateDto);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
