@@ -15,9 +15,8 @@ import java.util.List;
 public class ReviewDetailDto {
 
     private Long id;
-    private Long placeId;
+    private Long kakaoPlaceId;
     private UserBasicInfoDto user;
-    private String title;
     private String content;
     private List<ReviewImageDto> reviewImageDtoList = new ArrayList<>();
     private float tasteRating;
@@ -30,9 +29,8 @@ public class ReviewDetailDto {
 
     public ReviewDetailDto(Review review) {
         this.id = review.getId();
-        this.placeId = review.getPlace().getId();
+        this.kakaoPlaceId = review.getPlace().getKakaoPlaceId();
         this.user = new UserBasicInfoDto(review.getUser());
-        this.title = review.getTitle();
         this.content = review.getContent();
         this.hygieneRating = review.getHygieneRating();
         this.tasteRating = review.getTasteRating();
