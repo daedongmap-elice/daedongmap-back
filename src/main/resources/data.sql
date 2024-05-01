@@ -1,11 +1,11 @@
 INSERT INTO
-    users(nickname, password, status, email, phone_number, web_site, profile_image)
+    users(nickname, created_at, updated_at, password, status, email, phone_number, web_site, profile_image)
 VALUES
-    ('홍길동', '$2a$10$P04N91fpnmwXfiK6JA/OiOE/P/9UDRn4mFn2sJpTWsG4bc1WDTKy.', '맛집 찾아 삼만리', 'gildong@naver.com', '010-1234-1234', '아직 연결된 외부 사이트가 없습니다.', '기본프로필 이미지 링크'),
-    ('강호동', '$2a$10$REDzwMbjz2zj9laxqr.OpO.XTjogqRNFUDBi3CjpOjjY1ZUUBgI9a', '뭐든지 잘 먹습니다.', 'hodong@gmail.com', '010-1111-1234', 'https://www.naver.com', '기본프로필 이미지 링크'),
-    ('유재석', '$2a$10$Ly4G8YbB2Y0j5zFnyuQ9XeV8b1ZfrU.7DsQpBJqzhiumNVmHRGOhW', '맛있는 집 추천 받아요!', 'jaesuk@naver.com', '010-1234-1111', '아직 연결된 외부 사이트가 없습니다.', '기본프로필 이미지 링크'),
-    ('마동석', '$2a$10$QOTwD5aUTw5SqPLzBrKG4udn7X9/yNIFndk7g1lDEIxaX9DnyEVCO', '세상 모든 식당을 리뷰할 때까지', 'dongsuk@naver.com', '010-9876-1234', '아직 연결된 외부 사이트가 없습니다.', '기본프로필 이미지 링크'),
-    ('이순신', '$2a$10$.lKPR9zG9OTv2WxpP5T03.h6BXZPd6qQP1/C6Q/wvL9vSX8Hi3Phy', '단게 먹고 싶네요.', 'sunsin@gmail.com', '010-1234-9876', '아직 연결된 외부 사이트가 없습니다.', '기본프로필 이미지 링크');
+    ('홍길동', NOW(), NOW(), '$2a$10$P04N91fpnmwXfiK6JA/OiOE/P/9UDRn4mFn2sJpTWsG4bc1WDTKy.', '맛집 찾아 삼만리', 'gildong@naver.com', '010-1234-1234', '아직 연결된 외부 사이트가 없습니다.', '기본프로필 이미지 링크'),
+    ('강호동', NOW(), NOW(), '$2a$10$REDzwMbjz2zj9laxqr.OpO.XTjogqRNFUDBi3CjpOjjY1ZUUBgI9a', '뭐든지 잘 먹습니다.', 'hodong@gmail.com', '010-1111-1234', 'https://www.naver.com', '기본프로필 이미지 링크'),
+    ('유재석', NOW(), NOW(), '$2a$10$Ly4G8YbB2Y0j5zFnyuQ9XeV8b1ZfrU.7DsQpBJqzhiumNVmHRGOhW', '맛있는 집 추천 받아요!', 'jaesuk@naver.com', '010-1234-1111', '아직 연결된 외부 사이트가 없습니다.', '기본프로필 이미지 링크'),
+    ('마동석', NOW(), NOW(), '$2a$10$QOTwD5aUTw5SqPLzBrKG4udn7X9/yNIFndk7g1lDEIxaX9DnyEVCO', '세상 모든 식당을 리뷰할 때까지', 'dongsuk@naver.com', '010-9876-1234', '아직 연결된 외부 사이트가 없습니다.', '기본프로필 이미지 링크'),
+    ('이순신', NOW(), NOW(), '$2a$10$.lKPR9zG9OTv2WxpP5T03.h6BXZPd6qQP1/C6Q/wvL9vSX8Hi3Phy', '단게 먹고 싶네요.', 'sunsin@gmail.com', '010-1234-9876', '아직 연결된 외부 사이트가 없습니다.', '기본프로필 이미지 링크');
 
 INSERT INTO
     authority(role, users)
@@ -53,26 +53,25 @@ insert into place(address_name,category_name,kakao_place_id,phone,place_name,pla
 insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 동작구 신대방동 395-69','뷔페','2041419925','02-835-6274','쿠우쿠우 보라매공원점','http://place.map.kakao.com/2041419925','서울 동작구 보라매로5가길 16','126.924094036542','37.4912743811746',0);
 insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 동작구 사당동 1041-5','한식','21827385','02-3472-0108','조가네갑오징어 사당점','http://place.map.kakao.com/21827385','서울 동작구 남부순환로271길 24','126.98020384145781','37.477895507340364',0);
 
-INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID)
-VALUES (3.3, '정말 맛있는 내장탕과 해장국집', 2.0, 3.0, 5.0, 27531028, 1);
+INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID, CREATED_AT, UPDATED_AT)
+VALUES (3.3, '정말 맛있는 내장탕과 해장국집', 2.0, 3.0, 5.0, 27531028, 1,'2024-04-30 16:42:28.464849',  '2024-04-30 16:42:28.464849');
 
-INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID)
-VALUES (5, '한우 양선지 해장국이랑 한우 내장탕 먹었어요>< 잡내없고 맛도링', 5, 5, 5, 27531028, 2);
+INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID, CREATED_AT, UPDATED_AT)
+VALUES (5, '한우 양선지 해장국이랑 한우 내장탕 먹었어요>< 잡내없고 맛도링', 5, 5, 5, 27531028, 2,'2024-04-30 16:40:28.11',  '2024-04-30 16:40:28.11');
 
-INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID)
-VALUES (3.7, '역시 중앙해장 간만에 오니 좋으네요. 근데 웨이팅이 생김', 5, 3, 3, 27531028, 4);
+INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID, CREATED_AT, UPDATED_AT)
+VALUES (3.7, '역시 중앙해장 간만에 오니 좋으네요. 근데 웨이팅이 생김', 5, 3, 3, 27531028, 4,'2024-04-29 11:20:01.11', '2024-04-29 11:20:01.11');
 
-INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID)
-VALUES (5, '하 평양냉면 1티어 진미', 5, 5, 5, 27584230, 1);
+INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID, CREATED_AT, UPDATED_AT)
+VALUES (5, '하 평양냉면 1티어 진미', 5, 5, 5, 27584230, 1,'2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03');
 
-INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID)
-VALUES (4, '제 최애 평양냉면집입니다.', 4, 4, 4, 27584230, 3);
 
-INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID)
-VALUES (3.7, '웨이팅이 꽤 긴편인데 그럴만한 가치가 있는곳이긴 해요.', 3, 4, 4, 929624344, 1);
+INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID, CREATED_AT, UPDATED_AT)
+VALUES (3.7, '웨이팅이 꽤 긴편인데 그럴만한 가치가 있는곳이긴 해요.', 3, 4, 4, 929624344, 1, '2024-04-27 12:55:05.55', '2024-04-27 12:55:05.55');
 
-INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID)
-VALUES (4.3, '디진다돈까쓰!!!', 5, 4, 4, 27508076, 2);
+INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID, CREATED_AT, UPDATED_AT)
+VALUES (4.3, '디진다돈까쓰!!!', 5, 4, 4, 27508076, 2, '2024-04-27 17:55:05.55', '2024-04-27 17:55:05.55');
 
-INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID)
-VALUES (4, '주말일찍 가니까 웨티이없고 맛있게 먹었네요~', 4, 4, 4, 10587024, 5);
+
+INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID, CREATED_AT, UPDATED_AT)
+VALUES (4, '진짜 마성의 맛. 조금 맵긴 하지만 ㅎ', 4, 4, 4, 1954563179, 4, '2024-04-26 19:30:05.55', '2024-04-26 19:30:05.55');
