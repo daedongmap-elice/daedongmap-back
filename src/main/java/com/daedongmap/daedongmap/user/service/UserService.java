@@ -49,7 +49,7 @@ public class UserService {
                 .email(userRegisterDto.getEmail())
                 .webSite("아직 연결된 외부 사이트가 없습니다.")
                 .phoneNumber(userRegisterDto.getPhoneNumber())
-                .profileImage("기본프로필 이미지 링크")
+                .profileImage("https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com")
                 .password(passwordEncoder.encode(userRegisterDto.getPassword()))
                 .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
                 .build();
@@ -103,19 +103,21 @@ public class UserService {
         Users foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(profileImage.getSize());
-        metadata.setContentType(profileImage.getContentType());
+        if(!amazonS3Client.getUrl(bucket + "/profile", foundUser.getEmail()).toString()
+                .equals("https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com")) {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(profileImage.getSize());
+            metadata.setContentType(profileImage.getContentType());
 
-        amazonS3Client.putObject(
-                bucket + "/profile",
-                foundUser.getEmail(),
-                profileImage.getInputStream(), metadata
-        );
-        String imageUrl = amazonS3Client.getUrl(bucket + "/profile", foundUser.getEmail()).toString();
+            amazonS3Client.putObject(
+                    bucket + "/profile",
+                    foundUser.getEmail(),
+                    profileImage.getInputStream(), metadata
+            );
+            String imageUrl = amazonS3Client.getUrl(bucket + "/profile", foundUser.getEmail()).toString();
 
-        userUpdateDto.setProfileImageLink(imageUrl);
-
+            userUpdateDto.setProfileImageLink(imageUrl);
+        }
         foundUser.updateUser(userUpdateDto);
 
         // @Transactional 어노테이션을 붙이면 JPA에서 트랜잭션이 끝나는 시점에서 변화가 생긴 엔티티를 모두 자동으로 반영
