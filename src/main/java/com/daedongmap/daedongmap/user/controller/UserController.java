@@ -119,15 +119,17 @@ public class UserController {
     // Put or patch?
     @PatchMapping("/user")
     @Operation(summary = "사용자 정보 업데이트", description = "UserUpdateDto를 통해 업데이트할 정보를 전달")
-    public ResponseEntity<Users> updateUser(@RequestPart(value = "file", required = false) MultipartFile multipartFile,
+    public ResponseEntity<UserResponseDto> updateUser(@RequestPart(value = "file", required = false) MultipartFile multipartFile,
                                             @RequestPart(value = "userUpdateDto") UserUpdateDto userUpdateDto,
                                             @AuthenticationPrincipal CustomUserDetails tokenUser) throws IOException {
 
         Users user = userService.updateUser(tokenUser.getUser().getId(), multipartFile, userUpdateDto);
 
+        UserResponseDto userResponseDto = UserResponseDto.builder().user(user).build();
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(user);
+                .body(userResponseDto);
     }
 
     @DeleteMapping("/user")
