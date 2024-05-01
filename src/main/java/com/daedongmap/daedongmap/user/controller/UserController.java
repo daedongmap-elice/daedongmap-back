@@ -121,7 +121,7 @@ public class UserController {
     @PutMapping("/user")
     @Operation(summary = "사용자 정보 업데이트", description = "UserUpdateDto를 통해 업데이트할 정보를 전달")
     public ResponseEntity<Users> updateUser(@RequestPart(value = "file") MultipartFile multipartFile,
-                                            @RequestBody UserUpdateDto userUpdateDto,
+                                            @RequestPart(value = "userUpdateDto") UserUpdateDto userUpdateDto,
                                             @AuthenticationPrincipal CustomUserDetails tokenUser) throws IOException {
 
         Users user = userService.updateUser(tokenUser.getUser().getId(), multipartFile, userUpdateDto);
