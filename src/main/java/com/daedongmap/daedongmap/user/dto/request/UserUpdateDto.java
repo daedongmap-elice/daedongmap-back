@@ -1,6 +1,7 @@
 package com.daedongmap.daedongmap.user.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.web.multipart.MultipartFile;
 import lombok.*;
 
 @Getter
@@ -22,4 +23,6 @@ public class UserUpdateDto {
     private String password;
 
     private String webSite;
+
+    private String profileImageLink;
 }
