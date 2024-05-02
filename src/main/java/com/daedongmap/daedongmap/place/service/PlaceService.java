@@ -82,8 +82,8 @@ public class PlaceService {
                 .build();
     }
 
-    public List<PlaceBasicInfoDto> findPlaceByCategoryName(String category) {
-        List<Place> places = placeRepository.findByCategoryName(category);
+    public List<PlaceBasicInfoDto> findReasonPlace(Double x1, Double x2, Double y1, Double y2) {
+        List<Place> places = placeRepository.findByReasonPlace(x1, x2, y1, y2);
         return places.stream()
                 .map(this::toPlaceBasicInfoDto)
                 .collect(Collectors.toList());
