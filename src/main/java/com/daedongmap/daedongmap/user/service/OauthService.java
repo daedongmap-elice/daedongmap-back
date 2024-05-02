@@ -183,16 +183,16 @@ public class OauthService {
 
             if(TYPE.equals("naver")) {
                 return OAuthUserInfoDto.builder()
-                        .email(String.valueOf(jsonNode.get("response").get(email)))
-                        .nickName(String.valueOf(jsonNode.get("response").get(nickName)))
-                        .phoneNumber(String.valueOf(jsonNode.get("response").get("mobile")))
-                        .profileImage(String.valueOf(jsonNode.get("response").get("profile_image")))
+                        .email(String.valueOf(jsonNode.get("response").get(email)).replaceAll("\"", ""))
+                        .nickName(String.valueOf(jsonNode.get("response").get(nickName)).replaceAll("\"", ""))
+                        .phoneNumber(String.valueOf(jsonNode.get("response").get("mobile")).replaceAll("\"", ""))
+                        .profileImage(String.valueOf(jsonNode.get("response").get("profile_image")).replaceAll("\"", ""))
                         .build();
             } else if(TYPE.equals("kakao")) {
                 return OAuthUserInfoDto.builder()
-                        .email(String.valueOf(jsonNode.get("response").get("kakao_account")))
-                        .nickName(String.valueOf(jsonNode.get("response").get("kakao_account").get("profile")))
-                        .profileImage(String.valueOf(jsonNode.get("response").get("profile_image")))
+                        .email(String.valueOf(jsonNode.get("kakao_account").get("email")).replaceAll("\"", ""))
+                        .nickName(String.valueOf(jsonNode.get("kakao_account").get("profile").get("nickname")).replaceAll("\"", ""))
+                        .profileImage(String.valueOf(jsonNode.get("properties").get("profile_image")).replaceAll("\"", ""))
                         .build();
             } else {
                 return null;
