@@ -12,6 +12,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
@@ -26,7 +27,8 @@ public class TokenProvider {
     // The signing key's size is 48 bits which is not secure enough for the HS256 algorithm
     // 영어 한단어당 8bit, 32글자 이상이어야 에러가 발생하지 않는다
     // 배포 단계에서는 노출되지 않도록 환경변수로 등록할 것
-    private String secretKey = "5524A1967CB7B4E95F6C728886A81QKW3M";
+    @Value("${jwt.encoder}")
+    private String secretKey;
 
     private static final long validTime = 30 * 60 * 1000L;
 

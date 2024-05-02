@@ -11,11 +11,15 @@ public class UserResponseDto {
     private String nickName;
     private String email;
     private String status;
+    private String webSite;
+    private String profileImage;
 
     @Builder
     public UserResponseDto(Users user) {
         this.nickName = user.getNickName();
-        this.email = user.getEmail();
         this.status = user.getStatus();
+        this.email = user.getEmail();
+        this.webSite = user.getWebSite();
+        this.profileImage = user.getProfileImage();
     }
 }

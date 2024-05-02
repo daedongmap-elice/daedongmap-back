@@ -6,7 +6,10 @@ import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.likes.repository.LikeRepository;
 import com.daedongmap.daedongmap.place.domain.Place;
+import com.daedongmap.daedongmap.place.dto.PlaceBasicInfoDto;
+import com.daedongmap.daedongmap.place.dto.PlaceCreateDto;
 import com.daedongmap.daedongmap.place.repository.PlaceRepository;
+import com.daedongmap.daedongmap.place.service.PlaceService;
 import com.daedongmap.daedongmap.review.dto.*;
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.repository.ReviewRepository;
@@ -39,19 +42,22 @@ public class ReviewService {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final ReviewImageService reviewImageService;
+    private final PlaceService placeService;
 
-    // todo
-    // 1. 리뷰를 작성하고자하는 장소가 데이터에 있는 경우 -> 장소 찾아서 필드에 넣기
-    // 2. 리뷰를 작성하고자하는 장소가 데이터에 없는 경우 -> 장소 등록 후 1번 방식
     @Transactional
-    public ReviewDto createReview(List<MultipartFile> multipartFileList, ReviewCreateDto reviewCreateDto) throws IOException {
+    public ReviewDto createReview(List<MultipartFile> multipartFileList, ReviewCreateDto reviewCreateDto, PlaceCreateDto placeCreateDto) throws IOException {
         Users user = userRepository.findById(reviewCreateDto.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Place place = placeRepository.findById(reviewCreateDto.getPlaceId()).orElseThrow(() -> new CustomException(ErrorCode.PLACE_NOT_FOUND));
+        Optional<Place> place = placeRepository.findByKakaoPlaceId(placeCreateDto.getKakaoPlaceId());
+
+        // 장소가 데이터에 없는 경우, 장소 등록
+        if (place.isEmpty()) {
+            PlaceBasicInfoDto placeBasicInfoDto = placeService.createPlace(placeCreateDto);
+            place = placeRepository.findByKakaoPlaceId(placeBasicInfoDto.getKakaoPlaceId());
+        }
 
         Review review = Review.builder()
                 .user(user)
-                .place(place)
-                .title(reviewCreateDto.getTitle())
+                .place(place.get())
                 .content(reviewCreateDto.getContent())
                 .hygieneRating(reviewCreateDto.getHygieneRating())
                 .tasteRating(reviewCreateDto.getTasteRating())
@@ -80,8 +86,8 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewGalleryDto> findReviewsByTypeAndRegion(String type, String region) {
-        return null;
+    public List<ReviewGalleryDto> findAllReviews(String type, String region) {
+       return null;
     }
 
     @Transactional(readOnly = true)
