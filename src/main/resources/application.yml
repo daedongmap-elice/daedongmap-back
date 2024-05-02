@@ -33,4 +33,4 @@ spring:
   
 #  설정 파일 생성 시 까먹지 말고 include 하기
   profiles:
-    include: aws, naver, secret
+    include: aws, oauth, secret

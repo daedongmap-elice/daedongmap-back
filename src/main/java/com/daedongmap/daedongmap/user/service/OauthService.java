@@ -40,21 +40,41 @@ public class OauthService {
     @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
     private String NAVER_REDIRECT;
 
+    @Value("${spring.security.oauth2.provider.naver.token-uri}")
+    private String NAVER_TOKEN_URI;
+
     @Value("${spring.security.oauth2.provider.naver.user-info-uri}")
     private String NAVER_USER_INFO;
 
-    private String type;
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+    private String KAKAO_CLIENT_ID;
+
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+    private String KAKAO_REDIRECT;
+
+    @Value("${spring.security.oauth2.provider.kakao.token-uri}")
+    private String KAKAO_TOKEN_URI;
+
+    @Value("${spring.security.oauth2.provider.kakao.user-info-uri}")
+    private String KAKAO_USER_INFO;
+
+    private String TYPE;
     private String clientId;
     private String redirectUri;
+    private String authURL;
+    private String infoURL;
 
     @Transactional
     public JwtTokenDto signUpAndLogin(String code, String type) {
 
-        if(type.equals("naver")) {
+        TYPE = type;
+
+        if(TYPE.equals("naver")) {
             clientId = NAVER_CLIENT_ID;
             redirectUri = NAVER_REDIRECT;
-        } else {
-            return null;
+        } else if(TYPE.equals("kakao")) {
+            clientId = KAKAO_CLIENT_ID;
+            redirectUri = KAKAO_REDIRECT;
         }
 
         OAuthTokenResponseDto token = getToken(code);
@@ -84,25 +104,34 @@ public class OauthService {
     @Transactional
     public OAuthTokenResponseDto getToken(String code) {
 
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.add("PRIVATE_TOKEN", "xyz");
+        headers.add("Content-type", "application/x-www-form-urlencoded");
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 
-        body.add("grant_type", "authorization_code");
-        body.add("client_id", clientId);
-        body.add("client_secret", NAVER_CLIENT_SECRET);
-        body.add("redirect_uri", redirectUri);
-        body.add("code", code);
+        if(TYPE.equals("naver")) {
+            body.add("grant_type", "authorization_code");
+            body.add("client_id", clientId);
+            body.add("client_secret", NAVER_CLIENT_SECRET);
+            body.add("redirect_uri", redirectUri);
+            body.add("code", code);
+            authURL = NAVER_TOKEN_URI;
+        } else if(TYPE.equals("kakao")) {
+            body.add("grant_type", "authorization_code");
+            body.add("client_id", clientId);
+            body.add("code", code);
+            body.add("redirect_uri", redirectUri);
+            authURL = KAKAO_TOKEN_URI;
+        }
+
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response;
-
-        response = restTemplate.exchange(
-                "https://nid.naver.com/oauth2.0/token",
+        ResponseEntity<String> response= restTemplate.exchange(
+                authURL,
                 HttpMethod.POST,
                 request,
                 String.class);
@@ -125,6 +154,19 @@ public class OauthService {
     @Transactional
     private OAuthUserInfoDto getUserProfile(OAuthTokenResponseDto token) {
 
+        String email = "";
+        String nickName = "";
+
+        if(TYPE.equals("naver")) {
+            infoURL = NAVER_USER_INFO;
+            email = "email";
+            nickName = "nickname";
+        } else if(TYPE.equals("kakao")) {
+            infoURL = KAKAO_USER_INFO;
+            email = "account_email";
+            nickName = "profile_nickname";
+        }
+
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", "Bearer " + token.getAccessToken());
 
@@ -132,18 +174,29 @@ public class OauthService {
 
         HttpEntity<String> request = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> response = restTemplate
-                .postForEntity(NAVER_USER_INFO, request, String.class);
+                .postForEntity(infoURL, request, String.class);
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
-            System.out.println(jsonNode.get("response"));
-            return OAuthUserInfoDto.builder()
-                    .email(String.valueOf(jsonNode.get("response").get("email")))
-                    .nickName(String.valueOf(jsonNode.get("response").get("nickname")))
-                    .phoneNumber(String.valueOf(jsonNode.get("response").get("mobile")))
-                    .profileImage(String.valueOf(jsonNode.get("response").get("profile_image")))
-                    .build();
+            System.out.println(jsonNode);
+
+            if(TYPE.equals("naver")) {
+                return OAuthUserInfoDto.builder()
+                        .email(String.valueOf(jsonNode.get("response").get(email)))
+                        .nickName(String.valueOf(jsonNode.get("response").get(nickName)))
+                        .phoneNumber(String.valueOf(jsonNode.get("response").get("mobile")))
+                        .profileImage(String.valueOf(jsonNode.get("response").get("profile_image")))
+                        .build();
+            } else if(TYPE.equals("kakao")) {
+                return OAuthUserInfoDto.builder()
+                        .email(String.valueOf(jsonNode.get("response").get("kakao_account")))
+                        .nickName(String.valueOf(jsonNode.get("response").get("kakao_account").get("profile")))
+                        .profileImage(String.valueOf(jsonNode.get("response").get("profile_image")))
+                        .build();
+            } else {
+                return null;
+            }
         } catch(Exception e) {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
