@@ -3,13 +3,11 @@ package com.daedongmap.daedongmap.user.service;
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.security.jwt.TokenProvider;
-import com.daedongmap.daedongmap.user.domain.Authority;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
 import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.dto.response.OAuthTokenResponseDto;
 import com.daedongmap.daedongmap.user.dto.response.OAuthUserInfoDto;
-import com.daedongmap.daedongmap.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -22,8 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Collections;
 
 @Slf4j
 @Service
@@ -68,13 +64,14 @@ public class OauthService {
         Users user = userService.findUserByEmail(profile.getEmail());
 
         if(user != null) {
-            tokenProvider.createToken(user, user.getRoles());
+            return tokenProvider.createToken(user, user.getRoles());
         }
 
         UserRegisterDto newUser = UserRegisterDto.builder()
                 .nickName(profile.getNickName())
                 .email(profile.getEmail())
                 .phoneNumber(profile.getPhoneNumber())
+                .profileImage(profile.getProfileImage())
                 .build();
 
         userService.registerUser(newUser);
@@ -140,10 +137,12 @@ public class OauthService {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
+            System.out.println(jsonNode.get("response"));
             return OAuthUserInfoDto.builder()
                     .email(String.valueOf(jsonNode.get("response").get("email")))
                     .nickName(String.valueOf(jsonNode.get("response").get("nickname")))
                     .phoneNumber(String.valueOf(jsonNode.get("response").get("mobile")))
+                    .profileImage(String.valueOf(jsonNode.get("response").get("profile_image")))
                     .build();
         } catch(Exception e) {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
