@@ -3,6 +3,7 @@ package com.daedongmap.daedongmap.review.domain;
 import com.daedongmap.daedongmap.common.entity.BaseTimeEntity;
 import com.daedongmap.daedongmap.place.domain.Place;
 import com.daedongmap.daedongmap.review.dto.ReviewUpdateDto;
+import com.daedongmap.daedongmap.reviewImage.domain.ReviewImage;
 import com.daedongmap.daedongmap.user.domain.Users;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -10,6 +11,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -38,6 +41,9 @@ public class Review extends BaseTimeEntity {
 
     private float averageRating;
 
+    @OneToMany(mappedBy = "review")
+    private List<ReviewImage> reviewImageList = new ArrayList<>();
+
     @Builder
     public Review(Users user, Place place, String content, float hygieneRating, float tasteRating, float kindnessRating, float averageRating) {
         this.user = user;
@@ -55,6 +61,12 @@ public class Review extends BaseTimeEntity {
         this.tasteRating = reviewUpdateDto.getTasteRating();
         this.kindnessRating = reviewUpdateDto.getKindnessRating();
         this.averageRating = reviewUpdateDto.getAverageRating();
+    }
+
+    public void addReviewImage(ReviewImage reviewImage) {
+        if (reviewImage != null) {
+            reviewImageList.add(reviewImage);
+        }
     }
 
 }

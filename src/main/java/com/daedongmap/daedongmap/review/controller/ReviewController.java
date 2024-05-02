@@ -1,5 +1,7 @@
 package com.daedongmap.daedongmap.review.controller;
 
+import com.daedongmap.daedongmap.common.model.Category;
+import com.daedongmap.daedongmap.common.model.Region;
 import com.daedongmap.daedongmap.place.dto.PlaceCreateDto;
 import com.daedongmap.daedongmap.place.service.PlaceService;
 import com.daedongmap.daedongmap.review.dto.*;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -34,10 +37,20 @@ public class ReviewController {
     }
 
     @GetMapping("/api/reviews")
-    @Operation(summary = "리뷰 전체 조회", description = "갤러리 형식으로 리뷰 전체를 조회합니다. 리뷰 게시물의 첫 번째 사진과 id를 반환합니다.")
-    public ResponseEntity<List<ReviewGalleryDto>> getReviewGallery(@RequestParam(defaultValue = "recommended") String type,
-                                                                   @RequestParam(defaultValue = "nationwide") String region) {
-        return null;
+    @Operation(summary = "리뷰 전체 조회", description = "리뷰 전체를 조회합니다.")
+    public ResponseEntity<List<ReviewDto>> getAllReviews() {
+        List<ReviewDto> reviewDtoList = reviewService.findAllReviews();
+        return ResponseEntity.status(HttpStatus.OK).body(reviewDtoList);
+    }
+
+    @GetMapping("/api/reviews/region/{region}/category/{category}")
+    @Operation(summary = "지역과 카테고리로 리뷰 전체 조회", description = "지역과 카테고리로 리뷰 전체를 조회합니다.")
+    public ResponseEntity<List<ReviewDetailDto>> getAllReviewByRegionAndCategory(@PathVariable(required = false) Optional<Region> region,
+                                                                           @PathVariable(required = false) Optional<Category> category,
+                                                                           @RequestParam(defaultValue = "DESC") String sort) {
+        log.info("지역과 카테고리로 리뷰 전체 조회 (controller) - " + region + ", " + category);
+        List<ReviewDetailDto> reviewDtoList = reviewService.findAllReviewByRegionAndCategory(region, category, sort);
+        return ResponseEntity.status(HttpStatus.OK).body(reviewDtoList);
     }
 
     @GetMapping("/api/reviews/users/{userId}")

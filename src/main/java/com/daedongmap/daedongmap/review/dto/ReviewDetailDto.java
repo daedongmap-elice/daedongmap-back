@@ -16,6 +16,7 @@ public class ReviewDetailDto {
 
     private Long id;
     private Long kakaoPlaceId;
+    private String placeName;
     private UserBasicInfoDto user;
     private String content;
     private List<ReviewImageDto> reviewImageDtoList = new ArrayList<>();
@@ -30,6 +31,7 @@ public class ReviewDetailDto {
     public ReviewDetailDto(Review review) {
         this.id = review.getId();
         this.kakaoPlaceId = review.getPlace().getKakaoPlaceId();
+        this.placeName = review.getPlace().getPlaceName();
         this.user = new UserBasicInfoDto(review.getUser());
         this.content = review.getContent();
         this.hygieneRating = review.getHygieneRating();
