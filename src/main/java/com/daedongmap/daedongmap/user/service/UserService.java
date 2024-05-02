@@ -35,7 +35,6 @@ public class UserService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    // TODO: OAuth 사용자의 경우 어떻게 저장할지 고민
     @Transactional
     public AuthResponseDto registerUser(UserRegisterDto userRegisterDto) {
 
@@ -45,17 +44,22 @@ public class UserService {
 
         boolean isMember = userRegisterDto.getPassword() != null;
 
+        if(userRegisterDto.getProfileImage().equals("https://ssl.pstatic.net/static/pwe/address/img_profile.png")) {
+            userRegisterDto.setProfileImage("https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com");
+        }
+
         Users newUsers = Users.builder()
                 .nickName(userRegisterDto.getNickName())
                 .status("안녕하세요! 반갑습니다!")
                 .email(userRegisterDto.getEmail())
                 .webSite("아직 연결된 외부 사이트가 없습니다.")
                 .phoneNumber(userRegisterDto.getPhoneNumber())
-                .profileImage("https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com")
+                .profileImage(userRegisterDto.getProfileImage())
                 .password(encodePassword(userRegisterDto.getPassword()))
                 .isMember(isMember)
                 .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
                 .build();
+
         userRepository.save(newUsers);
 
         return new AuthResponseDto(newUsers.getNickName(), null, null);
