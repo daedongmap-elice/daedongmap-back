@@ -71,8 +71,8 @@ VALUES
 /* 리뷰 이미지 */
 INSERT INTO REVIEW_IMAGE(CREATED_AT, UPDATED_AT, REVIEW_ID, USER_ID, FILE_NAME, FILE_PATH)
 VALUES
-    ('2024-04-30 16:40:28.11',  '2024-04-30 16:40:28.11', 2, 2, '한우내장탕', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%92%E1%85%A1%E1%86%AB%E1%84%8B%E1%85%AE%E1%84%82%E1%85%A2%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A1%E1%86%BC.jpeg'),
-    ('2024-04-30 16:42:28.464849',  '2024-04-30 16:42:28.464849', 1, 1, '한우내장탕', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%92%E1%85%A1%E1%86%AB%E1%84%8B%E1%85%AE%E1%84%82%E1%85%A2%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A1%E1%86%BC.jpeg'),
+    ('2024-04-30 16:40:28.11', '2024-04-30 16:40:28.11', 2, 2, '한우내장탕', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%92%E1%85%A1%E1%86%AB%E1%84%8B%E1%85%AE%E1%84%82%E1%85%A2%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A1%E1%86%BC.jpeg'),
+    ('2024-04-30 16:42:28.46', '2024-04-30 16:42:28.46', 1, 1, '한우내장탕', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%92%E1%85%A1%E1%86%AB%E1%84%8B%E1%85%AE%E1%84%82%E1%85%A2%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A1%E1%86%BC.jpeg'),
     ('2024-04-29 11:20:01.11', '2024-04-29 11:20:01.11', 3, 4, '한우내장탕', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%92%E1%85%A1%E1%86%AB%E1%84%8B%E1%85%AE%E1%84%82%E1%85%A2%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A1%E1%86%BC.jpeg'),
     ('2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', 4, 1, '평양냉면', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%91%E1%85%A7%E1%86%BC%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%82%E1%85%A2%E1%86%BC%E1%84%86%E1%85%A7%E1%86%AB.jpeg'),
     ('2024-04-27 17:55:05.55', '2024-04-27 17:55:05.55', 5, 2, '디진다돈까스', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%B5%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%84%83%E1%85%A9%E1%86%AB%E1%84%80%E1%85%A1%E1%84%89%E1%85%B3.jpeg'),

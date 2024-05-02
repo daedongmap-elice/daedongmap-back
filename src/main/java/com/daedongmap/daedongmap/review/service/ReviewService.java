@@ -2,6 +2,8 @@ package com.daedongmap.daedongmap.review.service;
 
 import com.daedongmap.daedongmap.comment.domain.Comment;
 import com.daedongmap.daedongmap.comment.repository.CommentRepository;
+import com.daedongmap.daedongmap.common.model.Category;
+import com.daedongmap.daedongmap.common.model.Region;
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.likes.repository.LikeRepository;
@@ -87,8 +89,24 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewGalleryDto> findAllReviews(String type, String region) {
-       return null;
+    public List<ReviewDto> findAllReviews() {
+       List<Review> reviewList = reviewRepository.findAll();
+       return reviewList.stream()
+               .map(ReviewDto::new)
+               .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewDto> findAllReviewByRegionAndCategory(Optional<Region> region, Optional<Category> category) {
+        String regionValue = region.isPresent() ? region.get().getValue() : Region.GANGNAM.getValue();
+        String categoryValue = category.isPresent() ? category.get().getValue() : Category.KOREAN.getValue();
+
+        log.info("지역과 카테고리로 리뷰 전체 조회 (service) - " + regionValue + ", " + categoryValue);
+
+        List<Review> reviewList = reviewRepository.findAllByPlaceAddressNameContainingAndPlaceCategoryName(regionValue, categoryValue);
+        return reviewList.stream()
+                .map(ReviewDto::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

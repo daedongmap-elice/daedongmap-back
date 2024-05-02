@@ -19,7 +19,7 @@ public class ReviewDto {
     private Long kakaoPlaceId;
     private UserBasicInfoDto user;
     private String content;
-    private List<ReviewImageDto> reviewImageDtoList = new ArrayList<>();
+    private List<ReviewImageDto> reviewImageDtoList;
     private float tasteRating;
     private float hygieneRating;
     private float kindnessRating;
