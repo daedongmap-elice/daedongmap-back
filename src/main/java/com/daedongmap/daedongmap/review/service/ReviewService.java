@@ -22,11 +22,13 @@ import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -97,16 +99,24 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewDto> findAllReviewByRegionAndCategory(Optional<Region> region, Optional<Category> category) {
+    public List<ReviewDetailDto> findAllReviewByRegionAndCategory(Optional<Region> region, Optional<Category> category, String sort) {
         String regionValue = region.isPresent() ? region.get().getValue() : Region.GANGNAM.getValue();
         String categoryValue = category.isPresent() ? category.get().getValue() : Category.KOREAN.getValue();
 
         log.info("지역과 카테고리로 리뷰 전체 조회 (service) - " + regionValue + ", " + categoryValue);
 
         List<Review> reviewList = reviewRepository.findAllByPlaceAddressNameContainingAndPlaceCategoryName(regionValue, categoryValue);
-        return reviewList.stream()
-                .map(ReviewDto::new)
+        List<ReviewDetailDto> reviewDtoList = reviewList.stream()
+                .map(ReviewDetailDto::new)
                 .collect(Collectors.toList());
+
+        if (sort == "DESC") {
+            reviewDtoList.sort(Comparator.comparing(ReviewDetailDto::getCreatedAt).reversed());
+        } else if (sort == "POPULAR") {
+            reviewDtoList.sort(Comparator.comparingLong(ReviewDetailDto::getLikeCount));
+        }
+
+        return reviewDtoList;
     }
 
     @Transactional(readOnly = true)

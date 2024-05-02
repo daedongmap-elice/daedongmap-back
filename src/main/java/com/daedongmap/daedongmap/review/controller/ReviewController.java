@@ -45,10 +45,11 @@ public class ReviewController {
 
     @GetMapping("/api/reviews/region/{region}/category/{category}")
     @Operation(summary = "지역과 카테고리로 리뷰 전체 조회", description = "지역과 카테고리로 리뷰 전체를 조회합니다.")
-    public ResponseEntity<List<ReviewDto>> getAllReviewByRegionAndCategory(@PathVariable(required = false) Optional<Region> region,
-                                                                           @PathVariable(required = false) Optional<Category> category) {
+    public ResponseEntity<List<ReviewDetailDto>> getAllReviewByRegionAndCategory(@PathVariable(required = false) Optional<Region> region,
+                                                                           @PathVariable(required = false) Optional<Category> category,
+                                                                           @RequestParam(defaultValue = "DESC") String sort) {
         log.info("지역과 카테고리로 리뷰 전체 조회 (controller) - " + region + ", " + category);
-        List<ReviewDto> reviewDtoList = reviewService.findAllReviewByRegionAndCategory(region, category);
+        List<ReviewDetailDto> reviewDtoList = reviewService.findAllReviewByRegionAndCategory(region, category, sort);
         return ResponseEntity.status(HttpStatus.OK).body(reviewDtoList);
     }
 
