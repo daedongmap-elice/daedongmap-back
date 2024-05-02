@@ -96,8 +96,13 @@ public class UserService {
     }
 
     public String retrieveUserId(String phoneNumber) {
+
         Users foundUser = userRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if(!foundUser.getIsMember()) {
+            return "간편로그인 사용자십니다! 간편로그인을 사용해주세요!";
+        }
 
         return foundUser.getEmail();
     }

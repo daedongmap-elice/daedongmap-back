@@ -41,7 +41,6 @@ public class Users extends BaseTimeEntity {
     private String email;
 
     @Column(name = "phone_number")
-    @NotBlank(message = "전화번호를 입력해주세요")
 //    @Pattern(regexp = "([0-9]{10,11})")
     private String phoneNumber;
 

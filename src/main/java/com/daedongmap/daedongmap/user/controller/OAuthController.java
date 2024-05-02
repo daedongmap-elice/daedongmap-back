@@ -12,11 +12,23 @@ import org.springframework.web.bind.annotation.*;
 public class OAuthController {
 
     private final OauthService oauthService;
+    private String type;
 
     @GetMapping("/naver")
     public ResponseEntity<JwtTokenDto> naverLogin(@RequestParam(name = "code") String code,
                                                   @RequestParam(name = "state", required = false) String state) {
 
-        return ResponseEntity.ok().body(oauthService.signUpAndLogin(code, "naver"));
+        type = "naver";
+
+        return ResponseEntity.ok().body(oauthService.signUpAndLogin(code, type));
+    }
+
+    @GetMapping("/kakao")
+    public ResponseEntity<JwtTokenDto> kakaoLogin(@RequestParam(name = "code") String code,
+                                                  @RequestParam(name = "state", required = false) String state) {
+
+        type = "kakao";
+
+        return ResponseEntity.ok().body(oauthService.signUpAndLogin(code, type));
     }
 }
