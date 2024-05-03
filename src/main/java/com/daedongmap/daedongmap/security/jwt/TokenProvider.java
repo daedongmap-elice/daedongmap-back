@@ -75,7 +75,7 @@ public class TokenProvider {
                     .build();
 
             tokenService.deleteRefreshByUserId(user.getId());
-            if(tokenService.save(toSaveToken)) {
+            if(!tokenService.save(toSaveToken)) {
                 throw new CustomException(ErrorCode.TOKEN_ERROR);
             }
             log.info(user.getEmail() + " 사용자에 대한 토큰 발급 완료");

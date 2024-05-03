@@ -2,10 +2,7 @@ package com.daedongmap.daedongmap.user.service;
 
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
-import com.daedongmap.daedongmap.security.jwt.TokenProvider;
 import com.daedongmap.daedongmap.user.domain.RefreshTokens;
-import com.daedongmap.daedongmap.user.domain.Users;
-import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,10 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class TokenService {
 
     private final TokenRepository tokenRepository;
-    private final TokenService tokenService;
-    private final UserService userService;
-    private final TokenProvider tokenProvider;
-
 
     @Transactional
     public String deleteRefreshByUserId(Long id) {
@@ -59,11 +52,5 @@ public class TokenService {
                 new CustomException(ErrorCode.LOGIN_REQUIRED));
 
         return foundToken.getUserId();
-    }
-
-    public JwtTokenDto tokenFacade(String refreshToken) {
-
-        Users user = userService.findUserById(tokenService.validate(refreshToken));
-        return tokenProvider.createNewAccessToken(user, user.getRoles());
     }
 }
