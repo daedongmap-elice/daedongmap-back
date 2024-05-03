@@ -85,15 +85,19 @@ public class OauthService {
 
         TYPE = type;
 
-        if(TYPE.equals("naver")) {
-            clientId = NAVER_CLIENT_ID;
-            redirectUri = NAVER_REDIRECT;
-        } else if(TYPE.equals("kakao")) {
-            clientId = KAKAO_CLIENT_ID;
-            redirectUri = KAKAO_REDIRECT;
-        } else if(TYPE.equals("google")) {
-            clientId = GOOGLE_CLIENT_ID;
-            redirectUri = GOOGLE_REDIRECT;
+        switch (TYPE) {
+            case "naver" -> {
+                clientId = NAVER_CLIENT_ID;
+                redirectUri = NAVER_REDIRECT;
+            }
+            case "kakao" -> {
+                clientId = KAKAO_CLIENT_ID;
+                redirectUri = KAKAO_REDIRECT;
+            }
+            case "google" -> {
+                clientId = GOOGLE_CLIENT_ID;
+                redirectUri = GOOGLE_REDIRECT;
+            }
         }
 
         OAuthTokenResponseDto token = getToken(code);
@@ -129,28 +133,31 @@ public class OauthService {
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 
-        if(TYPE.equals("naver")) {
-            body.add("grant_type", "authorization_code");
-            body.add("client_id", clientId);
-            body.add("client_secret", NAVER_CLIENT_SECRET);
-            body.add("redirect_uri", redirectUri);
-            body.add("code", code);
-            authURL = NAVER_TOKEN_URI;
-        } else if(TYPE.equals("kakao")) {
-            body.add("grant_type", "authorization_code");
-            body.add("client_id", clientId);
-            body.add("code", code);
-            body.add("redirect_uri", redirectUri);
-            authURL = KAKAO_TOKEN_URI;
-        } else if(TYPE.equals("google")) {
-            body.add("grant_type", "authorization_code");
-            body.add("client_id", clientId);
-            body.add("client_secret", GOOGLE_CLIENT_SECRET);
-            body.add("redirect_uri", redirectUri);
-            body.add("code", code);
-            authURL = GOOGLE_TOKEN_URI;
+        switch (TYPE) {
+            case "naver" -> {
+                body.add("grant_type", "authorization_code");
+                body.add("client_id", clientId);
+                body.add("client_secret", NAVER_CLIENT_SECRET);
+                body.add("redirect_uri", redirectUri);
+                body.add("code", code);
+                authURL = NAVER_TOKEN_URI;
+            }
+            case "kakao" -> {
+                body.add("grant_type", "authorization_code");
+                body.add("client_id", clientId);
+                body.add("code", code);
+                body.add("redirect_uri", redirectUri);
+                authURL = KAKAO_TOKEN_URI;
+            }
+            case "google" -> {
+                body.add("grant_type", "authorization_code");
+                body.add("client_id", clientId);
+                body.add("client_secret", GOOGLE_CLIENT_SECRET);
+                body.add("redirect_uri", redirectUri);
+                body.add("code", code);
+                authURL = GOOGLE_TOKEN_URI;
+            }
         }
-
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
 
@@ -187,16 +194,18 @@ public class OauthService {
         String email = "";
         String nickName = "";
 
-        if(TYPE.equals("naver")) {
-            infoURL = NAVER_USER_INFO;
-            email = "email";
-            nickName = "nickname";
-        } else if(TYPE.equals("kakao")) {
-            infoURL = KAKAO_USER_INFO;
-            email = "account_email";
-            nickName = "profile_nickname";
-        } else if(TYPE.equals("google")) {
-            infoURL = GOOGLE_USER_INFO;
+        switch (TYPE) {
+            case "naver" -> {
+                infoURL = NAVER_USER_INFO;
+                email = "email";
+                nickName = "nickname";
+            }
+            case "kakao" -> {
+                infoURL = KAKAO_USER_INFO;
+                email = "account_email";
+                nickName = "profile_nickname";
+            }
+            case "google" -> infoURL = GOOGLE_USER_INFO;
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();
