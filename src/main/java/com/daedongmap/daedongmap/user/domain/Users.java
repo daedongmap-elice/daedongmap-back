@@ -1,6 +1,8 @@
 package com.daedongmap.daedongmap.user.domain;
 
+import com.daedongmap.daedongmap.comment.domain.Comment;
 import com.daedongmap.daedongmap.common.entity.BaseTimeEntity;
+import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -55,6 +57,13 @@ public class Users extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Authority> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
 
     @Builder
     public Users(String nickName, String status, String email,
