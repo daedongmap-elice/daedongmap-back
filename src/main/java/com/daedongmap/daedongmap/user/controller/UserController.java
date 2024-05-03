@@ -61,6 +61,8 @@ public class UserController {
 
         String refreshToken = request.getHeader("Authorization");
 
+        System.out.println(refreshToken);
+
         Long userId = tokenService.validate(refreshToken);
 
         String deleteMessage = tokenService.deleteByUserId(userId);

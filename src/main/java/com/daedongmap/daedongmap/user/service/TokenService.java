@@ -38,10 +38,13 @@ public class TokenService {
     public Long validate(String refreshToken) {
 
         String token = "";
+        System.out.println(refreshToken);
 
         if (refreshToken != null && refreshToken.startsWith("Bearer ")) {
             token = refreshToken.substring(7);
         }
+
+        System.out.println(token);
 
         RefreshTokens foundToken = tokenRepository.findByRefreshToken(token).orElseThrow(() ->
                 new CustomException(ErrorCode.LOGIN_REQUIRED));
