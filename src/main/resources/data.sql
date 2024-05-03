@@ -78,7 +78,6 @@ VALUES
     ('2024-04-27 17:55:05.55', '2024-04-27 17:55:05.55', 5, 2, '디진다돈까스', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%B5%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%84%83%E1%85%A9%E1%86%AB%E1%84%80%E1%85%A1%E1%84%89%E1%85%B3.jpeg'),
     ('2024-04-26 19:30:05.55', '2024-04-26 19:30:05.55', 6, 4, '디진다돈까스', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%B5%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%84%83%E1%85%A9%E1%86%AB%E1%84%80%E1%85%A1%E1%84%89%E1%85%B3.jpeg');
 
-
 /* 댓글 */
 INSERT INTO COMMENT(CREATED_AT, UPDATED_AT, CONTENT, PARENT_ID, REVIEW_ID, USER_ID)
 VALUES

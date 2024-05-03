@@ -23,4 +23,6 @@ public class PlaceBasicInfoDto {
     private Double y;
 
     private float averageRating;
+
+    private String reviewImagePath;
 }
