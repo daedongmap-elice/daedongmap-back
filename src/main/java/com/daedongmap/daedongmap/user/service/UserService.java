@@ -44,7 +44,7 @@ public class UserService {
 
         boolean isMember = userRegisterDto.getPassword() != null;
 
-        if(userRegisterDto.getProfileImage().equals("https://ssl.pstatic.net/static/pwe/address/img_profile.png")) {
+        if(userRegisterDto.getProfileImage() == null || userRegisterDto.getProfileImage().equals("https://ssl.pstatic.net/static/pwe/address/img_profile.png")) {
             userRegisterDto.setProfileImage("https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com");
         }
 
