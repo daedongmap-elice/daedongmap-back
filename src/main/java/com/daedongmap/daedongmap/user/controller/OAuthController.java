@@ -31,4 +31,13 @@ public class OAuthController {
 
         return ResponseEntity.ok().body(oauthService.signUpAndLogin(code, type));
     }
+
+    @GetMapping("/google")
+    public ResponseEntity<JwtTokenDto> googleLogin(@RequestParam(name = "code") String code,
+                                                  @RequestParam(name = "state", required = false) String state) {
+
+        type = "google";
+
+        return ResponseEntity.ok().body(oauthService.signUpAndLogin(code, type));
+    }
 }

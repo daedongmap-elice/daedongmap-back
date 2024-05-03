@@ -53,7 +53,7 @@ public class UserService {
                 .status("안녕하세요! 반갑습니다!")
                 .email(userRegisterDto.getEmail())
                 .webSite("아직 연결된 외부 사이트가 없습니다.")
-                .phoneNumber(userRegisterDto.getPhoneNumber())
+                .phoneNumber(fixPhoneNumber(userRegisterDto.getPhoneNumber()))
                 .profileImage(userRegisterDto.getProfileImage())
                 .password(encodePassword(userRegisterDto.getPassword()))
                 .isMember(isMember)
@@ -71,6 +71,14 @@ public class UserService {
             return passwordEncoder.encode(password);
         }
         return null;
+    }
+
+    public String fixPhoneNumber(String phoneNumber) {
+        if(phoneNumber == null) {
+            return null;
+        } else {
+            return phoneNumber.replaceAll("-", "");
+        }
     }
 
     @Transactional
@@ -97,7 +105,7 @@ public class UserService {
 
     public String retrieveUserId(String phoneNumber) {
 
-        Users foundUser = userRepository.findByPhoneNumber(phoneNumber)
+        Users foundUser = userRepository.findByPhoneNumber(phoneNumber.replaceAll("-", ""))
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if(!foundUser.getIsMember()) {

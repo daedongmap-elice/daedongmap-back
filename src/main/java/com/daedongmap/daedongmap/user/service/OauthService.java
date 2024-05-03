@@ -58,6 +58,22 @@ public class OauthService {
     @Value("${spring.security.oauth2.provider.kakao.user-info-uri}")
     private String KAKAO_USER_INFO;
 
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String GOOGLE_CLIENT_ID;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+    private String GOOGLE_CLIENT_SECRET;
+
+    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+    private String GOOGLE_REDIRECT;
+
+    @Value("${spring.security.oauth2.provider.google.token-uri}")
+    private String GOOGLE_TOKEN_URI;
+
+    @Value("${spring.security.oauth2.provider.google.user-info-uri}")
+    private String GOOGLE_USER_INFO;
+
+
     private String TYPE;
     private String clientId;
     private String redirectUri;
@@ -75,6 +91,9 @@ public class OauthService {
         } else if(TYPE.equals("kakao")) {
             clientId = KAKAO_CLIENT_ID;
             redirectUri = KAKAO_REDIRECT;
+        } else if(TYPE.equals("google")) {
+            clientId = GOOGLE_CLIENT_ID;
+            redirectUri = GOOGLE_REDIRECT;
         }
 
         OAuthTokenResponseDto token = getToken(code);
@@ -104,7 +123,6 @@ public class OauthService {
     @Transactional
     public OAuthTokenResponseDto getToken(String code) {
 
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.add("Content-type", "application/x-www-form-urlencoded");
@@ -124,6 +142,13 @@ public class OauthService {
             body.add("code", code);
             body.add("redirect_uri", redirectUri);
             authURL = KAKAO_TOKEN_URI;
+        } else if(TYPE.equals("google")) {
+            body.add("grant_type", "authorization_code");
+            body.add("client_id", clientId);
+            body.add("client_secret", GOOGLE_CLIENT_SECRET);
+            body.add("redirect_uri", redirectUri);
+            body.add("code", code);
+            authURL = GOOGLE_TOKEN_URI;
         }
 
 
@@ -141,6 +166,11 @@ public class OauthService {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(responseBody);
+            if(TYPE.equals("google")) {
+                return OAuthTokenResponseDto.builder()
+                        .accessToken(jsonNode.get("access_token").asText())
+                        .build();
+            }
             return OAuthTokenResponseDto.builder()
                     .accessToken(jsonNode.get("access_token").asText())
                     .refreshToken(jsonNode.get("refresh_token").asText())
@@ -165,16 +195,29 @@ public class OauthService {
             infoURL = KAKAO_USER_INFO;
             email = "account_email";
             nickName = "profile_nickname";
+        } else if(TYPE.equals("google")) {
+            infoURL = GOOGLE_USER_INFO;
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("Authorization", "Bearer " + token.getAccessToken());
+        httpHeaders.add("Authorization", "Bearer " + token.getAccessToken());
+        HttpEntity<String> request = new HttpEntity<>(httpHeaders);
+        HttpEntity<MultiValueMap<String, String>> googleRequest = new HttpEntity<>(httpHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = null;
 
-        HttpEntity<String> request = new HttpEntity<>(httpHeaders);
-        ResponseEntity<String> response = restTemplate
-                .postForEntity(infoURL, request, String.class);
+        if(TYPE.equals("google")) {
+            response = restTemplate.exchange(
+                    infoURL,
+                    HttpMethod.GET,
+                    googleRequest,
+                    String.class
+            );
+        } else {
+            response = restTemplate
+                    .postForEntity(infoURL, request, String.class);
+        }
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -194,8 +237,14 @@ public class OauthService {
                         .nickName(String.valueOf(jsonNode.get("kakao_account").get("profile").get("nickname")).replaceAll("\"", ""))
                         .profileImage(String.valueOf(jsonNode.get("properties").get("profile_image")).replaceAll("\"", ""))
                         .build();
+            } else if(TYPE.equals("google")) {
+                return OAuthUserInfoDto.builder()
+                        .email(String.valueOf(jsonNode.get("email")).replaceAll("\"", ""))
+                        .nickName(String.valueOf(jsonNode.get("name")).replaceAll("\"", ""))
+                        .profileImage(String.valueOf(jsonNode.get("picture")).replaceAll("\"", ""))
+                        .build();
             } else {
-                return null;
+                throw new CustomException(ErrorCode.INVALID_TOKEN);
             }
         } catch(Exception e) {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
