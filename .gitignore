@@ -38,5 +38,5 @@ out/
 
 ### 설정 파일 ###
 application-aws.yml
-application-naver.yml
+application-oauth.yml
 application-secret.yml
