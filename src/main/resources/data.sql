@@ -83,3 +83,7 @@ VALUES ('감동식당', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.c
 
 INSERT INTO REVIEW_IMAGE (FILE_NAME, FILE_PATH, REVIEW_ID, USER_ID, CREATED_AT, UPDATED_AT)
 VALUES ('감동식당', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%80%E1%85%A1%E1%86%B7%E1%84%83%E1%85%A9%E1%86%BC%E1%84%89%E1%85%B5%E1%86%A8%E1%84%83%E1%85%A1%E1%86%BC.jpeg_d685b5e3-e8b6-4ed9-bfb1-b32b3449e4c7', 2, 2, NOW(), NOW());
+
+INSERT INTO REVIEW_IMAGE (FILE_NAME, FILE_PATH, REVIEW_ID, USER_ID, CREATED_AT, UPDATED_AT)
+VALUES ('감동식당', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%80%E1%85%A1%E1%86%B7%E1%84%83%E1%85%A9%E1%86%BC%E1%84%89%E1%85%B5%E1%86%A8%E1%84%83%E1%85%A1%E1%86%BC.jpeg_d685b5e3-e8b6-4ed9-bfb1-b32b3449e4c7', 3, 2, NOW(), NOW());
+
