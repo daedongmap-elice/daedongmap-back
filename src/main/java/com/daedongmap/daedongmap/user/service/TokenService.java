@@ -2,7 +2,10 @@ package com.daedongmap.daedongmap.user.service;
 
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
+import com.daedongmap.daedongmap.security.jwt.TokenProvider;
 import com.daedongmap.daedongmap.user.domain.RefreshTokens;
+import com.daedongmap.daedongmap.user.domain.Users;
+import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,26 +16,32 @@ import org.springframework.transaction.annotation.Transactional;
 public class TokenService {
 
     private final TokenRepository tokenRepository;
+    private final TokenService tokenService;
+    private final UserService userService;
+    private final TokenProvider tokenProvider;
 
 
     @Transactional
-    public String deleteByUserId(Long id) {
+    public String deleteRefreshByUserId(Long id) {
 
         try {
             tokenRepository.deleteByUserId(id);
         } catch (Exception e) {
-            return "해당 사용자에 대한 refresh 토큰이 존재하지 않습니다.";
+            throw new CustomException(ErrorCode.TOKEN_ERROR);
         }
-
-        return "기존 사용자에 대한 refresh 토큰 삭제 완료";
+        return "안전하게 로그아웃 하셨습니다.";
     }
 
     @Transactional
-    public String save(RefreshTokens toSaveToken) {
+    public Boolean save(RefreshTokens toSaveToken) {
         
-        tokenRepository.save(toSaveToken);
+        try {
+            tokenRepository.save(toSaveToken);
+        } catch (Exception e) {
+            return false;
+        }
 
-        return "refresh 토큰 저장 완료";
+        return true;
     }
 
     public Long validate(String refreshToken) {
@@ -50,5 +59,11 @@ public class TokenService {
                 new CustomException(ErrorCode.LOGIN_REQUIRED));
 
         return foundToken.getUserId();
+    }
+
+    public JwtTokenDto tokenFacade(String refreshToken) {
+
+        Users user = userService.findUserById(tokenService.validate(refreshToken));
+        return tokenProvider.createNewAccessToken(user, user.getRoles());
     }
 }

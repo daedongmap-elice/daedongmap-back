@@ -15,8 +15,7 @@ public class OAuthController {
     private String type;
 
     @GetMapping("/naver")
-    public ResponseEntity<JwtTokenDto> naverLogin(@RequestParam(name = "code") String code,
-                                                  @RequestParam(name = "state", required = false) String state) {
+    public ResponseEntity<JwtTokenDto> naverLogin(@RequestParam(name = "code") String code) {
 
         type = "naver";
 
@@ -24,8 +23,7 @@ public class OAuthController {
     }
 
     @GetMapping("/kakao")
-    public ResponseEntity<JwtTokenDto> kakaoLogin(@RequestParam(name = "code") String code,
-                                                  @RequestParam(name = "state", required = false) String state) {
+    public ResponseEntity<JwtTokenDto> kakaoLogin(@RequestParam(name = "code") String code) {
 
         type = "kakao";
 
@@ -33,8 +31,7 @@ public class OAuthController {
     }
 
     @GetMapping("/google")
-    public ResponseEntity<JwtTokenDto> googleLogin(@RequestParam(name = "code") String code,
-                                                  @RequestParam(name = "state", required = false) String state) {
+    public ResponseEntity<JwtTokenDto> googleLogin(@RequestParam(name = "code") String code) {
 
         type = "google";
 

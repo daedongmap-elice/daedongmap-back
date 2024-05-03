@@ -27,13 +27,9 @@ public class TokenController {
     @Operation(summary = "access 토큰 새로 발급", description = "기존의 access 토큰 기한이 지난 경우 refresh token 전송받아 인증 절차 후 새로운 access token 발급")
     public ResponseEntity<JwtTokenDto> refreshToken(HttpServletRequest request) {
 
-        String refreshToken = request.getHeader("Authorization");
-
-        Long userId = tokenService.validate(refreshToken);
-
-        Users user = userService.findUserById(userId);
-
-        JwtTokenDto newAccessToken = tokenProvider.createNewAccessToken(user, user.getRoles());
+        JwtTokenDto newAccessToken = tokenService.tokenFacade(
+                request.getHeader("Authorization")
+        );
 
         return ResponseEntity
                 .status(HttpStatus.OK)
