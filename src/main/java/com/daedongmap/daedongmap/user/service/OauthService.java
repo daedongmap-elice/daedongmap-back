@@ -2,6 +2,9 @@ package com.daedongmap.daedongmap.user.service;
 
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
+import com.daedongmap.daedongmap.security.OauthConfig.GoogleConfig;
+import com.daedongmap.daedongmap.security.OauthConfig.KakaoConfig;
+import com.daedongmap.daedongmap.security.OauthConfig.NaverConfig;
 import com.daedongmap.daedongmap.security.jwt.TokenProvider;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
@@ -26,59 +29,20 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class OauthService {
 
-    private final UserDetailService userDetailService;
-    private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final UserService userService;
-
-    @Value("${spring.security.oauth2.client.registration.naver.client-id}")
-    private String NAVER_CLIENT_ID;
-
-    @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
-    private String NAVER_CLIENT_SECRET;
-
-    @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
-    private String NAVER_REDIRECT;
-
-    @Value("${spring.security.oauth2.provider.naver.token-uri}")
-    private String NAVER_TOKEN_URI;
-
-    @Value("${spring.security.oauth2.provider.naver.user-info-uri}")
-    private String NAVER_USER_INFO;
-
-    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
-    private String KAKAO_CLIENT_ID;
-
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-    private String KAKAO_REDIRECT;
-
-    @Value("${spring.security.oauth2.provider.kakao.token-uri}")
-    private String KAKAO_TOKEN_URI;
-
-    @Value("${spring.security.oauth2.provider.kakao.user-info-uri}")
-    private String KAKAO_USER_INFO;
-
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String GOOGLE_CLIENT_ID;
-
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
-    private String GOOGLE_CLIENT_SECRET;
-
-    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
-    private String GOOGLE_REDIRECT;
-
-    @Value("${spring.security.oauth2.provider.google.token-uri}")
-    private String GOOGLE_TOKEN_URI;
-
-    @Value("${spring.security.oauth2.provider.google.user-info-uri}")
-    private String GOOGLE_USER_INFO;
-
+    private final NaverConfig naverConfig;
+    private final KakaoConfig kakaoConfig;
+    private final GoogleConfig googleConfig;
 
     private String TYPE;
     private String clientId;
     private String redirectUri;
     private String authURL;
     private String infoURL;
+    private String email;
+    private String nickName;
+
 
     @Transactional
     public JwtTokenDto signUpAndLogin(String code, String type) {
@@ -87,16 +51,18 @@ public class OauthService {
 
         switch (TYPE) {
             case "naver" -> {
-                clientId = NAVER_CLIENT_ID;
-                redirectUri = NAVER_REDIRECT;
+//                clientId = NAVER_CLIENT_ID;
+                clientId = naverConfig.getClientId();
+//                redirectUri = NAVER_REDIRECT;
+                redirectUri = naverConfig.getRedirectUri();
             }
             case "kakao" -> {
-                clientId = KAKAO_CLIENT_ID;
-                redirectUri = KAKAO_REDIRECT;
+                clientId = kakaoConfig.getClientId();
+                redirectUri = kakaoConfig.getRedirectUri();
             }
             case "google" -> {
-                clientId = GOOGLE_CLIENT_ID;
-                redirectUri = GOOGLE_REDIRECT;
+                clientId = googleConfig.getClientId();
+                redirectUri = googleConfig.getRedirectUri();
             }
         }
 
@@ -137,25 +103,25 @@ public class OauthService {
             case "naver" -> {
                 body.add("grant_type", "authorization_code");
                 body.add("client_id", clientId);
-                body.add("client_secret", NAVER_CLIENT_SECRET);
+                body.add("client_secret", naverConfig.getClientSecret());
                 body.add("redirect_uri", redirectUri);
                 body.add("code", code);
-                authURL = NAVER_TOKEN_URI;
+                authURL = naverConfig.getTokenUri();
             }
             case "kakao" -> {
                 body.add("grant_type", "authorization_code");
                 body.add("client_id", clientId);
                 body.add("code", code);
                 body.add("redirect_uri", redirectUri);
-                authURL = KAKAO_TOKEN_URI;
+                authURL = kakaoConfig.getTokenUri();
             }
             case "google" -> {
                 body.add("grant_type", "authorization_code");
                 body.add("client_id", clientId);
-                body.add("client_secret", GOOGLE_CLIENT_SECRET);
+                body.add("client_secret", googleConfig.getClientSecret());
                 body.add("redirect_uri", redirectUri);
                 body.add("code", code);
-                authURL = GOOGLE_TOKEN_URI;
+                authURL = googleConfig.getTokenUri();
             }
         }
 
@@ -191,21 +157,18 @@ public class OauthService {
     @Transactional
     private OAuthUserInfoDto getUserProfile(OAuthTokenResponseDto token) {
 
-        String email = "";
-        String nickName = "";
-
         switch (TYPE) {
             case "naver" -> {
-                infoURL = NAVER_USER_INFO;
+                infoURL = naverConfig.getUserInfoUri();
                 email = "email";
                 nickName = "nickname";
             }
             case "kakao" -> {
-                infoURL = KAKAO_USER_INFO;
+                infoURL = kakaoConfig.getUserInfoUri();
                 email = "account_email";
                 nickName = "profile_nickname";
             }
-            case "google" -> infoURL = GOOGLE_USER_INFO;
+            case "google" -> infoURL = googleConfig.getUserInfoUri();
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();
