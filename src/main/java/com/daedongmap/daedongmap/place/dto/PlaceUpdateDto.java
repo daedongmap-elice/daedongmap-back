@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class PlaceUpdateDto {
-    private String kakaoPlaceId;
+    private Long kakaoPlaceId;
     private String placeName;
     private String placeUrl;
     private String categoryName;

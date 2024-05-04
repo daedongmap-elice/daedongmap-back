@@ -14,34 +14,39 @@ public class TokenService {
 
     private final TokenRepository tokenRepository;
 
-
     @Transactional
-    public String deleteByUserId(Long id) {
+    public String deleteRefreshByUserId(Long id) {
 
         try {
             tokenRepository.deleteByUserId(id);
         } catch (Exception e) {
-            return "해당 사용자에 대한 refresh 토큰이 존재하지 않습니다.";
+            throw new CustomException(ErrorCode.TOKEN_ERROR);
         }
-
-        return "기존 사용자에 대한 refresh 토큰 삭제 완료";
+        return "안전하게 로그아웃 하셨습니다.";
     }
 
     @Transactional
-    public String save(RefreshTokens toSaveToken) {
+    public Boolean save(RefreshTokens toSaveToken) {
         
-        tokenRepository.save(toSaveToken);
+        try {
+            tokenRepository.save(toSaveToken);
+        } catch (Exception e) {
+            return false;
+        }
 
-        return "refresh 토큰 저장 완료";
+        return true;
     }
 
     public Long validate(String refreshToken) {
 
         String token = "";
+        System.out.println(refreshToken);
 
         if (refreshToken != null && refreshToken.startsWith("Bearer ")) {
             token = refreshToken.substring(7);
         }
+
+        System.out.println(token);
 
         RefreshTokens foundToken = tokenRepository.findByRefreshToken(token).orElseThrow(() ->
                 new CustomException(ErrorCode.LOGIN_REQUIRED));

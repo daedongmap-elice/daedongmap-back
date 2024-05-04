@@ -9,6 +9,7 @@ import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
 import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
 import com.daedongmap.daedongmap.user.dto.response.AuthResponseDto;
 import com.daedongmap.daedongmap.user.dto.response.UserResponseDto;
+import com.daedongmap.daedongmap.user.service.Facade;
 import com.daedongmap.daedongmap.user.service.TokenService;
 import com.daedongmap.daedongmap.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +21,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -29,6 +33,7 @@ public class UserController {
 
     private final UserService userService;
     private final TokenService tokenService;
+    private final Facade facade;
 
     @PostMapping("/register")
     @Operation(summary = "사용자 등록", description = "userRegisterDto를 통해 받은 정보로 사용자 정보를 DB에 저장")
@@ -57,10 +62,7 @@ public class UserController {
     public ResponseEntity<String> logoutUser(HttpServletRequest request) {
 
         String refreshToken = request.getHeader("Authorization");
-
-        Long userId = tokenService.validate(refreshToken);
-
-        String deleteMessage = tokenService.deleteByUserId(userId);
+        String deleteMessage = facade.logoutUser(refreshToken);
 
         log.info(deleteMessage);
 
@@ -85,7 +87,12 @@ public class UserController {
     @Operation(summary = "다른 사용자의 정보 조회", description = "토큰의 userId를 통해 다른 사용자에 대한 정보를 출력")
     public ResponseEntity<UserResponseDto> findOtherUserById(@PathVariable(name = "userId") Long userId) {
 
-        UserResponseDto userResponseDto = userService.findUserById(userId);
+        Users user = userService.findUserById(userId);
+
+        UserResponseDto userResponseDto = UserResponseDto.builder()
+
+                .user(user)
+                .build();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -97,7 +104,11 @@ public class UserController {
     @Operation(summary = "사용자 정보 조회", description = "토큰의 userId를 통해 현재 사용자에 대한 정보를 출력")
     public ResponseEntity<UserResponseDto> findCurrentById(@AuthenticationPrincipal CustomUserDetails tokenUser) {
 
-        UserResponseDto userResponseDto = userService.findUserById(tokenUser.getUser().getId());
+        Users user = userService.findUserById(tokenUser.getUser().getId());
+
+        UserResponseDto userResponseDto = UserResponseDto.builder()
+                .user(user)
+                .build();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -105,16 +116,19 @@ public class UserController {
     }
 
     // Put or patch?
-    @PutMapping("/user")
+    @PatchMapping("/user")
     @Operation(summary = "사용자 정보 업데이트", description = "UserUpdateDto를 통해 업데이트할 정보를 전달")
-    public ResponseEntity<Users> updateUser(@RequestBody UserUpdateDto userUpdateDto,
-                                            @AuthenticationPrincipal CustomUserDetails tokenUser) {
+    public ResponseEntity<UserResponseDto> updateUser(@RequestPart(value = "file", required = false) MultipartFile multipartFile,
+                                            @RequestPart(value = "userUpdateDto") UserUpdateDto userUpdateDto,
+                                            @AuthenticationPrincipal CustomUserDetails tokenUser) throws IOException {
 
-        Users user = userService.updateUser(tokenUser.getUser().getId(), userUpdateDto);
+        Users user = userService.updateUser(tokenUser.getUser().getId(), multipartFile, userUpdateDto);
+
+        UserResponseDto userResponseDto = UserResponseDto.builder().user(user).build();
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(user);
+                .body(userResponseDto);
     }
 
     @DeleteMapping("/user")

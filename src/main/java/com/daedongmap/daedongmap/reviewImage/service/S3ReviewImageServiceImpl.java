@@ -34,8 +34,8 @@ public class S3ReviewImageServiceImpl extends ReviewImageService {
         metadata.setContentLength(reviewImage.getSize());
         metadata.setContentType(reviewImage.getContentType());
 
-        amazonS3Client.putObject(bucket, fileName, reviewImage.getInputStream(), metadata);
-        return amazonS3Client.getUrl(bucket, fileName).toString();
+        amazonS3Client.putObject(bucket + "/review", fileName, reviewImage.getInputStream(), metadata);
+        return amazonS3Client.getUrl(bucket + "/review", fileName).toString();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class S3ReviewImageServiceImpl extends ReviewImageService {
         // s3 에서 이미지 파일 삭제
         List<ReviewImage> reviewImageList = reviewImageRepository.findAllByReviewId(reviewId);
         for (ReviewImage reviewImage : reviewImageList) {
-            amazonS3Client.deleteObject(bucket, reviewImage.getFileName());
+            amazonS3Client.deleteObject(bucket + "/review", reviewImage.getFileName());
         }
 
         // DB 에서 이미지 파일 정보 삭제
