@@ -9,6 +9,7 @@ import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
 import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
 import com.daedongmap.daedongmap.user.dto.response.AuthResponseDto;
 import com.daedongmap.daedongmap.user.dto.response.UserResponseDto;
+import com.daedongmap.daedongmap.user.service.Facade;
 import com.daedongmap.daedongmap.user.service.TokenService;
 import com.daedongmap.daedongmap.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +33,7 @@ public class UserController {
 
     private final UserService userService;
     private final TokenService tokenService;
+    private final Facade facade;
 
     @PostMapping("/register")
     @Operation(summary = "사용자 등록", description = "userRegisterDto를 통해 받은 정보로 사용자 정보를 DB에 저장")
@@ -60,10 +62,8 @@ public class UserController {
     public ResponseEntity<String> logoutUser(HttpServletRequest request) {
 
         String refreshToken = request.getHeader("Authorization");
+        String deleteMessage = facade.logoutUser(refreshToken);
 
-        Long userId = tokenService.validate(refreshToken);
-
-        String deleteMessage = tokenService.deleteRefreshByUserId(userId);
         log.info(deleteMessage);
 
         return ResponseEntity
