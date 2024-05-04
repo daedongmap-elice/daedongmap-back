@@ -58,13 +58,6 @@ public class Users extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Authority> roles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
-
-
     @Builder
     public Users(String nickName, String status, String email,
                  String webSite, String phoneNumber, String profileImage,
