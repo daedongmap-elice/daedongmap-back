@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 public class PlaceBasicInfoDto {
     private Long id;
-    private String kakaoPlaceId;
+    private Long kakaoPlaceId;
     private String placeName;
     private String placeUrl;
     private String categoryName;
@@ -23,4 +23,6 @@ public class PlaceBasicInfoDto {
     private Double y;
 
     private float averageRating;
+
+    private String reviewImagePath;
 }

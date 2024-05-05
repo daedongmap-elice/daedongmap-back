@@ -2,11 +2,16 @@ package com.daedongmap.daedongmap.review.service;
 
 import com.daedongmap.daedongmap.comment.domain.Comment;
 import com.daedongmap.daedongmap.comment.repository.CommentRepository;
+import com.daedongmap.daedongmap.common.model.Category;
+import com.daedongmap.daedongmap.common.model.Region;
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.likes.repository.LikeRepository;
 import com.daedongmap.daedongmap.place.domain.Place;
+import com.daedongmap.daedongmap.place.dto.PlaceBasicInfoDto;
+import com.daedongmap.daedongmap.place.dto.PlaceCreateDto;
 import com.daedongmap.daedongmap.place.repository.PlaceRepository;
+import com.daedongmap.daedongmap.place.service.PlaceService;
 import com.daedongmap.daedongmap.review.dto.*;
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.repository.ReviewRepository;
@@ -17,11 +22,13 @@ import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,19 +46,22 @@ public class ReviewService {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final ReviewImageService reviewImageService;
+    private final PlaceService placeService;
 
-    // todo
-    // 1. 리뷰를 작성하고자하는 장소가 데이터에 있는 경우 -> 장소 찾아서 필드에 넣기
-    // 2. 리뷰를 작성하고자하는 장소가 데이터에 없는 경우 -> 장소 등록 후 1번 방식
     @Transactional
-    public ReviewDto createReview(List<MultipartFile> multipartFileList, ReviewCreateDto reviewCreateDto) throws IOException {
+    public ReviewDto createReview(List<MultipartFile> multipartFileList, ReviewCreateDto reviewCreateDto, PlaceCreateDto placeCreateDto) throws IOException {
         Users user = userRepository.findById(reviewCreateDto.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Place place = placeRepository.findById(reviewCreateDto.getPlaceId()).orElseThrow(() -> new CustomException(ErrorCode.PLACE_NOT_FOUND));
+        Optional<Place> place = placeRepository.findByKakaoPlaceId(placeCreateDto.getKakaoPlaceId());
+
+        // 장소가 데이터에 없는 경우, 장소 등록
+        if (place.isEmpty()) {
+            PlaceBasicInfoDto placeBasicInfoDto = placeService.createPlace(placeCreateDto);
+            place = placeRepository.findByKakaoPlaceId(placeBasicInfoDto.getKakaoPlaceId());
+        }
 
         Review review = Review.builder()
                 .user(user)
-                .place(place)
-                .title(reviewCreateDto.getTitle())
+                .place(place.get())
                 .content(reviewCreateDto.getContent())
                 .hygieneRating(reviewCreateDto.getHygieneRating())
                 .tasteRating(reviewCreateDto.getTasteRating())
@@ -74,14 +84,39 @@ public class ReviewService {
                     .build();
 
             reviewImageRepository.save(reviewImage);
+            createdReview.addReviewImage(reviewImage);
         }
 
         return new ReviewDto(createdReview);
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewGalleryDto> findReviewsByTypeAndRegion(String type, String region) {
-        return null;
+    public List<ReviewDto> findAllReviews() {
+       List<Review> reviewList = reviewRepository.findAll();
+       return reviewList.stream()
+               .map(ReviewDto::new)
+               .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewDetailDto> findAllReviewByRegionAndCategory(Optional<Region> region, Optional<Category> category, String sort) {
+        String regionValue = region.isPresent() ? region.get().getValue() : Region.GANGNAM.getValue();
+        String categoryValue = category.isPresent() ? category.get().getValue() : Category.KOREAN.getValue();
+
+        log.info("지역과 카테고리로 리뷰 전체 조회 (service) - " + regionValue + ", " + categoryValue);
+
+        List<Review> reviewList = reviewRepository.findAllByPlaceAddressNameContainingAndPlaceCategoryName(regionValue, categoryValue);
+        List<ReviewDetailDto> reviewDtoList = reviewList.stream()
+                .map(ReviewDetailDto::new)
+                .collect(Collectors.toList());
+
+        if (sort == "DESC") {
+            reviewDtoList.sort(Comparator.comparing(ReviewDetailDto::getCreatedAt).reversed());
+        } else if (sort == "POPULAR") {
+            reviewDtoList.sort(Comparator.comparingLong(ReviewDetailDto::getLikeCount));
+        }
+
+        return reviewDtoList;
     }
 
     @Transactional(readOnly = true)
@@ -132,6 +167,18 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
         review.updateReview(reviewUpdateDto);
         return new ReviewDto(review);
+    }
+
+    @Transactional(readOnly = true)
+    public String findReviewByKakaoPlaceIdDesc(Long kakaoPlaceId) {
+        Review review = reviewRepository.findFirstByKakaoPlaceIdOrderByCreatedAtDesc(kakaoPlaceId);
+        List<ReviewImage> reviewImage = reviewImageRepository.findAllByReviewId(review.getId());
+        String reviewImagePath = "";
+
+        if (reviewImage.size() != 0) {
+            reviewImagePath = reviewImage.get(0).getFilePath();
+        }
+        return reviewImagePath;
     }
 
 }

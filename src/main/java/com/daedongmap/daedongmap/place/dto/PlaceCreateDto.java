@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class PlaceCreateDto {
-    private String kakaoPlaceId;
+    private Long kakaoPlaceId;
     private String placeName;
     private String placeUrl;
     private String categoryName;

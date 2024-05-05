@@ -12,6 +12,7 @@ public enum ErrorCode {
     EMAIL_IN_USE(HttpStatus.CONFLICT, "사용중인 이메일입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 사용자입니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "틀린 비밀번호입니다."),
+    OAUTH_USER(HttpStatus.UNAUTHORIZED, "간편 로그인 사용자입니다."),
 
     /* Token */
     UNAUTHORIZED_TOKEN(HttpStatus.FORBIDDEN, "인증되지 않은 토큰입니다."),
@@ -19,6 +20,7 @@ public enum ErrorCode {
     UNSUPPORTED_TOKEN(HttpStatus.BAD_REQUEST, "지원되지 않는 토큰입니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     LOGIN_REQUIRED(HttpStatus.UNAUTHORIZED, "다시 로그인 해주세요."),
+    TOKEN_ERROR(HttpStatus.CONFLICT, "토큰 발급 중 문제가 생겼습니다."),
 
     /* Review */
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 리뷰입니다."),
