@@ -36,7 +36,7 @@ public class ReviewController {
 
     @PostMapping("/api/reviews")
     @Operation(summary = "리뷰 작성", description = "리뷰를 작성합니다.")
-    public ResponseEntity<ReviewDto> createReview(@RequestPart(value="file") List<MultipartFile> multipartFileList,
+    public ResponseEntity<ReviewDto> createReview(@RequestPart(value="file", required=false) List<MultipartFile> multipartFileList,
                                                   @RequestPart(value="reviewRequest") ReviewCreateDto reviewCreateDto,
                                                   @RequestPart(value="placeRequest") PlaceCreateDto placeCreateDto) throws IOException {
         ReviewDto createdReviewDto = reviewService.createReview(multipartFileList, reviewCreateDto, placeCreateDto);
@@ -46,7 +46,7 @@ public class ReviewController {
     // 이미지 업로드 확인용 api
     @PostMapping("/api/reviews/test")
     @Operation(summary = "테스트", description = "테스트")
-    public ResponseEntity<ReviewImage> reviewTest(@RequestPart(value="file") MultipartFile multipartFile) throws IOException {
+    public ResponseEntity<ReviewImage> reviewTest(@RequestPart(value="file", required=false) MultipartFile multipartFile) throws IOException {
         String fileName = multipartFile.getOriginalFilename() + "_" + UUID.randomUUID();
         String filePath = reviewImageService.uploadReviewImage(multipartFile, fileName);
 
