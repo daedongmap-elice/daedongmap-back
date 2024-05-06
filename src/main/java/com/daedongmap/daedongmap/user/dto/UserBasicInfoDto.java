@@ -11,11 +11,13 @@ public class UserBasicInfoDto {
     private Long id;
     private String nickName;
     private String email;
+    private String profileImagePath;
 
     public UserBasicInfoDto(Users user) {
         this.id = user.getId();
         this.nickName = user.getNickName();
         this.email = user.getEmail();
+        this.profileImagePath = user.getProfileImage();
     }
 
 }
