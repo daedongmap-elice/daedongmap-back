@@ -46,8 +46,8 @@ public class ReviewService {
     private final PlaceService placeService;
 
     @Transactional
-    public ReviewDto createReview(List<MultipartFile> multipartFileList, ReviewCreateDto reviewCreateDto, PlaceCreateDto placeCreateDto) throws IOException {
-        Users user = userRepository.findById(reviewCreateDto.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public ReviewDto createReview(Long userId, List<MultipartFile> multipartFileList, ReviewCreateDto reviewCreateDto, PlaceCreateDto placeCreateDto) throws IOException {
+        Users user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Optional<Place> place = placeRepository.findByKakaoPlaceId(placeCreateDto.getKakaoPlaceId());
 
         // 장소가 데이터에 없는 경우, 장소 등록
@@ -145,30 +145,41 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(Long reviewId) {
-        // 리뷰에 해당되는 댓글 삭제
-        List<Comment> comments = commentRepository.findAllByReviewId(reviewId);
-        for (Comment comment : comments) {
-            commentRepository.deleteById(comment.getId());
+    public void deleteReview(Long userId, Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+        if (review.getUser().getId() == userId) {
+            // 리뷰에 해당되는 댓글 삭제
+            List<Comment> comments = commentRepository.findAllByReviewId(reviewId);
+            for (Comment comment : comments) {
+                commentRepository.deleteById(comment.getId());
+            }
+
+            // 리뷰에 해당되는 이미지 파일 삭제
+            reviewImageService.deleteReviewImage(reviewId);
+
+            // 리뷰 삭제
+            reviewRepository.deleteById(reviewId);
+        } else {
+            throw new CustomException(ErrorCode.REVIEW_NOT_MINE);
         }
 
-        // 리뷰에 해당되는 이미지 파일 삭제
-        reviewImageService.deleteReviewImage(reviewId);
-
-        // 리뷰 삭제
-        reviewRepository.deleteById(reviewId);
     }
 
     @Transactional
-    public ReviewDto updateReview(Long reviewId, ReviewUpdateDto reviewUpdateDto, List<MultipartFile> multipartFileList) throws IOException {
+    public ReviewDto updateReview(Long userId, Long reviewId, ReviewUpdateDto reviewUpdateDto, List<MultipartFile> multipartFileList) throws IOException {
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
-        review.updateReview(reviewUpdateDto);
+        if (review.getUser().getId() == userId) {
+            review.updateReview(reviewUpdateDto);
 
-        List<ReviewImage> updateImages = updateReviewImages(review, multipartFileList);
-        review.setReviewImageList(updateImages);
+            List<ReviewImage> updateImages = updateReviewImages(review, multipartFileList);
+            review.setReviewImageList(updateImages);
 
-        return new ReviewDto(review);
+            return new ReviewDto(review);
+        } else {
+            throw new CustomException(ErrorCode.REVIEW_NOT_MINE);
+        }
     }
 
     private List<ReviewImage> updateReviewImages(Review review, List<MultipartFile> multipartFileList) throws IOException {

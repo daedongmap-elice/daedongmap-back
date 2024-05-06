@@ -24,6 +24,7 @@ public enum ErrorCode {
 
     /* Review */
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 리뷰입니다."),
+    REVIEW_NOT_MINE(HttpStatus.NOT_FOUND, "본인이 등록한 리뷰가 아닙니다."),
 
     /* Comment */
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 댓글입니다."),
