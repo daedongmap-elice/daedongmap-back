@@ -38,7 +38,7 @@ public class Users extends BaseTimeEntity {
     @Size(max = 50, message = "상태는 50자 이내로 작성 가능합니다.")
     private String status;
 
-    @Column(unique = true, name = "email")
+    @Column(name = "email")
     @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
 
