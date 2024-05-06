@@ -1,8 +1,6 @@
 package com.daedongmap.daedongmap.user.domain;
 
-import com.daedongmap.daedongmap.comment.domain.Comment;
 import com.daedongmap.daedongmap.common.entity.BaseTimeEntity;
-import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
