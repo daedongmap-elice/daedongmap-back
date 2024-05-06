@@ -17,9 +17,10 @@ public class UserServiceFacade {
 
     @Transactional
     public JwtTokenDto getJwtTokenDto(String refreshToken) {
-        Users foundUser = userService.findUserById(tokenService.validate(refreshToken));
 
+        Users foundUser = userService.findUserById(tokenService.validate(refreshToken));
         return tokenProvider.createNewAccessToken(foundUser, foundUser.getRoles());
+
     }
 
     @Transactional
