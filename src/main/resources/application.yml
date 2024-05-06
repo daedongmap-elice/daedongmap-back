@@ -4,14 +4,14 @@ spring:
 
   datasource:
     #        H2
-#    url: jdbc:h2:mem:daedongmap-db
-#    username: sa
+    url: jdbc:h2:mem:daedongmap-db
+    username: sa
 
   #        MySQL
-    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/daedongmap
-#    username: ${USER}
-#    password: ${PASSWORD}
+  #        driver-class-name: com.mysql.cj.jdbc.Driver
+  #        url: jdbc:mysql://localhost:3306/daedongmap
+  #        username: ${USER}
+  #        password: ${PASSWORD}
 
   h2:
     console:
@@ -24,7 +24,6 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
         format-sql: true
     defer-datasource-initialization: true
 

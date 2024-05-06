@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class Facade {
+public class UserServiceFacade {
 
     private final TokenService tokenService;
     private final UserService userService;
