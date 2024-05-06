@@ -28,10 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -163,10 +160,37 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewDto updateReview(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
+    public ReviewDto updateReview(Long reviewId, ReviewUpdateDto reviewUpdateDto, List<MultipartFile> multipartFileList) throws IOException {
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
         review.updateReview(reviewUpdateDto);
+
+        List<ReviewImage> updateImages = updateReviewImages(review, multipartFileList);
+        review.setReviewImageList(updateImages);
+
         return new ReviewDto(review);
+    }
+
+    private List<ReviewImage> updateReviewImages(Review review, List<MultipartFile> multipartFileList) throws IOException {
+        List<ReviewImage> updateImages = new ArrayList<>();
+
+        reviewImageService.deleteReviewImage(review.getId());
+
+        for (MultipartFile multipartFile : multipartFileList) {
+            String fileName = multipartFile.getOriginalFilename() + "_" + UUID.randomUUID();
+            String filePath = reviewImageService.uploadReviewImage(multipartFile, fileName);
+
+            ReviewImage reviewImage = ReviewImage.builder()
+                    .user(review.getUser())
+                    .review(review)
+                    .fileName(fileName)
+                    .filePath(filePath)
+                    .build();
+
+            updateImages.add(reviewImageRepository.save(reviewImage));
+        }
+
+        return updateImages;
     }
 
     @Transactional(readOnly = true)

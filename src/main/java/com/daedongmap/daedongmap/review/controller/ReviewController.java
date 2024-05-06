@@ -113,8 +113,10 @@ public class ReviewController {
     // todo: 본인만 수정 가능, 토큰으로부터 가져온 id와 포스트 작성자의 id가 일치하는지 확인 후 수정
     @PutMapping("/api/reviews/{reviewId}")
     @Operation(summary = "리뷰 수정", description = "리뷰를 수정합니다.")
-    public ResponseEntity<ReviewDto> modifyReview(@PathVariable Long reviewId, @RequestBody ReviewUpdateDto reviewUpdateDto) {
-        ReviewDto updatedReviewDto = reviewService.updateReview(reviewId, reviewUpdateDto);
+    public ResponseEntity<ReviewDto> modifyReview(@PathVariable Long reviewId,
+                                                  @RequestPart(value="reviewUpdateRequest") ReviewUpdateDto reviewUpdateDto,
+                                                  @RequestPart(value = "file") List<MultipartFile> multipartFileList) throws IOException {
+        ReviewDto updatedReviewDto = reviewService.updateReview(reviewId, reviewUpdateDto, multipartFileList);
         return ResponseEntity.status(HttpStatus.OK).body(updatedReviewDto);
     }
 
