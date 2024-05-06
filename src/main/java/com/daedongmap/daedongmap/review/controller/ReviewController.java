@@ -39,6 +39,10 @@ public class ReviewController {
     public ResponseEntity<ReviewDto> createReview(@RequestPart(value="file", required=false) List<MultipartFile> multipartFileList,
                                                   @RequestPart(value="reviewRequest") ReviewCreateDto reviewCreateDto,
                                                   @RequestPart(value="placeRequest") PlaceCreateDto placeCreateDto) throws IOException {
+        log.info("multipartFileList: " + multipartFileList);
+        log.info("multipartFile: " + multipartFileList.get(0).getContentType());
+        log.info("reviewCreateDto: " + reviewCreateDto.getContent());
+        log.info("placeCreateDto: " + placeCreateDto.getPlaceName());
         ReviewDto createdReviewDto = reviewService.createReview(multipartFileList, reviewCreateDto, placeCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReviewDto);
     }
@@ -47,6 +51,8 @@ public class ReviewController {
     @PostMapping("/api/reviews/test")
     @Operation(summary = "테스트", description = "테스트")
     public ResponseEntity<ReviewImage> reviewTest(@RequestPart(value="file", required=false) MultipartFile multipartFile) throws IOException {
+        log.info("multipartFile: " + multipartFile.getContentType());
+
         String fileName = multipartFile.getOriginalFilename() + "_" + UUID.randomUUID();
         String filePath = reviewImageService.uploadReviewImage(multipartFile, fileName);
 
