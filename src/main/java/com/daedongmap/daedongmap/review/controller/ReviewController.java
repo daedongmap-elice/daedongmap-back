@@ -52,6 +52,7 @@ public class ReviewController {
     @GetMapping("/api/reviews")
     @Operation(summary = "리뷰 전체 조회", description = "리뷰 전체를 조회합니다.")
     public ResponseEntity<List<ReviewDto>> getAllReviews() {
+        log.info("리뷰 전체 조회 api 호출");
         List<ReviewDto> reviewDtoList = reviewService.findAllReviews();
         return ResponseEntity.status(HttpStatus.OK).body(reviewDtoList);
     }
@@ -69,6 +70,7 @@ public class ReviewController {
     @GetMapping("/api/reviews/users/{userId}")
     @Operation(summary = "사용자별 리뷰 조회", description = "사용자별 리뷰를 모두 조회합니다.")
     public ResponseEntity<List<ReviewDto>> getReviewsByUser(@PathVariable Long userId) {
+        log.info("사용자별 리뷰 조회 api 호출");
         List<ReviewDto> findReviewDtoList = reviewService.findReviewsByUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(findReviewDtoList);
     }
@@ -76,6 +78,7 @@ public class ReviewController {
     @GetMapping("/api/reviews/places/{placeId}")
     @Operation(summary = "음식점별 리뷰 조회", description = "음식점별 리뷰를 모두 조회합니다.")
     public ResponseEntity<List<ReviewDto>> getReviewsByPlace(@PathVariable Long placeId) {
+        log.info("음식점별 리뷰 조회 api 호출");
         List<ReviewDto> findReviewDtoList = reviewService.findReviewsByPlace(placeId);
         return ResponseEntity.status(HttpStatus.OK).body(findReviewDtoList);
     }
@@ -93,6 +96,7 @@ public class ReviewController {
     @GetMapping("/api/reviews/{reviewId}")
     @Operation(summary = "리뷰 상세 조회", description = "리뷰를 상세조회합니다.")
     public ResponseEntity<ReviewDetailDto> getReviewById(@PathVariable Long reviewId) {
+        log.info("리뷰 상세 조회 api 호출");
         ReviewDetailDto reviewDetailDto = reviewService.findReviewById(reviewId);
         return ResponseEntity.status(HttpStatus.OK).body(reviewDetailDto);
     }
