@@ -70,8 +70,9 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(deleteMessage);
     }
-
-    @PostMapping("/user/accountId")
+    
+    // TODO: 변경된 사항 프론트 엔드에 전달! - user 삭제
+    @PostMapping("/accountId")
     @Operation(summary = "사용자 아이디 찾기", description = "회원가입 시 입력한 휴대폰 번호를 통해 아이디 찾기")
     public ResponseEntity<String> retrieveUserId(@RequestBody @Valid UserFindIdDto userFindIdDto) {
 
