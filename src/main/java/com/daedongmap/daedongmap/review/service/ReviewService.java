@@ -28,10 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -49,15 +46,12 @@ public class ReviewService {
     private final PlaceService placeService;
 
     @Transactional
-    public ReviewDto createReview(List<MultipartFile> multipartFileList, ReviewCreateDto reviewCreateDto, PlaceCreateDto placeCreateDto) throws IOException {
-        Users user = userRepository.findById(reviewCreateDto.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Optional<Place> place = placeRepository.findByKakaoPlaceId(placeCreateDto.getKakaoPlaceId());
+    public ReviewDto createReview(Long userId, List<MultipartFile> multipartFileList, ReviewCreateDto reviewCreateDto, PlaceCreateDto placeCreateDto) throws IOException {
+        Users user = getUserById(userId);
 
-        // 장소가 데이터에 없는 경우, 장소 등록
-        if (place.isEmpty()) {
-            PlaceBasicInfoDto placeBasicInfoDto = placeService.createPlace(placeCreateDto);
-            place = placeRepository.findByKakaoPlaceId(placeBasicInfoDto.getKakaoPlaceId());
-        }
+        // 존재하지 않는 경우 : 새로운 장소를 만들어서 반환
+        // 존재하는 경우 : 기존 장소를 찾아서 반환
+        Optional<Place> place = getOrCreatePlace(placeCreateDto);
 
         Review review = Review.builder()
                 .user(user)
@@ -71,21 +65,8 @@ public class ReviewService {
 
         Review createdReview = reviewRepository.save(review);
 
-        for (MultipartFile multipartFile : multipartFileList) {
-            // 이미지를 저장하고 파일 경로를 반환
-            String fileName = multipartFile.getOriginalFilename() + "_" + UUID.randomUUID();
-            String filePath = reviewImageService.uploadReviewImage(multipartFile, fileName);
-
-            ReviewImage reviewImage = ReviewImage.builder()
-                    .user(user)
-                    .review(createdReview)
-                    .filePath(filePath)
-                    .fileName(fileName)
-                    .build();
-
-            reviewImageRepository.save(reviewImage);
-            createdReview.addReviewImage(reviewImage);
-        }
+        List<ReviewImage> reviewImageList = saveReviewImages(user, review, multipartFileList);
+        createdReview.setReviewImageList(reviewImageList);
 
         return new ReviewDto(createdReview);
     }
@@ -110,9 +91,9 @@ public class ReviewService {
                 .map(ReviewDetailDto::new)
                 .collect(Collectors.toList());
 
-        if (sort == "DESC") {
+        if ("DESC".equals(sort)) {
             reviewDtoList.sort(Comparator.comparing(ReviewDetailDto::getCreatedAt).reversed());
-        } else if (sort == "POPULAR") {
+        } else if ("POPULAR".equals(sort)) {
             reviewDtoList.sort(Comparator.comparingLong(ReviewDetailDto::getLikeCount));
         }
 
@@ -137,9 +118,7 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public ReviewDetailDto findReviewById(Long reviewId) {
-        Optional<Review> optionalReview = reviewRepository.findById(reviewId);
-        Review review = optionalReview.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-
+        Review review = getReviewById(reviewId);
         ReviewDetailDto reviewDetailDto = new ReviewDetailDto(review);
         reviewDetailDto.setReviewImageDtoList(reviewImageService.getReviewImage(reviewId));
         reviewDetailDto.setLikeCount(likeRepository.countByReviewId(reviewId));
@@ -148,25 +127,46 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(Long reviewId) {
-        // 리뷰에 해당되는 댓글 삭제
-        List<Comment> comments = commentRepository.findAllByReviewId(reviewId);
-        for (Comment comment : comments) {
-            commentRepository.deleteById(comment.getId());
+    public void deleteReview(Long userId, Long reviewId) {
+        Review review =  getReviewById(reviewId);
+
+        if (isReviewOwner(userId, review)) {
+            // 리뷰에 해당되는 댓글 삭제
+            List<Comment> comments = commentRepository.findAllByReviewId(reviewId);
+            for (Comment comment : comments) {
+                commentRepository.deleteById(comment.getId());
+            }
+
+            // 리뷰에 해당되는 이미지 파일 삭제
+            reviewImageService.deleteReviewImage(reviewId);
+
+            // 리뷰 삭제
+            reviewRepository.deleteById(reviewId);
+        } else {
+            throw new CustomException(ErrorCode.REVIEW_NOT_MINE);
         }
 
-        // 리뷰에 해당되는 이미지 파일 삭제
-        reviewImageService.deleteReviewImage(reviewId);
-
-        // 리뷰 삭제
-        reviewRepository.deleteById(reviewId);
     }
 
     @Transactional
-    public ReviewDto updateReview(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
-        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-        review.updateReview(reviewUpdateDto);
-        return new ReviewDto(review);
+    public ReviewDto updateReview(Long userId, Long reviewId, ReviewUpdateDto reviewUpdateDto, List<MultipartFile> multipartFileList) throws IOException {
+        Review review = getReviewById(reviewId);
+
+        if (isReviewOwner(userId, review)) {
+            review.updateReview(reviewUpdateDto);
+
+            List<ReviewImage> updateImages = updateReviewImages(review, multipartFileList);
+            review.setReviewImageList(updateImages);
+
+            return new ReviewDto(review);
+        } else {
+            throw new CustomException(ErrorCode.REVIEW_NOT_MINE);
+        }
+    }
+
+    private List<ReviewImage> updateReviewImages(Review review, List<MultipartFile> multipartFileList) throws IOException {
+        reviewImageService.deleteReviewImage(review.getId());
+        return saveReviewImages(review.getUser(), review, multipartFileList);
     }
 
     @Transactional(readOnly = true)
@@ -175,10 +175,53 @@ public class ReviewService {
         List<ReviewImage> reviewImage = reviewImageRepository.findAllByReviewId(review.getId());
         String reviewImagePath = "";
 
-        if (reviewImage.size() != 0) {
+        if (!reviewImage.isEmpty()) {
             reviewImagePath = reviewImage.get(0).getFilePath();
         }
         return reviewImagePath;
+    }
+
+    private Users getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    private Review getReviewById(Long reviewId) {
+        Optional<Review> optionalReview = reviewRepository.findById(reviewId);
+        return optionalReview.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+    }
+
+    private Optional<Place> getOrCreatePlace(PlaceCreateDto placeCreateDto) {
+        Optional<Place> place = placeRepository.findByKakaoPlaceId(placeCreateDto.getKakaoPlaceId());
+        if (place.isEmpty()) {
+            PlaceBasicInfoDto placeBasicInfoDto = placeService.createPlace(placeCreateDto);
+            place = placeRepository.findByKakaoPlaceId(placeBasicInfoDto.getKakaoPlaceId());
+        }
+
+        return place;
+    }
+
+    private boolean isReviewOwner(Long userId, Review review) {
+        return review.getUser().getId().equals(userId);
+    }
+
+    private List<ReviewImage> saveReviewImages(Users user, Review review, List<MultipartFile> multipartFileList) throws IOException {
+        List<ReviewImage> reviewImages = new ArrayList<>();
+
+        for (MultipartFile multipartFile : multipartFileList) {
+            String fileName = multipartFile.getOriginalFilename() + "_" + UUID.randomUUID();
+            String filePath = reviewImageService.uploadReviewImage(multipartFile, fileName);
+
+            ReviewImage reviewImage = ReviewImage.builder()
+                    .user(user)
+                    .review(review)
+                    .fileName(fileName)
+                    .filePath(filePath)
+                    .build();
+
+            reviewImages.add(reviewImageRepository.save(reviewImage));
+        }
+
+        return reviewImages;
     }
 
 }
