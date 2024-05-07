@@ -81,6 +81,13 @@ public class UserController {
                 .body(userId);
     }
 
+    @PostMapping("/user")
+    @Operation(summary = "현재 로그인한 사용자 ID 반환", description = "토큰을 사용해 현재 로그인한 사용자의 아이디를 반환")
+    public Long returnLoggedInUserId(@AuthenticationPrincipal CustomUserDetails tokenUser) {
+
+        return tokenUser.getUser().getId();
+    }
+
     // 다른 사용자의 정보 확인하기 - 다른 사람의 마이페이지 조회
     @GetMapping("/user/{userId}")
     @Operation(summary = "다른 사용자의 정보 조회", description = "토큰의 userId를 통해 다른 사용자에 대한 정보를 출력")
@@ -112,10 +119,10 @@ public class UserController {
                                             @RequestPart(value = "userUpdateDto") UserUpdateDto userUpdateDto,
                                             @AuthenticationPrincipal CustomUserDetails tokenUser) throws IOException {
 
+        log.info(String.valueOf(multipartFile));
         log.info(userUpdateDto.getNickName());
         log.info(userUpdateDto.getStatus());
         log.info(userUpdateDto.getWebSite());
-        log.info(String.valueOf(multipartFile));
 
         UserResponseDto userResponseDto = userService.updateUser(tokenUser.getUser().getId(), multipartFile, userUpdateDto);
 
