@@ -75,14 +75,6 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(findReviewDtoList);
     }
 
-//    @GetMapping("/api/reviews/places/{placeId}")
-//    @Operation(summary = "음식점별 리뷰 조회", description = "음식점별 리뷰를 모두 조회합니다.")
-//    public ResponseEntity<List<ReviewDto>> getReviewsByPlace(@PathVariable Long placeId) {
-//        log.info("음식점별 리뷰 조회 api 호출");
-//        List<ReviewDto> findReviewDtoList = reviewService.findReviewsByPlace(placeId);
-//        return ResponseEntity.status(HttpStatus.OK).body(findReviewDtoList);
-//    }
-
     @GetMapping("/api/reviews/places/{kakaoPlaceId}")
     @Operation(summary = "음식점별 리뷰 조회", description = "음식점별 리뷰를 모두 조회합니다.")
     public ResponseEntity<List<ReviewDto>> getReviewsByKakaoPlaceId(@PathVariable Long kakaoPlaceId) {

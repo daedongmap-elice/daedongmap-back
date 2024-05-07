@@ -14,11 +14,8 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findAllByUserId(Long userId);
-    // todo: kakaoPlaceId로 바꾸기
     List<Review> findAllByPlaceId(Long placeId);
-
     List<Review> findAllByPlace_KakaoPlaceId(Long kakaoPlaceId);
-
     @Query(value = "select review " +
             "from Review review " +
             "where place.kakaoPlaceId = 27531028 order by review.createdAt limit 1")
