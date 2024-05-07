@@ -25,6 +25,7 @@ public class ReviewDetailDto {
     private float kindnessRating;
     private float averageRating;
     private Long likeCount;
+    private Boolean isLikedByUser;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

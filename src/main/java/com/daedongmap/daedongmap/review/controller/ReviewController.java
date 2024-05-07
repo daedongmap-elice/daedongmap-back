@@ -95,9 +95,10 @@ public class ReviewController {
 
     @GetMapping("/api/reviews/{reviewId}")
     @Operation(summary = "리뷰 상세 조회", description = "리뷰를 상세조회합니다.")
-    public ResponseEntity<ReviewDetailDto> getReviewById(@PathVariable Long reviewId) {
-        log.info("리뷰 상세 조회 api 호출");
-        ReviewDetailDto reviewDetailDto = reviewService.findReviewById(reviewId);
+    public ResponseEntity<ReviewDetailDto> getReviewById(@PathVariable Long reviewId, @AuthenticationPrincipal CustomUserDetails tokenUser) {
+        log.info("리뷰 상세 조회 api 호출 - reviewId : " + reviewId);
+        Long userId = tokenUser.getUser().getId();
+        ReviewDetailDto reviewDetailDto = reviewService.findReviewById(reviewId, userId);
         return ResponseEntity.status(HttpStatus.OK).body(reviewDetailDto);
     }
 

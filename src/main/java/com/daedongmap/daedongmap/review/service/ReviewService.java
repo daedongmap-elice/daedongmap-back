@@ -117,11 +117,13 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewDetailDto findReviewById(Long reviewId) {
+    public ReviewDetailDto findReviewById(Long reviewId, Long userId) {
         Review review = getReviewById(reviewId);
         ReviewDetailDto reviewDetailDto = new ReviewDetailDto(review);
         reviewDetailDto.setReviewImageDtoList(reviewImageService.getReviewImage(reviewId));
         reviewDetailDto.setLikeCount(likeRepository.countByReviewId(reviewId));
+        Boolean isLikedByUser = likeRepository.existsByReviewAndUser(getReviewById(reviewId), getUserById(userId));
+        reviewDetailDto.setIsLikedByUser(isLikedByUser);
 
         return reviewDetailDto;
     }
