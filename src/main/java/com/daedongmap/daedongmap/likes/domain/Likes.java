@@ -5,6 +5,8 @@ import com.daedongmap.daedongmap.user.domain.Users;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -16,7 +18,8 @@ public class Likes {
     private Long id;
 
     @JoinColumn(name="user_id")
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Users user;
 
     @JoinColumn(name="review_id")
