@@ -74,6 +74,8 @@ public class UserController {
     @Operation(summary = "사용자 아이디 찾기", description = "회원가입 시 입력한 휴대폰 번호를 통해 아이디 찾기")
     public ResponseEntity<String> retrieveUserId(@RequestBody @Valid UserFindIdDto userFindIdDto) {
 
+        log.info(userFindIdDto.getPhoneNumber());
+
         String userId = userService.retrieveUserId(userFindIdDto.getPhoneNumber());
 
         return ResponseEntity
@@ -83,9 +85,11 @@ public class UserController {
 
     @PostMapping("/user")
     @Operation(summary = "현재 로그인한 사용자 ID 반환", description = "토큰을 사용해 현재 로그인한 사용자의 아이디를 반환")
-    public Long returnLoggedInUserId(@AuthenticationPrincipal CustomUserDetails tokenUser) {
+    public ResponseEntity<Long> returnLoggedInUserId(@AuthenticationPrincipal CustomUserDetails tokenUser) {
 
-        return tokenUser.getUser().getId();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(tokenUser.getUser().getId());
     }
 
     // 다른 사용자의 정보 확인하기 - 다른 사람의 마이페이지 조회
