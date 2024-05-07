@@ -24,6 +24,7 @@ public class Likes {
 
     @JoinColumn(name="review_id")
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Review review;
 
     public Likes(Users user, Review review) {

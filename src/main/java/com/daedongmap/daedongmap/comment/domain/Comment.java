@@ -29,7 +29,8 @@ public class Comment extends BaseTimeEntity {
     private Users user;
 
     @JoinColumn(name="review_id")
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Review review;
 
     private String content;

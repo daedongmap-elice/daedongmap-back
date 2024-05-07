@@ -10,5 +10,6 @@ public class ReviewUpdateDto {
     private float hygieneRating;
     private float kindnessRating;
     private float averageRating;
+    private Boolean imageModified;
 
 }
