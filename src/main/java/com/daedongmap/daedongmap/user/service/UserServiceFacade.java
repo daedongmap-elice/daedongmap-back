@@ -1,5 +1,7 @@
 package com.daedongmap.daedongmap.user.service;
 
+import com.daedongmap.daedongmap.exception.CustomException;
+import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.security.jwt.TokenProvider;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
@@ -29,5 +31,16 @@ public class UserServiceFacade {
         Long userId = tokenService.validate(refreshToken);
 
         return tokenService.deleteRefreshByUserId(userId);
+    }
+
+    @Transactional
+    public String deleteUser(Long id) {
+
+        try {
+            tokenService.deleteRefreshByUserId(id);
+            return userService.deleteUser(id);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
     }
 }
