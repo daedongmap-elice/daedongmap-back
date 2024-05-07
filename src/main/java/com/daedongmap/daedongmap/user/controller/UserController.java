@@ -69,7 +69,7 @@ public class UserController {
                 .body(deleteMessage);
     }
     
-    // TODO: 변경된 사항 프론트 엔드에 전달! - user 삭제
+    // TODO: 변경된 사항 프론트 엔드에 전달! - uri에서 user 삭제됨
     @PostMapping("/accountId")
     @Operation(summary = "사용자 아이디 찾기", description = "회원가입 시 입력한 휴대폰 번호를 통해 아이디 찾기")
     public ResponseEntity<String> retrieveUserId(@RequestBody @Valid UserFindIdDto userFindIdDto) {
@@ -111,6 +111,11 @@ public class UserController {
     public ResponseEntity<UserResponseDto> updateUser(@RequestPart(value = "file", required = false) MultipartFile multipartFile,
                                             @RequestPart(value = "userUpdateDto") UserUpdateDto userUpdateDto,
                                             @AuthenticationPrincipal CustomUserDetails tokenUser) throws IOException {
+
+        log.info(userUpdateDto.getNickName());
+        log.info(userUpdateDto.getStatus());
+        log.info(userUpdateDto.getWebSite());
+        log.info(String.valueOf(multipartFile));
 
         UserResponseDto userResponseDto = userService.updateUser(tokenUser.getUser().getId(), multipartFile, userUpdateDto);
 
