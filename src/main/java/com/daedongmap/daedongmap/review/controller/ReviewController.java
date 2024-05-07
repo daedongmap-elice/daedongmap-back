@@ -109,7 +109,7 @@ public class ReviewController {
                                                   @RequestPart(value = "file", required = false) List<MultipartFile> multipartFileList,
                                                   @AuthenticationPrincipal CustomUserDetails tokenUser) throws IOException {
         Long userId = tokenUser.getUser().getId();
-        log.info("리뷰 수정 api 호출 - userId : " + userId + ", reviewId : " + reviewId + ", file : " + multipartFileList.size());
+        log.info("리뷰 수정 api 호출 - userId : " + userId + ", reviewId : " + reviewId);
 
         ReviewDto updatedReviewDto = reviewService.updateReview(userId, reviewId, reviewUpdateDto, multipartFileList);
         return ResponseEntity.status(HttpStatus.OK).body(updatedReviewDto);

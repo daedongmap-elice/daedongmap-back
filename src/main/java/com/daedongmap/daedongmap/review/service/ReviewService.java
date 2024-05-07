@@ -157,8 +157,11 @@ public class ReviewService {
         if (isReviewOwner(userId, review)) {
             review.updateReview(reviewUpdateDto);
 
-            List<ReviewImage> updateImages = updateReviewImages(review, multipartFileList);
-            review.setReviewImageList(updateImages);
+            if (reviewUpdateDto.getImageModified()) {
+                log.info("updateReview - 수정된 이미지가 있습니다");
+                List<ReviewImage> updateImages = updateReviewImages(review, multipartFileList);
+                review.setReviewImageList(updateImages);
+            }
 
             return new ReviewDto(review);
         } else {
