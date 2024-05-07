@@ -22,11 +22,11 @@ public class Comment extends BaseTimeEntity {
     private Long id;
 
     @JoinColumn(name="user_id")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Users user;
 
     @JoinColumn(name="review_id")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Review review;
 
     private String content;

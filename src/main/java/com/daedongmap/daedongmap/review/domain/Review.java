@@ -24,7 +24,7 @@ public class Review extends BaseTimeEntity {
     private Long id;
 
     @JoinColumn(name="user_id")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Users user;
 
     @JoinColumn(name="kakao_place_id", referencedColumnName="kakaoPlaceId")

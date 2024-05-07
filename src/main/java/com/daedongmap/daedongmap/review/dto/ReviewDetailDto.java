@@ -17,9 +17,7 @@ public class ReviewDetailDto {
     private Long id;
     private Long kakaoPlaceId;
     private String placeName;
-    private UserBasicInfoDto user;
     private String content;
-    private List<ReviewImageDto> reviewImageDtoList = new ArrayList<>();
     private float tasteRating;
     private float hygieneRating;
     private float kindnessRating;
@@ -28,6 +26,8 @@ public class ReviewDetailDto {
     private Boolean isLikedByUser;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private UserBasicInfoDto user;
+    private List<ReviewImageDto> reviewImageDtoList = new ArrayList<>();
 
     public ReviewDetailDto(Review review) {
         this.id = review.getId();

@@ -18,15 +18,15 @@ public class ReviewDto {
     private Long id;
     private Long kakaoPlaceId;
     private String placeName;
-    private UserBasicInfoDto user;
     private String content;
-    private List<ReviewImageDto> reviewImageList;
     private float tasteRating;
     private float hygieneRating;
     private float kindnessRating;
     private float averageRating;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private UserBasicInfoDto user;
+    private List<ReviewImageDto> reviewImageList;
 
     public ReviewDto(Review review) {
         this.id = review.getId();

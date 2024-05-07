@@ -15,11 +15,11 @@ public class Follow {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name="follower_id")
     private Users follower; // 팔로우 하는 유저
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name="following_id")
     private Users following; // 팔로우 받는 유저
 

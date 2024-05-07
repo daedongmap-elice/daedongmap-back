@@ -106,10 +106,10 @@ public class ReviewController {
     @Operation(summary = "리뷰 수정", description = "리뷰를 수정합니다.")
     public ResponseEntity<ReviewDto> modifyReview(@PathVariable Long reviewId,
                                                   @RequestPart(value="reviewUpdateRequest") ReviewUpdateDto reviewUpdateDto,
-                                                  @RequestPart(value = "file") List<MultipartFile> multipartFileList,
+                                                  @RequestPart(value = "file", required = false) List<MultipartFile> multipartFileList,
                                                   @AuthenticationPrincipal CustomUserDetails tokenUser) throws IOException {
         Long userId = tokenUser.getUser().getId();
-        log.info("리뷰 수정 api 호출 - userId : " + userId + ", reviewId : " + reviewId);
+        log.info("리뷰 수정 api 호출 - userId : " + userId + ", reviewId : " + reviewId + ", file : " + multipartFileList.size());
 
         ReviewDto updatedReviewDto = reviewService.updateReview(userId, reviewId, reviewUpdateDto, multipartFileList);
         return ResponseEntity.status(HttpStatus.OK).body(updatedReviewDto);
