@@ -3,6 +3,7 @@ package com.daedongmap.daedongmap.user.controller;
 import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.service.OauthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,9 @@ public class OAuthController {
 
         type = "naver";
 
-        return ResponseEntity.ok().body(oauthService.signUpAndLogin(code, type));
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(oauthService.signUpAndLogin(code, type));
     }
 
     @GetMapping("/kakao")
@@ -27,7 +30,9 @@ public class OAuthController {
 
         type = "kakao";
 
-        return ResponseEntity.ok().body(oauthService.signUpAndLogin(code, type));
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(oauthService.signUpAndLogin(code, type));
     }
 
     @GetMapping("/google")
@@ -35,6 +40,8 @@ public class OAuthController {
 
         type = "google";
 
-        return ResponseEntity.ok().body(oauthService.signUpAndLogin(code, type));
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(oauthService.signUpAndLogin(code, type));
     }
 }
