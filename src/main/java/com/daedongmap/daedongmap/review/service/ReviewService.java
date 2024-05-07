@@ -116,6 +116,14 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public List<ReviewDto> findReviewsByKakaoPlaceId(Long kakaoPlaceId) {
+        List<Review> reviews = reviewRepository.findAllByPlace_KakaoPlaceId(kakaoPlaceId);
+        return reviews.stream()
+                .map(ReviewDto::new)
+                .collect(Collectors.toList());
+    }
+
     @Transactional(readOnly = true)
     public ReviewDetailDto findReviewById(Long reviewId, Long userId) {
         Review review = getReviewById(reviewId);
