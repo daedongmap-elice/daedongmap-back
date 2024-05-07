@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDateTime;
@@ -22,7 +24,8 @@ public class Comment extends BaseTimeEntity {
     private Long id;
 
     @JoinColumn(name="user_id")
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Users user;
 
     @JoinColumn(name="review_id")
