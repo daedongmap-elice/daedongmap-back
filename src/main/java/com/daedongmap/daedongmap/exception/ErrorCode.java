@@ -32,7 +32,7 @@ public enum ErrorCode {
     COMMENT_NOT_MINE(HttpStatus.NOT_FOUND, "본인이 등록한 댓글이 아닙니다."),
 
     /* Like */
-    LIKE_NOT_ALLOWED_OWN_REVIEW(HttpStatus.BAD_REQUEST, "내 리뷰에는 좋아요를 누를 수 없습니다."),
+    LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 좋아요입니다."),
     ALREADY_LIKED(HttpStatus.BAD_REQUEST, "이미 해당 리뷰에 좋아요를 눌렀습니다."),
 
     /* Follow */
