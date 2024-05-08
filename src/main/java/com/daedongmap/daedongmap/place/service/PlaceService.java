@@ -7,6 +7,7 @@ import com.daedongmap.daedongmap.place.dto.PlaceBasicInfoDto;
 import com.daedongmap.daedongmap.place.dto.PlaceCreateDto;
 import com.daedongmap.daedongmap.place.dto.PlaceUpdateDto;
 import com.daedongmap.daedongmap.place.repository.PlaceRepository;
+import com.daedongmap.daedongmap.review.repository.ReviewRepository;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,18 +29,21 @@ public class PlaceService {
     private PlaceRepository placeRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @Transactional
     public PlaceBasicInfoDto createPlace(PlaceCreateDto placeCreateDto) {
         placeRepository.findByKakaoPlaceId(placeCreateDto.getKakaoPlaceId()).ifPresent(e -> {
             throw new CustomException(ErrorCode.PLACE_KAKAO_ID_IN_USE);
         });
+//        StringTokenizer st = new StringTokenizer(placeCreateDto.getAddressName(), " ", true);
 
         Place place = Place.builder()
                 .kakaoPlaceId(placeCreateDto.getKakaoPlaceId())
                 .placeName(placeCreateDto.getPlaceName())
                 .placeUrl(placeCreateDto.getPlaceUrl())
-                .categoryName(placeCreateDto.getCategoryName())
+                .categoryName(placeCreateDto.getCategoryName().split(" ")[2])
                 .addressName(placeCreateDto.getAddressName())
                 .roadAddressName(placeCreateDto.getRoadAddressName())
                 .phone(placeCreateDto.getPhone())
@@ -82,10 +87,12 @@ public class PlaceService {
                 .build();
     }
 
-    public List<PlaceBasicInfoDto> findReasonPlace(String filter, Double x1, Double x2, Double y1, Double y2) {
+    public List<PlaceBasicInfoDto> findReasonPlace(String filter, Double x1, Double x2, Double y1, Double y2, Double x, Double y) {
         List<Place> places;
-        if (filter == "popularity") {
+        if (filter.equals("rating")) {
             places = placeRepository.findByReasonPlaceOrderByRate(x1, x2, y1, y2);
+        } else if(filter.equals("distance")) {
+            places = placeRepository.findByReasonPlaceOrderByDistance(x, y, x1, x2, y1, y2);
         } else {
             places = placeRepository.findByReasonPlace(x1, x2, y1, y2);
         }

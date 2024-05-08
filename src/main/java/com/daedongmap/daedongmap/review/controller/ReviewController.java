@@ -1,17 +1,8 @@
 package com.daedongmap.daedongmap.review.controller;
 
-import com.daedongmap.daedongmap.common.model.Category;
-import com.daedongmap.daedongmap.common.model.Region;
 import com.daedongmap.daedongmap.place.dto.PlaceCreateDto;
-import com.daedongmap.daedongmap.place.service.PlaceService;
 import com.daedongmap.daedongmap.review.dto.*;
-import com.daedongmap.daedongmap.review.domain.Review;
-import com.daedongmap.daedongmap.review.repository.ReviewRepository;
 import com.daedongmap.daedongmap.review.service.ReviewService;
-import com.daedongmap.daedongmap.reviewImage.domain.ReviewImage;
-import com.daedongmap.daedongmap.reviewImage.repository.ReviewImageRepository;
-import com.daedongmap.daedongmap.reviewImage.service.ReviewImageService;
-import com.daedongmap.daedongmap.security.jwt.TokenProvider;
 import com.daedongmap.daedongmap.user.domain.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -57,14 +46,15 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(reviewDtoList);
     }
 
-    @GetMapping("/api/reviews/region/{region}/category/{category}")
-    @Operation(summary = "지역과 카테고리로 리뷰 전체 조회", description = "지역과 카테고리로 리뷰 전체를 조회합니다.")
-    public ResponseEntity<List<ReviewDetailDto>> getAllReviewByRegionAndCategory(@PathVariable(required = false) Optional<Region> region,
-                                                                           @PathVariable(required = false) Optional<Category> category,
-                                                                           @RequestParam(defaultValue = "DESC") String sort) {
-        log.info("지역과 카테고리로 리뷰 전체 조회 api 호출 - " + region + ", " + category);
-        List<ReviewDetailDto> reviewDtoList = reviewService.findAllReviewByRegionAndCategory(region, category, sort);
-        return ResponseEntity.status(HttpStatus.OK).body(reviewDtoList);
+    @GetMapping("/api/reviews/filter")
+    @Operation(summary = "필터를 적용한 리뷰 전체 조회", description = "필터를 적용해서 리뷰 전체를 조회합니다. 필터는 지역, 음식 종류, 정렬(인기순, 최신순)이 있습니다.")
+    public ResponseEntity<List<ReviewDetailDto>> getReviewsByFilter(@RequestParam String region,
+                                                                   @RequestParam String category,
+                                                                   @RequestParam String sort) {
+        log.info("필터를 적용한 리뷰 전체 조회 api 호출 - " + region + ", " + category + ", " + sort);
+        List<ReviewDetailDto> reviewDetailDtoList = reviewService.getReviewsByFilter(region, category, sort);
+
+        return ResponseEntity.status(HttpStatus.OK).body(reviewDetailDtoList);
     }
 
     @GetMapping("/api/reviews/users/{userId}")
