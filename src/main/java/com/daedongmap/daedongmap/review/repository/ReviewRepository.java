@@ -19,7 +19,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query(value = "select review " +
             "from Review review " +
-            "where place.kakaoPlaceId = 27531028 order by review.createdAt limit 1")
+            "where place.kakaoPlaceId = :kakaoPlaceId order by review.createdAt limit 1")
     Review findFirstByKakaoPlaceIdOrderByCreatedAtDesc(@Param("kakaoPlaceId") Long kakaoPlaceId);
     List<Review> findAllByPlaceAddressNameContainingAndPlaceCategoryName(String addressName, String category);
 }
