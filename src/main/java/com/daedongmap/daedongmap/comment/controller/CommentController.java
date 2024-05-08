@@ -33,6 +33,16 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commentBasicInfoDto);
     }
 
+    @GetMapping("/api/comments/me")
+    @Operation(summary = "내 댓글 조회", description = "내 댓글을 조회합니다.")
+    public ResponseEntity<List<CommentDto>> findCommentByReview(@AuthenticationPrincipal CustomUserDetails tokenUser) {
+        Long userId = tokenUser.getUser().getId();
+        log.info("내 댓글 조회 api - userId : " + userId);
+
+        List<CommentDto> commentDtoList = commentService.findCommentsByMe(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(commentDtoList);
+    }
+
     @GetMapping("/api/comments/reviews/{reviewId}")
     @Operation(summary = "리뷰별 댓글 조회", description = "리뷰에 대한 댓글을 조회합니다.")
     public ResponseEntity<List<CommentWithRepliesDto>> findCommentByReview(@PathVariable Long reviewId) {

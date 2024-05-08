@@ -31,7 +31,7 @@ public class CommentService {
     @Transactional
     public CommentDto createComment(Long userId, CommentCreateDto commentCreateDto) {
         Users user = getUserById(userId);
-        Review review = reviewRepository.findById(commentCreateDto.getReviewId()).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+        Review review = getReviewById(commentCreateDto.getReviewId());
 
         Comment comment = Comment.builder()
                 .user(user)
@@ -45,14 +45,22 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
+    public List<CommentDto> findCommentsByMe(Long userId) {
+        List<Comment> comments = commentRepository.findAllByUserId(userId);
+        return comments.stream()
+                .map(CommentDto::new)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<CommentWithRepliesDto> findCommentsByReview(Long reviewId) {
         List<Comment> comments = commentRepository.findAllByReviewId(reviewId);
-        List<CommentDto> commentDtos = comments.stream()
+        List<CommentDto> commentDtoList = comments.stream()
                 .map(CommentDto::new)
-                .collect(Collectors.toList());
+                .toList();
 
         List<CommentWithRepliesDto> commentWithRepliesDtoList = new ArrayList<>();
-        for (CommentDto commentDto: commentDtos) {
+        for (CommentDto commentDto: commentDtoList) {
             if (commentDto.getParentId() == null) {
                 commentWithRepliesDtoList.add(new CommentWithRepliesDto(commentDto));
             }
@@ -73,7 +81,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
-        if (isCommentOwner(userId, comment)) {
+        if (!isCommentOwner(userId, comment)) {
             throw new CustomException(ErrorCode.COMMENT_NOT_MINE);
         }
 
@@ -84,6 +92,10 @@ public class CommentService {
 
     private Users getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    private Review getReviewById(Long reviewId) {
+        return reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
     }
 
     private boolean isCommentOwner(Long userId, Comment comment) {
