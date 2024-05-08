@@ -37,13 +37,13 @@ public class PlaceService {
         placeRepository.findByKakaoPlaceId(placeCreateDto.getKakaoPlaceId()).ifPresent(e -> {
             throw new CustomException(ErrorCode.PLACE_KAKAO_ID_IN_USE);
         });
-        StringTokenizer st = new StringTokenizer(placeCreateDto.getAddressName(), " ", true);
+//        StringTokenizer st = new StringTokenizer(placeCreateDto.getAddressName(), " ", true);
 
         Place place = Place.builder()
                 .kakaoPlaceId(placeCreateDto.getKakaoPlaceId())
                 .placeName(placeCreateDto.getPlaceName())
                 .placeUrl(placeCreateDto.getPlaceUrl())
-                .categoryName(placeCreateDto.getCategoryName())
+                .categoryName(placeCreateDto.getCategoryName().split(" ")[2])
                 .addressName(placeCreateDto.getAddressName())
                 .roadAddressName(placeCreateDto.getRoadAddressName())
                 .phone(placeCreateDto.getPhone())
