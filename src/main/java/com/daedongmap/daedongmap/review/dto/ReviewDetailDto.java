@@ -9,6 +9,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -17,6 +18,7 @@ public class ReviewDetailDto {
     private Long id;
     private Long kakaoPlaceId;
     private String placeName;
+    private String categoryName;
     private String content;
     private float tasteRating;
     private float hygieneRating;
@@ -27,12 +29,13 @@ public class ReviewDetailDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private UserBasicInfoDto user;
-    private List<ReviewImageDto> reviewImageDtoList = new ArrayList<>();
+    private List<ReviewImageDto> reviewImageDtoList;
 
     public ReviewDetailDto(Review review) {
         this.id = review.getId();
         this.kakaoPlaceId = review.getPlace().getKakaoPlaceId();
         this.placeName = review.getPlace().getPlaceName();
+        this.categoryName = review.getPlace().getCategoryName();
         this.user = new UserBasicInfoDto(review.getUser());
         this.content = review.getContent();
         this.hygieneRating = review.getHygieneRating();
@@ -41,6 +44,9 @@ public class ReviewDetailDto {
         this.averageRating = review.getAverageRating();
         this.createdAt = review.getCreatedAt();
         this.updatedAt = review.getUpdatedAt();
+        this.reviewImageDtoList = review.getReviewImageList().stream()
+                .map(ReviewImageDto::new)
+                .collect(Collectors.toList());
     }
 
 }

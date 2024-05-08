@@ -1,9 +1,5 @@
 package com.daedongmap.daedongmap.review.service;
 
-import com.daedongmap.daedongmap.comment.domain.Comment;
-import com.daedongmap.daedongmap.comment.repository.CommentRepository;
-import com.daedongmap.daedongmap.common.model.Category;
-import com.daedongmap.daedongmap.common.model.Region;
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.likes.repository.LikeRepository;
@@ -22,7 +18,6 @@ import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,7 +35,6 @@ public class ReviewService {
     private final ReviewImageRepository reviewImageRepository;
     private final UserRepository userRepository;
     private final PlaceRepository placeRepository;
-    private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final ReviewImageService reviewImageService;
     private final PlaceService placeService;
@@ -79,24 +73,26 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewDetailDto> findAllReviewByRegionAndCategory(Optional<Region> region, Optional<Category> category, String sort) {
-        String regionValue = region.isPresent() ? region.get().getValue() : Region.GANGNAM.getValue();
-        String categoryValue = category.isPresent() ? category.get().getValue() : Category.KOREAN.getValue();
-
-        log.info("지역과 카테고리로 리뷰 전체 조회 (service) - " + regionValue + ", " + categoryValue);
-
-        List<Review> reviewList = reviewRepository.findAllByPlaceAddressNameContainingAndPlaceCategoryName(regionValue, categoryValue);
-        List<ReviewDetailDto> reviewDtoList = reviewList.stream()
+    public List<ReviewDetailDto> getReviewsByFilter(String region, String category, String sort) {
+        // 카테고리와 지역으로 조회
+        List<Review> reviewList = reviewRepository.findAllByPlace_CategoryNameAndPlace_AddressNameContaining(category, region);
+        List<ReviewDetailDto> reviewDetailDtoList = reviewList.stream()
                 .map(ReviewDetailDto::new)
                 .collect(Collectors.toList());
 
-        if ("DESC".equals(sort)) {
-            reviewDtoList.sort(Comparator.comparing(ReviewDetailDto::getCreatedAt).reversed());
-        } else if ("POPULAR".equals(sort)) {
-            reviewDtoList.sort(Comparator.comparingLong(ReviewDetailDto::getLikeCount));
+        for (ReviewDetailDto reviewDetailDto : reviewDetailDtoList) {
+            reviewDetailDto.setReviewImageDtoList(reviewImageService.getReviewImage(reviewDetailDto.getId()));
+            reviewDetailDto.setLikeCount(likeRepository.countByReviewId(reviewDetailDto.getId()));
         }
 
-        return reviewDtoList;
+        // 정렬 적용
+        if ("최신순".equals(sort)) {
+            reviewDetailDtoList.sort(Comparator.comparing(ReviewDetailDto::getCreatedAt).reversed());
+        } else if ("인기순".equals(sort)) {
+            reviewDetailDtoList.sort(Comparator.comparingLong(ReviewDetailDto::getLikeCount).reversed());
+        }
+
+        return reviewDetailDtoList;
     }
 
     @Transactional(readOnly = true)
