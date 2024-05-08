@@ -12,17 +12,14 @@ services:
       TZ: 'Asia/Seoul'
     ports:
       - "3306:3306"
-    command:
-      - "mysqld"
-      - "--character-set-server=utf8mb4"
-      - "--collation-server=utf8mb4_unicode_ci"
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci', '--lower_case_table_names=1']
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - demo-restapi
+      - daedongmap
 
   application:
     container_name: daedongmap-back
@@ -34,15 +31,15 @@ services:
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://daedongmap-db:3306/daedongmap
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "1234"
 
     depends_on:
       database:
         condition: service_healthy
     networks:
-      - demo-restapi
+      - daedongmap
 
 networks:
-  demo-restapi:
+  daedongmap:
     driver: bridge
