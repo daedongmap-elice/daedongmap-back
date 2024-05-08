@@ -1,6 +1,5 @@
 package com.daedongmap.daedongmap.comment.domain;
 
-import com.daedongmap.daedongmap.comment.dto.CommentUpdateDto;
 import com.daedongmap.daedongmap.common.entity.BaseTimeEntity;
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.user.domain.Users;
@@ -10,9 +9,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.security.core.userdetails.User;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -43,10 +39,6 @@ public class Comment extends BaseTimeEntity {
         this.review = review;
         this.content = content;
         this.parentId = parentId;
-    }
-
-    public void updateComment(CommentUpdateDto commentUpdateDto) {
-        this.content = commentUpdateDto.getContent();
     }
 
 }

@@ -14,7 +14,6 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findAllByUserId(Long userId);
-    List<Review> findAllByPlaceId(Long placeId);
     List<Review> findAllByPlace_KakaoPlaceId(Long kakaoPlaceId);
     @Query(value = "select review " +
             "from Review review " +
