@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -24,16 +26,12 @@ public class LikeService {
 
     @Transactional
     public void likeReview(Long userId, Long reviewId) {
-        Users user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+        Users user = getUserById(userId);
+        Review review = getReviewById(reviewId);
 
         Likes existingLike = likeRepository.findByUserAndReview(user, review);
         if (existingLike != null) {
             throw new CustomException(ErrorCode.ALREADY_LIKED);
-        }
-
-        if (!checkUser(user, review)) {
-            throw new CustomException(ErrorCode.LIKE_NOT_ALLOWED_OWN_REVIEW);
         }
 
         likeRepository.save(new Likes(user, review));
@@ -41,15 +39,24 @@ public class LikeService {
 
     @Transactional
     public void unlikeReview(Long userId, Long reviewId) {
-        Users user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-        Likes likes = likeRepository.findByUserAndReview(user, review);
+        Users user = getUserById(userId);
+        Review review = getReviewById(reviewId);
 
-        likeRepository.delete(likes);
+        Likes existingLike = likeRepository.findByUserAndReview(user, review);
+        if (existingLike == null) {
+            throw new CustomException(ErrorCode.LIKE_NOT_FOUND);
+        }
+
+        likeRepository.delete(existingLike);
     }
 
-    private boolean checkUser(Users user, Review review) {
-        return !user.getId().equals(review.getUser().getId());
+    private Users getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    private Review getReviewById(Long reviewId) {
+        Optional<Review> optionalReview = reviewRepository.findById(reviewId);
+        return optionalReview.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
     }
 
 }
