@@ -10,6 +10,7 @@ public enum ErrorCode {
 
     /* User */
     EMAIL_IN_USE(HttpStatus.CONFLICT, "사용중인 이메일입니다."),
+    PHONE_IN_USE(HttpStatus.CONFLICT, "이미 등록된 휴대폰 번호입니다. 아이디 찾기를 사용해주세요."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 사용자입니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "틀린 비밀번호입니다."),
     OAUTH_USER(HttpStatus.UNAUTHORIZED, "간편 로그인 사용자입니다."),
