@@ -43,16 +43,22 @@ public class FollowController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/api/follows/users/{userId}/following")
+    @GetMapping("/api/follows/following")
     @Operation(summary = "팔로잉 리스트 조회", description = "사용자가 팔로잉한 유저 리스트를 조회합니다.")
-    public ResponseEntity<List<FollowingDto>> getFollowingList(@PathVariable Long userId) {
+    public ResponseEntity<List<FollowingDto>> getFollowingList(@AuthenticationPrincipal CustomUserDetails tokenUser) {
+        Long userId = tokenUser.getUser().getId();
+        log.info("내가 팔로잉한 리스트 api 호출 - 나 : " + userId);
+
         List<FollowingDto> followingDtoList = followService.getFollowingList(userId);
         return ResponseEntity.status(HttpStatus.OK).body(followingDtoList);
     }
 
-    @GetMapping("/api/follows/users/{userId}/follower")
+    @GetMapping("/api/follows/follower")
     @Operation(summary = "팔로워 리스트 조회", description = "사용자의 팔로워 리스트를 조회합니다.")
-    public ResponseEntity<List<FollowerDto>> getFollowerList(@PathVariable Long userId) {
+    public ResponseEntity<List<FollowerDto>> getFollowerList(@AuthenticationPrincipal CustomUserDetails tokenUser) {
+        Long userId = tokenUser.getUser().getId();
+        log.info("나의 팔로워 리스트 api 호출 - 나 : " + userId);
+
         List<FollowerDto> followerDtoList = followService.getFollowerList(userId);
         return ResponseEntity.status(HttpStatus.OK).body(followerDtoList);
     }
