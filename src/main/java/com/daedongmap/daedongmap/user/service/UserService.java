@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -44,14 +45,13 @@ public class UserService {
     public AuthResponseDto registerUser(UserRegisterDto userRegisterDto) {
 
         userRepository.findByEmail(userRegisterDto.getEmail()).ifPresent(e -> {
-            throw new CustomException(ErrorCode.EMAIL_IN_USE);
+                    throw new CustomException(ErrorCode.EMAIL_IN_USE);});
+
+        userRepository.findByPhoneNumber(fixPhoneNumber(userRegisterDto.getPhoneNumber())).ifPresent(e -> {
+            throw new CustomException(ErrorCode.PHONE_IN_USE);
         });
 
         boolean isMember = userRegisterDto.getPassword() != null;
-
-        if(userRegisterDto.getProfileImage() == null) {
-            userRegisterDto.setProfileImage(DEFAULT_PROFILE);
-        }
 
         Users newUser = Users.builder()
                 .nickName(userRegisterDto.getNickName())
@@ -59,7 +59,7 @@ public class UserService {
                 .email(userRegisterDto.getEmail())
                 .webSite("아직 연결된 외부 사이트가 없습니다.")
                 .phoneNumber(fixPhoneNumber(userRegisterDto.getPhoneNumber()))
-                .profileImage(userRegisterDto.getProfileImage())
+                .profileImage(setProfileImage(userRegisterDto.getProfileImage()))
                 .password(encodePassword(userRegisterDto.getPassword()))
                 .isMember(isMember)
                 .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
@@ -83,6 +83,12 @@ public class UserService {
         } else {
             return phoneNumber.replaceAll("-", "");
         }
+    }
+
+    public String setProfileImage(String image) {
+        if(image != null) {
+            return image;
+        } else return DEFAULT_PROFILE;
     }
 
     @Transactional
@@ -173,6 +179,7 @@ public class UserService {
 
     @Transactional
     public String deleteUser(Long userId) {
+
 
         Users deletedUser = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
