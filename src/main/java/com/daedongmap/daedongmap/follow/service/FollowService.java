@@ -27,16 +27,16 @@ public class FollowService {
 
     @Transactional
     public void doFollow(Long followerId, Long followingId) {
-        Users follower = userRepository.findById(followerId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Users following = userRepository.findById(followingId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Users follower = getUserById(followerId);
+        Users following = getUserById(followingId);
 
         // 자기 자신은 팔로우 할 수 없음
-        if (followerId == followingId) {
+        if (followerId.equals(followingId)) {
             throw new CustomException(ErrorCode.FOLLOW_MYSELF_NOW_ALLOWED);
         }
 
         // 이미 팔로우 중인지 확인
-        if (isFollowing(follower, following)) {
+        if (isAlreadyFollowing(follower, following)) {
             throw new CustomException(ErrorCode.FOLLOW_DUPLICATED);
         }
 
@@ -48,30 +48,28 @@ public class FollowService {
         followRepository.save(follow);
     }
 
-    public boolean isFollowing(Users follower, Users following) {
-        Follow follow = followRepository.findByFollowerAndFollowing(follower, following);
-
-        if (follow != null) {
-            return true;
-        }
-        return false;
-    }
-
     @Transactional
     public void unFollow(Long followerId, Long followingId) {
-        Users follower = userRepository.findById(followerId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Users following = userRepository.findById(followingId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Users follower = getUserById(followerId);
+        Users following = getUserById(followingId);
+
+        // 자기 자신은 팔로우 할 수 없음
+        if (followerId.equals(followingId)) {
+            throw new CustomException(ErrorCode.FOLLOW_MYSELF_NOW_ALLOWED);
+        }
 
         Follow follow = followRepository.findByFollowerAndFollowing(follower, following);
-        if (follow != null) {
-            followRepository.delete(follow);
+        if (follow == null) {
+            throw new CustomException(ErrorCode.FOLLOW_NOT_FOUND);
         }
+
+        followRepository.delete(follow);
     }
 
     @Transactional(readOnly = true)
     public List<FollowingDto> getFollowingList(Long userId) {
         // user 가 팔로워인 입장
-        Users user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Users user = getUserById(userId);
         List<Follow> followingList = followRepository.findAllByFollower(user);
 
         // 팔로잉한 상대가 역으로 유저를 팔로우를 하는지 확인
@@ -89,7 +87,7 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<FollowerDto> getFollowerList(Long userId) {
         // user 가 팔로잉 당한 입장
-        Users user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Users user = getUserById(userId);
         List<Follow> followerList = followRepository.findAllByFollowing(user);
 
         // 유저를 팔로우하는 상대를 유저도 팔로잉하는지 확인
@@ -102,6 +100,15 @@ public class FollowService {
         }
 
         return followerDtoList;
+    }
+
+    private Users getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    public boolean isAlreadyFollowing(Users follower, Users following) {
+        Follow follow = followRepository.findByFollowerAndFollowing(follower, following);
+        return follow != null;
     }
 
 }

@@ -11,6 +11,6 @@ import lombok.Setter;
 public class FollowerDto {
 
     private UserBasicInfoDto follower; // 유저를 팔로잉한 팔로워
-    private boolean isFollowing; // 유저의 팔로워를 유저도 팔로잉하는지
+    private boolean isMyFollowing; // 유저도 팔로워를 팔로잉하는지
 
 }
