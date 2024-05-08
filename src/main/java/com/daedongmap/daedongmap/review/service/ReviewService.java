@@ -161,11 +161,13 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public String findReviewByKakaoPlaceIdDesc(Long kakaoPlaceId) {
         Review review = reviewRepository.findFirstByKakaoPlaceIdOrderByCreatedAtDesc(kakaoPlaceId);
-        List<ReviewImage> reviewImage = reviewImageRepository.findAllByReviewId(review.getId());
         String reviewImagePath = "";
 
-        if (!reviewImage.isEmpty()) {
-            reviewImagePath = reviewImage.get(0).getFilePath();
+        if (review != null) {
+            List<ReviewImage> reviewImage = reviewImageRepository.findAllByReviewId(review.getId());
+            if (reviewImage.size() != 0) {
+                reviewImagePath = reviewImage.get(0).getFilePath();
+            }
         }
         return reviewImagePath;
     }
