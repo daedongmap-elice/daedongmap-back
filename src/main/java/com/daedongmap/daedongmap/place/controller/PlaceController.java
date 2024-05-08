@@ -30,8 +30,8 @@ public class PlaceController {
 
     @GetMapping("/region")
     @Operation(summary = "음식점 지역 검색", description = "검색한 지역의 음식점을 모두 조회합니다.")
-    public ResponseEntity<List<PlaceBasicInfoDto>> getRegionPlace(@RequestParam(defaultValue="recommend") String filter, @RequestParam Double x1, @RequestParam Double x2, @RequestParam Double y1, @RequestParam Double y2) {
-        List<PlaceBasicInfoDto> findPlace = placeService.findReasonPlace(filter, x1, x2, y1, y2);
+    public ResponseEntity<List<PlaceBasicInfoDto>> getRegionPlace(@RequestParam(defaultValue="recommend") String filter, @RequestParam Double x1, @RequestParam Double x2, @RequestParam Double y1, @RequestParam Double y2, @RequestParam Double x, @RequestParam Double y) {
+        List<PlaceBasicInfoDto> findPlace = placeService.findReasonPlace(filter, x1, x2, y1, y2, x, y);
         return ResponseEntity.status(HttpStatus.OK).body(findPlace);
     }
 
