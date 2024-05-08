@@ -75,11 +75,11 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(findReviewDtoList);
     }
 
-    @GetMapping("/api/reviews/places/{placeId}")
+    @GetMapping("/api/reviews/places/{kakaoPlaceId}")
     @Operation(summary = "음식점별 리뷰 조회", description = "음식점별 리뷰를 모두 조회합니다.")
-    public ResponseEntity<List<ReviewDto>> getReviewsByPlace(@PathVariable Long placeId) {
-        log.info("음식점별 리뷰 조회 api 호출");
-        List<ReviewDto> findReviewDtoList = reviewService.findReviewsByPlace(placeId);
+    public ResponseEntity<List<ReviewDto>> getReviewsByKakaoPlaceId(@PathVariable Long kakaoPlaceId) {
+        log.info("음식점별 리뷰 조회 api 호출 - kakaoPlaceId : " + kakaoPlaceId);
+        List<ReviewDto> findReviewDtoList = reviewService.findReviewsByKakaoPlaceId(kakaoPlaceId);
         return ResponseEntity.status(HttpStatus.OK).body(findReviewDtoList);
     }
 
@@ -109,7 +109,7 @@ public class ReviewController {
                                                   @RequestPart(value = "file", required = false) List<MultipartFile> multipartFileList,
                                                   @AuthenticationPrincipal CustomUserDetails tokenUser) throws IOException {
         Long userId = tokenUser.getUser().getId();
-        log.info("리뷰 수정 api 호출 - userId : " + userId + ", reviewId : " + reviewId + ", file : " + multipartFileList.size());
+        log.info("리뷰 수정 api 호출 - userId : " + userId + ", reviewId : " + reviewId);
 
         ReviewDto updatedReviewDto = reviewService.updateReview(userId, reviewId, reviewUpdateDto, multipartFileList);
         return ResponseEntity.status(HttpStatus.OK).body(updatedReviewDto);

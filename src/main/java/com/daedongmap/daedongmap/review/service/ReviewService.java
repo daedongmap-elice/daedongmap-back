@@ -49,8 +49,7 @@ public class ReviewService {
     public ReviewDto createReview(Long userId, List<MultipartFile> multipartFileList, ReviewCreateDto reviewCreateDto, PlaceCreateDto placeCreateDto) throws IOException {
         Users user = getUserById(userId);
 
-        // 존재하지 않는 경우 : 새로운 장소를 만들어서 반환
-        // 존재하는 경우 : 기존 장소를 찾아서 반환
+        // 없으면 새로운 장소를 만들어서 반환, 있으면 기존 장소를 찾아서 반환
         Optional<Place> place = getOrCreatePlace(placeCreateDto);
 
         Review review = Review.builder()
@@ -108,9 +107,9 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public List<ReviewDto> findReviewsByPlace(Long placeId) {
-        List<Review> reviews = reviewRepository.findAllByPlaceId(placeId);
+    @Transactional
+    public List<ReviewDto> findReviewsByKakaoPlaceId(Long kakaoPlaceId) {
+        List<Review> reviews = reviewRepository.findAllByPlace_KakaoPlaceId(kakaoPlaceId);
         return reviews.stream()
                 .map(ReviewDto::new)
                 .collect(Collectors.toList());
@@ -133,21 +132,10 @@ public class ReviewService {
         Review review =  getReviewById(reviewId);
 
         if (isReviewOwner(userId, review)) {
-            // 리뷰에 해당되는 댓글 삭제
-            List<Comment> comments = commentRepository.findAllByReviewId(reviewId);
-            for (Comment comment : comments) {
-                commentRepository.deleteById(comment.getId());
-            }
-
-            // 리뷰에 해당되는 이미지 파일 삭제
-            reviewImageService.deleteReviewImage(reviewId);
-
-            // 리뷰 삭제
             reviewRepository.deleteById(reviewId);
         } else {
             throw new CustomException(ErrorCode.REVIEW_NOT_MINE);
         }
-
     }
 
     @Transactional
@@ -157,8 +145,11 @@ public class ReviewService {
         if (isReviewOwner(userId, review)) {
             review.updateReview(reviewUpdateDto);
 
-            List<ReviewImage> updateImages = updateReviewImages(review, multipartFileList);
-            review.setReviewImageList(updateImages);
+            if (reviewUpdateDto.getImageModified()) {
+                log.info("updateReview - 수정된 이미지가 있습니다");
+                List<ReviewImage> updateImages = updateReviewImages(review, multipartFileList);
+                review.setReviewImageList(updateImages);
+            }
 
             return new ReviewDto(review);
         } else {
