@@ -9,6 +9,7 @@ import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
 import com.daedongmap.daedongmap.user.dto.response.AuthResponseDto;
 import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.dto.response.UserResponseDto;
+import com.daedongmap.daedongmap.user.service.TokenService;
 import com.daedongmap.daedongmap.user.service.UserServiceFacade;
 import com.daedongmap.daedongmap.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,7 @@ import java.io.IOException;
 public class UserController {
 
     private final UserService userService;
+    private final TokenService tokenService;
     private final UserServiceFacade userServiceFacade;
 
     @PostMapping("/register")
@@ -137,7 +139,7 @@ public class UserController {
     @Operation(summary = "사용자 삭제", description = "이메일(PK)을 통해 사용자 조회 확인 후 삭제, 삭제된 사용자의 닉네임 반환")
     public ResponseEntity<String> deleteUser(@AuthenticationPrincipal CustomUserDetails tokenUser) {
 
-        String deletedUser = userService.deleteUser(tokenUser.getUser().getId());
+        String deletedUser = userServiceFacade.deleteUser(tokenUser.getUser().getId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -53,7 +53,7 @@ public class Users extends BaseTimeEntity {
     @Column(name = "is_member")
     private Boolean isMember;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Authority> roles = new ArrayList<>();
 
     @Builder
