@@ -61,7 +61,6 @@ public class UserController {
 
         String refreshToken = request.getHeader("Authorization");
         String deleteMessage = userServiceFacade.logoutUser(refreshToken);
-
         log.info(deleteMessage);
 
         return ResponseEntity
@@ -120,11 +119,6 @@ public class UserController {
     public ResponseEntity<UserResponseDto> updateUser(@RequestPart(value = "file", required = false) MultipartFile multipartFile,
                                             @RequestPart(value = "userUpdateDto") UserUpdateDto userUpdateDto,
                                             @AuthenticationPrincipal CustomUserDetails tokenUser) throws IOException {
-
-        log.info(String.valueOf(multipartFile));
-        log.info(userUpdateDto.getNickName());
-        log.info(userUpdateDto.getStatus());
-        log.info(userUpdateDto.getWebSite());
 
         UserResponseDto userResponseDto = userService.updateUser(tokenUser.getUser().getId(), multipartFile, userUpdateDto);
 

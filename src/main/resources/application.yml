@@ -4,17 +4,17 @@ spring:
 
   datasource:
     #        H2
-    url: jdbc:h2:mem:daedongmap-db
-    username: sa
-  h2:
-    console:
-      enabled: true
+#    url: jdbc:h2:mem:daedongmap-db
+#    username: sa
+#  h2:
+#    console:
+#      enabled: true
 
   #        MySQL
-  #    driver-class-name: com.mysql.cj.jdbc.Driver
-  #    url: jdbc:mysql://localhost:3306/daedongmap?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-  #    username: root
-  #    password: 1234
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://daedongmap-db.cd8ayw8my9fr.ap-northeast-2.rds.amazonaws.com:3306/daedongmap?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      username: admin
+      password: 26477520
 
   jpa:
     show-sql: true
@@ -22,9 +22,9 @@ spring:
     hibernate:
       ddl-auto: create
     properties:
-      dialect: org.hibernate.dialect.MySQL8Dialect
       hibernate:
         format-sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
     defer-datasource-initialization: true
 
   sql:
