@@ -26,7 +26,7 @@ public class ReviewDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private UserBasicInfoDto user;
-    private List<ReviewImageDto> reviewImageList;
+    private List<ReviewImageDto> reviewImageDtoList;
 
     public ReviewDto(Review review) {
         this.id = review.getId();
@@ -34,7 +34,7 @@ public class ReviewDto {
         this.placeName = review.getPlace().getPlaceName();
         this.user = new UserBasicInfoDto(review.getUser());
         this.content = review.getContent();
-        this.reviewImageList = review.getReviewImageList().stream()
+        this.reviewImageDtoList = review.getReviewImageList().stream()
                 .map(ReviewImageDto::new)
                 .collect(Collectors.toList());
         this.hygieneRating = review.getHygieneRating();
