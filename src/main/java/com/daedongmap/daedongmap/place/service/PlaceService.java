@@ -84,6 +84,10 @@ public class PlaceService {
                 .roadAddressName(place.getRoadAddressName())
                 .x(place.getX())
                 .y(place.getY())
+                .phone(place.getPhone())
+                .averageRating(place.getAverageRating())
+                .reviewImagePath(place.getReviewImagePath())
+                .reviewCnt(place.getReviewCnt())
                 .build();
     }
 
@@ -100,4 +104,10 @@ public class PlaceService {
                 .map(this::toPlaceBasicInfoDto)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void updatePlaceRate(Long kakaoPlaceId) {
+        placeRepository.updatePlaceRateById(kakaoPlaceId);
+    }
+
 }
