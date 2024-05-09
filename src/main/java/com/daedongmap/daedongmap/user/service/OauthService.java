@@ -49,9 +49,7 @@ public class OauthService {
 
         switch (TYPE) {
             case "naver" -> {
-//                clientId = NAVER_CLIENT_ID;
                 clientId = naverConfig.getClientId();
-//                redirectUri = NAVER_REDIRECT;
                 redirectUri = naverConfig.getRedirectUri();
             }
             case "kakao" -> {
