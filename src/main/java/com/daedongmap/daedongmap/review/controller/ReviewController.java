@@ -1,6 +1,7 @@
 package com.daedongmap.daedongmap.review.controller;
 
 import com.daedongmap.daedongmap.place.dto.PlaceCreateDto;
+import com.daedongmap.daedongmap.place.service.PlaceService;
 import com.daedongmap.daedongmap.review.dto.*;
 import com.daedongmap.daedongmap.review.service.ReviewService;
 import com.daedongmap.daedongmap.user.domain.CustomUserDetails;
@@ -22,6 +23,7 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final PlaceService placeService;
 
     @PostMapping("/api/reviews")
     @Operation(summary = "리뷰 작성", description = "리뷰를 작성합니다.")
@@ -33,8 +35,8 @@ public class ReviewController {
 
         Long userId = tokenUser.getUser().getId();
         log.info("리뷰 작성 api 호출 - userId : " + userId);
-
         ReviewDto createdReviewDto = reviewService.createReview(userId, multipartFileList, reviewCreateDto, placeCreateDto);
+        placeService.updatePlaceRate(placeCreateDto.getKakaoPlaceId());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReviewDto);
     }
 
