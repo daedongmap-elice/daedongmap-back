@@ -30,7 +30,9 @@ public class TokenProvider {
     @Value("${jwt.encoder}")
     private String SECRET_KEY;
 
+    // 30분 리프레시 access 토큰 유효시간
     private static final long EXPIRE_IN = 30 * 60 * 1000L;
+    // 1주 간의 리프레시 토큰 유효시간
     private static final long REFRESH_EXPIRE_IN = 7 * 24 * 60 * 60 * 1000L;
 
     private final TokenService tokenService;
