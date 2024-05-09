@@ -117,8 +117,11 @@ public class ReviewService {
         ReviewDetailDto reviewDetailDto = new ReviewDetailDto(review);
         reviewDetailDto.setReviewImageDtoList(reviewImageService.getReviewImage(reviewId));
         reviewDetailDto.setLikeCount(likeRepository.countByReviewId(reviewId));
-        Boolean isLikedByUser = likeRepository.existsByReviewAndUser(getReviewById(reviewId), getUserById(userId));
-        reviewDetailDto.setIsLikedByUser(isLikedByUser);
+
+        if (userId != null) {
+            Boolean isLikedByUser = likeRepository.existsByReviewAndUser(getReviewById(reviewId), getUserById(userId));
+            reviewDetailDto.setIsLikedByUser(isLikedByUser);
+        }
 
         return reviewDetailDto;
     }
