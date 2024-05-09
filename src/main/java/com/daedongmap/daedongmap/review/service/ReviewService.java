@@ -87,9 +87,31 @@ public class ReviewService {
 
         // 정렬 적용
         if ("최신순".equals(sort)) {
+            log.info("필터 리뷰 전체 조회 - 최신순");
             reviewDetailDtoList.sort(Comparator.comparing(ReviewDetailDto::getCreatedAt).reversed());
-        } else if ("인기순".equals(sort)) {
+        } else if ("인기리뷰순".equals(sort)) {
+            log.info("필터 리뷰 전체 조회 - 인기리뷰순");
             reviewDetailDtoList.sort(Comparator.comparingLong(ReviewDetailDto::getLikeCount).reversed());
+        } else if ("인기음식점순".equals(sort)) {
+            log.info("필터 리뷰 전체 조회 - 인기음식점순");
+
+            // 음식점별 리뷰 개수 계산
+            Map<Long, Integer> placeReviewCounts = new HashMap<>();
+            for (ReviewDetailDto reviewDetailDto : reviewDetailDtoList) {
+                Long placeId = reviewDetailDto.getKakaoPlaceId();
+                placeReviewCounts.put(placeId, placeReviewCounts.getOrDefault(placeId, 0) + 1);
+            }
+            log.info("placeReviewCounts : " + placeReviewCounts);
+
+            // 리뷰 개수가 많은 음식점 순으로 정렬
+            reviewDetailDtoList.sort((review1, review2) -> {
+                Integer reviewCount1 = placeReviewCounts.get(review1.getKakaoPlaceId());
+                Integer reviewCount2 = placeReviewCounts.get(review2.getKakaoPlaceId());
+                return Integer.compare(reviewCount2, reviewCount1);
+            });
+        } else if ("별점순".equals(sort)) {
+            log.info("필터 리뷰 전체 조회 - 별점순");
+            reviewDetailDtoList.sort(Comparator.comparingDouble(ReviewDetailDto::getAverageRating).reversed());
         }
 
         return reviewDetailDtoList;
@@ -119,6 +141,7 @@ public class ReviewService {
         reviewDetailDto.setLikeCount(likeRepository.countByReviewId(reviewId));
 
         if (userId != null) {
+            log.info("회원이 리뷰 상세 조회합니다.");
             Boolean isLikedByUser = likeRepository.existsByReviewAndUser(getReviewById(reviewId), getUserById(userId));
             reviewDetailDto.setIsLikedByUser(isLikedByUser);
         }
