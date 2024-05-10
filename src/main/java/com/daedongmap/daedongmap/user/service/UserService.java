@@ -39,7 +39,7 @@ public class UserService {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-    private final String DEFAULT_PROFILE = "https://s3.ap-northeast-2.amazonaws.com/daedongmap-bucket/profile/canelo%40gmail.com";
+    private final String DEFAULT_PROFILE = "https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/기본프로필.jpg";
 
     @Transactional
     public AuthResponseDto registerUser(UserRegisterDto userRegisterDto) {
