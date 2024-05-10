@@ -13,14 +13,14 @@ spring:
   #        MySQL
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://daedongmap-db.cd8ayw8my9fr.ap-northeast-2.rds.amazonaws.com:3306/daedongmap?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-      username: admin
-      password: 26477520
+      username:
+      password:
 
   jpa:
     show-sql: true
     generate-ddl: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format-sql: true
