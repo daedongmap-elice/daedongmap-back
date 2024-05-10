@@ -7,9 +7,11 @@ VALUES
     ('유재석', '2024-04-27 12:55:05.55', '2024-04-27 12:55:05.55', '$2a$10$Ly4G8YbB2Y0j5zFnyuQ9XeV8b1ZfrU.7DsQpBJqzhiumNVmHRGOhW', '맛있는 집 추천 받아요!', 'jaesuk@naver.com', '01012341111', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A2%E1%84%89%E1%85%A5%E1%86%A8.jpeg', true),
     ('마동석','2024-04-26 19:30:05.55', '2024-04-26 19:30:05.55', '$2a$10$QOTwD5aUTw5SqPLzBrKG4udn7X9/yNIFndk7g1lDEIxaX9DnyEVCO', '세상 모든 식당을 리뷰할 때까지', 'dongsuk@naver.com', '01098761234', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%86%E1%85%A1%E1%84%83%E1%85%A9%E1%86%BC%E1%84%89%E1%85%A5%E1%86%A8.jpeg', true),
     ('이순신', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$.lKPR9zG9OTv2WxpP5T03.h6BXZPd6qQP1/C6Q/wvL9vSX8Hi3Phy', '단게 먹고 싶네요.', 'sunsin@gmail.com', '01012349876', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%8B%E1%85%B5%E1%84%89%E1%85%AE%E1%86%AB%E1%84%89%E1%85%B5%E1%86%AB.jpeg', true),
-    ('elicecloud1', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$z.Lrg7s/bdwOrg2sOFS9fOxa4hFPL4/Vb/jBZ2fOpuZrfmHrtjYj2', '테스트 계정 1', 'elicer1@cloud.com', '01000000001', '아직 연결된 외부 사이트가 없습니다.', 'test', true),
-    ('elicecloud2', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$GZCieNZjGZu/rHMztPE.murCbsXyw31LoHcn90/B4EsJmntXOATqK', '테스트 계정 2', 'elicer2@cloud.com', '01000000002', '아직 연결된 외부 사이트가 없습니다.', 'test', true),
-    ('elicecloud3', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$NrFPfPa10FpSoxHHcdlZseCXp7RyoiFTS/GPX8PG5Ur1v/VH7xTq2', '테스트 계정 3', 'elicer3@cloud.com', '01000000003', '아직 연결된 외부 사이트가 없습니다.', 'test', true);
+    ('유재석', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$U6YFfiy3LyQXJq.8yWY9deuNFS1aQ8V0vMVohfXfOQ8grPthYDQNu', '맛있는 집은 찾아서!', 'jaesuk@gmail.com', '01024681359', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/기본프로필.jpg', true),
+    ('이수근', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$pUU9JqUARjOU3XRb1ct6juHd02PuVkznzxWWSukNmaY57PS9/W2fS', '진짜 맛있는 집만 압니다.', 'sugeun@gmail.com', '01082828282', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/기본프로필.jpg', true),
+    ('elicecloud1', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$z.Lrg7s/bdwOrg2sOFS9fOxa4hFPL4/Vb/jBZ2fOpuZrfmHrtjYj2', '테스트 계정 1', 'elicer1@cloud.com', '01000000001', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/기본프로필.jpg', true),
+    ('elicecloud2', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$GZCieNZjGZu/rHMztPE.murCbsXyw31LoHcn90/B4EsJmntXOATqK', '테스트 계정 2', 'elicer2@cloud.com', '01000000002', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/기본프로필.jpg', true),
+    ('elicecloud3', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$NrFPfPa10FpSoxHHcdlZseCXp7RyoiFTS/GPX8PG5Ur1v/VH7xTq2', '테스트 계정 3', 'elicer3@cloud.com', '01000000003', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/기본프로필.jpg', true);
 
 INSERT INTO
     authority (role, users)
@@ -21,7 +23,9 @@ VALUES
     ('ROLE_USER', 5),
     ('ROLE_USER', 6),
     ('ROLE_USER', 7),
-    ('ROLE_USER', 8);
+    ('ROLE_USER', 8),
+    ('ROLE_USER', 9),
+    ('ROLE_USER', 10);
 
 
 /* 음식점 */
