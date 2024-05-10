@@ -26,9 +26,7 @@ public class UserServiceFacade {
     }
 
     @Transactional
-    public String logoutUser(String refreshToken) {
-
-        Long userId = tokenService.validate(refreshToken);
+    public String logoutUser(Long userId) {
 
         return tokenService.deleteRefreshByUserId(userId);
     }

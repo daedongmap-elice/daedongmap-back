@@ -12,7 +12,6 @@ import com.daedongmap.daedongmap.user.dto.response.UserResponseDto;
 import com.daedongmap.daedongmap.user.service.UserServiceFacade;
 import com.daedongmap.daedongmap.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,13 +54,11 @@ public class UserController {
                 .body(tokenDto);
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/user/logout")
     @Operation(summary = "사용자 로그아웃", description = "DB 로그아웃하는 사용자의 리프레시 토큰 삭제")
-    public ResponseEntity<String> logoutUser(HttpServletRequest request) {
+    public ResponseEntity<String> logoutUser(@AuthenticationPrincipal CustomUserDetails tokenUser) {
 
-        String refreshToken = request.getHeader("Authorization");
-        String deleteMessage = userServiceFacade.logoutUser(refreshToken);
-
+        String deleteMessage = userServiceFacade.logoutUser(tokenUser.getUser().getId());
         log.info(deleteMessage);
 
         return ResponseEntity
@@ -120,11 +117,6 @@ public class UserController {
     public ResponseEntity<UserResponseDto> updateUser(@RequestPart(value = "file", required = false) MultipartFile multipartFile,
                                             @RequestPart(value = "userUpdateDto") UserUpdateDto userUpdateDto,
                                             @AuthenticationPrincipal CustomUserDetails tokenUser) throws IOException {
-
-        log.info(String.valueOf(multipartFile));
-        log.info(userUpdateDto.getNickName());
-        log.info(userUpdateDto.getStatus());
-        log.info(userUpdateDto.getWebSite());
 
         UserResponseDto userResponseDto = userService.updateUser(tokenUser.getUser().getId(), multipartFile, userUpdateDto);
 
