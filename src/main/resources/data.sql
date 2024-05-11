@@ -1,113 +1,267 @@
 /* 유저 */
 INSERT INTO
-    users(nickname, created_at, updated_at, password, status, email, phone_number, web_site, profile_image, is_member)
+    users (nickname, created_at, updated_at, password, status, email, phone_number, web_site, profile_image, is_member)
 VALUES
-    ('홍길동', '2024-04-30 16:42:28.464849',  '2024-04-30 16:42:28.464849', '$2a$10$P04N91fpnmwXfiK6JA/OiOE/P/9UDRn4mFn2sJpTWsG4bc1WDTKy.', '맛집 찾아 삼만리', 'gildong@naver.com', '010-1234-1234', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%92%E1%85%A9%E1%86%BC%E1%84%80%E1%85%B5%E1%86%AF%E1%84%83%E1%85%A9%E1%86%BC.png', true),
-    ('강호동', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$REDzwMbjz2zj9laxqr.OpO.XTjogqRNFUDBi3CjpOjjY1ZUUBgI9a', '뭐든지 잘 먹습니다.', 'hodong@gmail.com', '010-1111-1234', 'https://www.naver.com', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%80%E1%85%A1%E1%86%BC%E1%84%92%E1%85%A9%E1%84%83%E1%85%A9%E1%86%BC.jpeg', true),
-    ('유재석', '2024-04-27 12:55:05.55', '2024-04-27 12:55:05.55', '$2a$10$Ly4G8YbB2Y0j5zFnyuQ9XeV8b1ZfrU.7DsQpBJqzhiumNVmHRGOhW', '맛있는 집 추천 받아요!', 'jaesuk@naver.com', '010-1234-1111', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A2%E1%84%89%E1%85%A5%E1%86%A8.jpeg', true),
-    ('마동석','2024-04-26 19:30:05.55', '2024-04-26 19:30:05.55', '$2a$10$QOTwD5aUTw5SqPLzBrKG4udn7X9/yNIFndk7g1lDEIxaX9DnyEVCO', '세상 모든 식당을 리뷰할 때까지', 'dongsuk@naver.com', '010-9876-1234', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%86%E1%85%A1%E1%84%83%E1%85%A9%E1%86%BC%E1%84%89%E1%85%A5%E1%86%A8.jpeg', true),
-    ('이순신', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$.lKPR9zG9OTv2WxpP5T03.h6BXZPd6qQP1/C6Q/wvL9vSX8Hi3Phy', '단게 먹고 싶네요.', 'sunsin@gmail.com', '010-1234-9876', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%8B%E1%85%B5%E1%84%89%E1%85%AE%E1%86%AB%E1%84%89%E1%85%B5%E1%86%AB.jpeg', true);
+    ('홍길동', '2024-04-30 16:42:28.46',  '2024-04-30 16:42:28.46', '$2a$10$P04N91fpnmwXfiK6JA/OiOE/P/9UDRn4mFn2sJpTWsG4bc1WDTKy.', '맛집 찾아 삼만리', 'gildong@naver.com', '01012341234', 'https://ko.wikipedia.org/wiki/%ED%99%8D%EA%B8%B8%EB%8F%99_(%EC%A1%B0%EC%84%A0)', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%92%E1%85%A9%E1%86%BC%E1%84%80%E1%85%B5%E1%86%AF%E1%84%83%E1%85%A9%E1%86%BC.png', true),
+    ('강호동', '2024-04-30 08:13:10.03', '2024-04-30 08:13:10.03', '$2a$10$REDzwMbjz2zj9laxqr.OpO.XTjogqRNFUDBi3CjpOjjY1ZUUBgI9a', '뭐든지 잘 먹습니다.', 'hodong@gmail.com', '01011111234', 'https://www.youtube.com/watch?v=8Gstb_82DgE', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%80%E1%85%A1%E1%86%BC%E1%84%92%E1%85%A9%E1%84%83%E1%85%A9%E1%86%BC.jpeg', true),
+    ('유재석', '2024-04-30 12:55:05.55', '2024-04-30 12:55:05.55', '$2a$10$Ly4G8YbB2Y0j5zFnyuQ9XeV8b1ZfrU.7DsQpBJqzhiumNVmHRGOhW', '맛있는 집 추천 받아요!', 'jaesuk@naver.com', '01012341111', 'https://namu.wiki/w/%EC%9C%A0%EC%9E%AC%EC%84%9D', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A2%E1%84%89%E1%85%A5%E1%86%A8.jpeg', true),
+    ('마동석','2024-04-26 19:30:05.55', '2024-04-26 19:30:05.55', '$2a$10$QOTwD5aUTw5SqPLzBrKG4udn7X9/yNIFndk7g1lDEIxaX9DnyEVCO', '세상 모든 식당을 리뷰할 때까지', 'dongsuk@naver.com', '01098761234', 'https://namu.wiki/w/%EB%A7%88%EB%8F%99%EC%84%9D', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%86%E1%85%A1%E1%84%83%E1%85%A9%E1%86%BC%E1%84%89%E1%85%A5%E1%86%A8.jpeg', true),
+    ('이순신', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$.lKPR9zG9OTv2WxpP5T03.h6BXZPd6qQP1/C6Q/wvL9vSX8Hi3Phy', '단게 먹고 싶네요.', 'sunsin@gmail.com', '01012349876', 'https://namu.wiki/w/%EC%9D%B4%EC%88%9C%EC%8B%A0', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%8B%E1%85%B5%E1%84%89%E1%85%AE%E1%86%AB%E1%84%89%E1%85%B5%E1%86%AB.jpeg', true),
+    ('엘리스토끼', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$U6YFfiy3LyQXJq.8yWY9deuNFS1aQ8V0vMVohfXfOQ8grPthYDQNu', '맛있는 집은 찾아서!', 'elicerabbit@gmail.com', '01024681359', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/기본프로필.jpg', true),
+    ('이수근', '2023-04-26 08:13:10.03', '2023-04-26 08:13:10.03', '$2a$10$pUU9JqUARjOU3XRb1ct6juHd02PuVkznzxWWSukNmaY57PS9/W2fS', '진짜 맛있는 집만 압니다.', 'sugeun@gmail.com', '01082828282', 'https://namu.wiki/w/%EC%9D%B4%EC%88%98%EA%B7%BC', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%8B%E1%85%B5%E1%84%89%E1%85%AE%E1%84%80%E1%85%B3%E1%86%AB.jpeg', true),
+
+    ('elicecloud1', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$z.Lrg7s/bdwOrg2sOFS9fOxa4hFPL4/Vb/jBZ2fOpuZrfmHrtjYj2', '테스트 계정 1', 'elicer1@cloud.com', '01000000001', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/기본프로필.jpg', true),
+    ('elicecloud2', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$GZCieNZjGZu/rHMztPE.murCbsXyw31LoHcn90/B4EsJmntXOATqK', '테스트 계정 2', 'elicer2@cloud.com', '01000000002', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/기본프로필.jpg', true),
+    ('elicecloud3', '2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', '$2a$10$NrFPfPa10FpSoxHHcdlZseCXp7RyoiFTS/GPX8PG5Ur1v/VH7xTq2', '테스트 계정 3', 'elicer3@cloud.com', '01000000003', '아직 연결된 외부 사이트가 없습니다.', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/profile/기본프로필.jpg', true);
 
 INSERT INTO
-    authority(role, users)
+    authority (role, users)
 VALUES
     ('ROLE_USER', 1),
     ('ROLE_USER', 2),
     ('ROLE_USER', 3),
     ('ROLE_USER', 4),
-    ('ROLE_USER', 5);
+    ('ROLE_USER', 5),
+    ('ROLE_USER', 6),
+    ('ROLE_USER', 7),
+    ('ROLE_USER', 8),
+    ('ROLE_USER', 9),
+    ('ROLE_USER', 10);
 
 
 /* 음식점 */
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 강남구 대치동 996-16','한식','27531028','02-558-7905','중앙해장','http://place.map.kakao.com/27531028','서울 강남구 영동대로86길 17','127.065472540919','37.508273597184',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 강남구 논현동 115-10','한식','27584230','02-515-3469','진미평양냉면','http://place.map.kakao.com/27584230','서울 강남구 학동로 305-3','127.036047158128','37.5161357904841',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 강남구 신사동 569-31','간식','8746906','02-516-3643','압구정공주떡','http://place.map.kakao.com/8746906','서울 강남구 논현로161길 10','127.02746679415719','37.52356596669052',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 강동구 성내동 442-12','간식','18310200','1588-5678','백년화편','http://place.map.kakao.com/18310200','서울 강동구 양재대로81길 32','127.13251425245822','37.5232515505377',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 강동구 성내동 448-24','중식','12444560','02-470-2600','차이나린찐','http://place.map.kakao.com/12444560','서울 강동구 강동대로 217','127.130528004417','37.5233781006404',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 강동구 천호동 454-15','양식','603985516','02-487-7999','로니로티 천호점','http://place.map.kakao.com/603985516','서울 강동구 천호대로 1027','127.12638533557136','37.53810676226715',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 강북구 수유동 56-45','일식','16380488','02-2241-7558','다래함박스텍','http://place.map.kakao.com/16380488','서울 강북구 수유로 20-2','127.019032803713','37.6327573067632',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 강북구 번동 470-1','한식','877502430','02-902-9915','진호횟집','http://place.map.kakao.com/877502430','서울 강북구 도봉로98길 33','127.03149836339257','37.641297778414796',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 강북구 수유동 596-4','한식','8362137','02-902-6456','샘터마루','http://place.map.kakao.com/8362137','서울 강북구 4.19로12길 35','127.006082566071','37.6466446620218',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 강서구 염창동 280-6','한식','9370927','02-3665-3930','유림 닭도리탕','http://place.map.kakao.com/9370927','서울 강서구 공항대로71길 5','126.87171977039051','37.547826497941145',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 강서구 화곡동 782-12','한식','13561654','070-7641-2008','조연탄','http://place.map.kakao.com/13561654','서울 강서구 곰달래로60길 29','126.863295223301','37.5309034836946',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 강서구 마곡동 772-8','한식','294491415','0507-1386-8295','금고깃집 마곡본점','http://place.map.kakao.com/294491415','서울 강서구 마곡동로 61','126.83319727621857','37.56050944967595',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 관악구 신림동 546-1','일식','27508076','02-3281-3330','온정돈까스','http://place.map.kakao.com/27508076','서울 관악구 조원로 60','126.90910720206458','37.48354757120769',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 관악구 봉천동 1660-7','간식','16990385','02-889-5170','쟝블랑제리','http://place.map.kakao.com/16990385','서울 관악구 낙성대역길 8','126.961968234363','37.477157623199',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 관악구 신림동 10-518','한식','10122642','02-886-9233','강강술래 신림점','http://place.map.kakao.com/10122642','서울 관악구 남부순환로 1660','126.935032063852','37.4845810083297',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 광진구 구의동 26-15','한식','16649162','02-447-6540','원조할아버지손두부','http://place.map.kakao.com/16649162','서울 광진구 자양로 324','127.09416187008681','37.55405750063962',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 광진구 자양동 227-138','기사식당','7963415','02-457-5473','송림식당','http://place.map.kakao.com/7963415','서울 광진구 자양번영로 79','127.076404551637','37.5366882542409',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 광진구 구의동 52-17','분식','13319252','','신토불이떡볶이 본점','http://place.map.kakao.com/13319252','서울 광진구 자양로43길 42','127.09047521166055','37.55256562797821',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 구로구 가리봉동 127-5','중식','929624344','02-855-8488','월래순교자관','http://place.map.kakao.com/929624344','서울 구로구 디지털로19길 13','126.88983784572301','37.48028123854243',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 구로구 구로동 1124-69','한식','898970657','070-8624-1998','신림춘천집 구로디지털직영점','http://place.map.kakao.com/898970657','서울 구로구 디지털로32나길 17-23','126.899823896113','37.4840626496785',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 구로구 구로동 188-25','일식','26505507','02-6344-3782','스시메이진 구로점','http://place.map.kakao.com/26505507','서울 구로구 디지털로 300','126.89682602713681','37.48524940051567',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 금천구 시흥동 991','한식','8153541','02-808-1888','강강술래 시흥점','http://place.map.kakao.com/8153541','서울 금천구 시흥대로 193','126.90144238492762','37.45094555895512',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 금천구 시흥동 115-10','중식','11833906','02-803-3759','동흥관','http://place.map.kakao.com/11833906','서울 금천구 시흥대로63길 20','126.898583086671','37.4551319490809',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 금천구 가산동 371-37','한식','1954563179','010-9581-8981','가산물갈비&백년불고기','http://place.map.kakao.com/1954563179','서울 금천구 가산디지털1로 128','126.88366152357','37.477275859989',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 노원구 상계동 434-49','한식','1317959049','070-7543-4481','감동식당','http://place.map.kakao.com/1317959049','서울 노원구 한글비석로47길 58','127.06659520859755','37.66156431075787',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 노원구 상계동 1025-4','한식','18536783','02-935-9233','강강술래 상계지점','http://place.map.kakao.com/18536783','서울 노원구 동일로 1628','127.05603035404788','37.673843857521106',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 노원구 공릉동 740','한식','16414503','02-949-7331','경복식당','http://place.map.kakao.com/16414503','서울 노원구 공릉로39길 10','127.0786990932734','37.623772287025',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 도봉구 창동 337-1','한식','14701954','02-900-9800','하누소 창동본점','http://place.map.kakao.com/14701954','서울 도봉구 노해로 327','127.0448063295615','37.651519639360096',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 도봉구 방학동 436-9','한식','11003958','02-956-0843','대문','http://place.map.kakao.com/11003958','서울 도봉구 시루봉로 139-6','127.02752284948','37.6636161160514',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 도봉구 도봉동 600-4','한식','13091152','02-954-6292','무수옥','http://place.map.kakao.com/13091152','서울 도봉구 도봉로165길 15','127.0441642533523','37.67713476879158',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 동대문구 용두동 232-26','한식','907979960','02-923-1718','어머니대성집','http://place.map.kakao.com/907979960','서울 동대문구 왕산로11길 4','127.02858466713235','37.57741837425039',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 동대문구 용두동 119-20','한식','27175293','02-928-0231','나정순할매쭈꾸미','http://place.map.kakao.com/27175293','서울 동대문구 무학로 144','127.03069016915066','37.57707546781634',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 동대문구 전농동 602-9','한식','16531175','02-965-5838','서울뼈구이매운족발','http://place.map.kakao.com/16531175','서울 동대문구 왕산로 274-1','127.051278756793','37.5850349055577',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 동작구 사당동 138-4','분식','10587024','02-595-1629','애플하우스 이수','http://place.map.kakao.com/10587024','서울 동작구 동작대로27다길 29','126.98057475807556','37.4862749512195',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 동작구 신대방동 395-69','뷔페','2041419925','02-835-6274','쿠우쿠우 보라매공원점','http://place.map.kakao.com/2041419925','서울 동작구 보라매로5가길 16','126.924094036542','37.4912743811746',0);
-insert into place(address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating) values('서울 동작구 사당동 1041-5','한식','21827385','02-3472-0108','조가네갑오징어 사당점','http://place.map.kakao.com/21827385','서울 동작구 남부순환로271길 24','126.98020384145781','37.477895507340364',0);
+INSERT INTO
+    place (address_name,category_name,kakao_place_id,phone,place_name,place_url,road_address_name,x,y,average_rating)
+VALUES
+    ('서울 강남구 대치동 996-16','한식','27531028','02-558-7905','중앙해장','http://place.map.kakao.com/27531028','서울 강남구 영동대로86길 17','127.065472540916','37.508273597195', 0),
+    ('서울 강동구 성내동 442-12','간식','18310200','1588-5678','백년화편','http://place.map.kakao.com/18310200','서울 강동구 양재대로81길 32','127.065472540919','37.508273597184',0),
+    ('서울 강북구 수유동 56-45','일식','16380488','02-2241-7558','다래함박스텍','http://place.map.kakao.com/16380488','서울 강북구 수유로 20-2','127.019032803713','37.6327573067632',0),
+    ('서울 마포구 망원동 485-33', '한식', '18208683', '02-323-2366', '고기도국수면', 'http://place.map.kakao.com/m/18208683', '서울 마포구 동교로9길 95 1층 101호', '37.55754586036254', '126.90773850090908', 0),
+    ('서울 마포구 망원동 485-5', '양식', '16993977', '02-6497-1517', '따식갈비&파스타', 'http://place.map.kakao.com/m/16993977', '서울 마포구 월드컵로 23길 12', '37.557298269687756', '126.90797364662406', 0),
+    ('서울 마포구 망원동 379-25', '일식', '1226420399', '070-7773-9870', '헤키', 'http://place.map.kakao.com/m/1226420399', '서울 마포구 동교로 9길 33', '37.555213869163104', '126.90979829468023', 0),
+
+    ('부산 중구 신창동1가 2-1','양식','10070964','051-255-9494','이재모피자 본점','http://place.map.kakao.com/10070964','부산 중구 광복중앙로 31','129.030747190728','35.10204215079571',0),
+    ('부산 사상구 괘법동 565-6','한식','10928210','051-317-2478','합천일류돼지국밥 사상점','http://place.map.kakao.com/10928210','부산 사상구 광장로 34','128.98007978034923','35.162262056483875',0),
+    ('부산 금정구 장전동 419-21','일식','704518356','010-5685-5482','톤쇼우 부산대본점','http://place.map.kakao.com/704518356','부산 금정구 금강로 247-10','129.084270776214','35.2304475924754',0),
+    ('부산 수영구 광안동 198-5','한식','1579337090','051-757-5515','초필살돼지구이 광안직영점','http://place.map.kakao.com/1579337090','부산 수영구 광남로108번길 9','129.11589506308508','35.15124388070005',0),
+    ('부산 중구 부평동2가 16','분식','20204736','051-245-0413','이가네떡볶이 본점','http://place.map.kakao.com/20204736','부산 중구 부평1길 48','129.02595233473696','35.1014825667343',0),
+    ('부산 해운대구 우동 1515','뷔페','15202235','051-743-3331','그랜드애플','http://place.map.kakao.com/15202235','부산 해운대구 센텀1로 25','129.131806898468','35.1663879943369',0),
+
+    ('대구 수성구 만촌동 855-18','중식','7863898','053-746-0203','리안','http://place.map.kakao.com/7863898','대구 수성구 교학로4길 48','128.65037738548736','35.855300594743575',0),
+    ('대구 북구 노원동1가 366-1','한식','15963316','','걸리버막창','http://place.map.kakao.com/15963316','대구 북구 옥산로 53','128.581524199799','35.8855122361608',0),
+    ('대구 중구 삼덕동1가 4-10','일식','10091825','053-424-8220','전원돈까스','http://place.map.kakao.com/10091825','대구 중구 동성로6길 2-23','128.595492524394','35.8679606507643',0),
+    ('대구 중구 동성로3가 1-3','간식','10435057','053-254-4064','삼송빵집 본점','http://place.map.kakao.com/10435057','대구 중구 중앙대로 397','128.59344632065785','35.86861140604418',0),
+    ('대구 서구 내당동 884-11','한식','21315532','053-552-5040','푸른회식당','http://place.map.kakao.com/21315532','대구 서구 달구벌대로375길 14-1','128.570128289469','35.8622283847847',0),
+    ('대구 수성구 범어동 1003-18','분식','12435003','053-741-4158','신천궁전떡볶이','http://place.map.kakao.com/12435003','대구 수성구 국채보상로162길 72','128.619385222148','35.8645373599954',0),
+
+    ('인천 중구 을왕동 860','중식','9917041','032-746-2666','양자강','http://place.map.kakao.com/9917041','인천 중구 용유서로 494','126.372013279267','37.4620340158578',0),
+    ('인천 부평구 부평동 546-83','한식','13057093','032-505-3388','오구당당 본점','http://place.map.kakao.com/13057093','인천 부평구 경원대로1377번길 47','126.722063837255','37.4934513995998',0),
+    ('인천 남동구 간석동 130-12','한식','11057071','032-425-5538','부암갈비','http://place.map.kakao.com/11057071','인천 남동구 용천로 149','126.714336437057','37.46304021542',0),
+    ('인천 부평구 부평동 160-1','한식','14614296','032-506-8592','바베큐광장','http://place.map.kakao.com/14614296','인천 부평구 경원대로 1439','126.728914848259','37.4913914040716',0),
+
+    ('경기 용인시 수지구 고기동 593-4','한식','83147987','031-263-1107','고기리막국수','http://place.map.kakao.com/83147987','경기 용인시 수지구 이종무로 157','127.04009695074139','37.359995701236684',0),
+    ('경기 수원시 팔달구 인계동 958-1','한식','8108863','1600-3883','가보정 1관','http://place.map.kakao.com/8108863','경기 수원시 팔달구 장다리로 282','127.02870636847084','37.274117855078806',0),
+    ('경기 남양주시 별내동 719-2','간식','1684848518','0507-1328-5719','보나리베','http://place.map.kakao.com/1684848518','경기 남양주시 불암산로39번길 9-2','127.10685334966008','37.6470198906585',0),
+    ('경기 용인시 수지구 동천동 115-3','한식','267054429','031-263-6823','산으로간고등어','http://place.map.kakao.com/267054429','경기 용인시 수지구 고기로 126','127.09037998227228','37.34764821072656',0),
+    ('경기 수원시 영통구 망포동 322-3','간식','19539402','031-205-0031','하얀풍차제과 망포역점','http://place.map.kakao.com/19539402','경기 수원시 영통구 영통로 195','127.05573176779723','37.2452478188161',0),
+    ('경기 의정부시 장암동 98-23','양식','1580065362','0507-1403-9211','파크프리베','http://place.map.kakao.com/1580065362','경기 의정부시 동일로192번길 28-27','127.06098318998117','37.70623422358499',0),
+    ('경기 시흥시 정왕동 2030-11','한식','27331019','031-319-5227','청춘조개 본점','http://place.map.kakao.com/27331019','경기 시흥시 오이도로 199-1','126.68709741439','37.3430350027099',0),
+
+    ('충북 청주시 청원구 우암동 131-4','한식','16507806','','봉용불고기','http://place.map.kakao.com/16507806','충북 청주시 청원구 중앙로 108','127.48840295237417','36.64674658915036',0),
+    ('충북 청주시 상당구 문의면 미천리 114-166','한식','11614199','043-298-0841','부부농장 문의시내점','http://place.map.kakao.com/11614199','충북 청주시 상당구 문의면 대청호반로 834-1','127.50044459780149','36.51656177546521',0),
+    ('충북 단양군 단양읍 현천리 217-1','한식','25986392','043-423-7575','마늘석갈비막국수','http://place.map.kakao.com/25986392','충북 단양군 단양읍 단양로 510','128.330463411368','36.9428055482753',0),
+    ('충남 천안시 서북구 불당동 763','간식','27463396','041-563-0086','뚜쥬루 거북이점','http://place.map.kakao.com/27463396','충남 천안시 서북구 봉서산로 69-22','127.114160289657','36.8071919368579',0),
+    ('충남 천안시 서북구 쌍용동 1736','한식','7871972','041-571-7007','숟가락반상 마실 천안본점','http://place.map.kakao.com/7871972','충남 천안시 서북구 월봉1길 50-1','127.11428968237797','36.790196831033555',0),
+
+    ('전남 여수시 종화동 458','술집','1267277320','0507-1361-6451','낭만24포차','http://place.map.kakao.com/1267277320','전남 여수시 하멜로 78','127.74701258136004','34.737691637257065',0),
+    ('전남 목포시 무안동 1-3','간식','9466320','061-244-0885','코롬방제과점','http://place.map.kakao.com/9466320','전남 목포시 영산로75번길 7','126.38441612105967','34.789851685791895',0),
+    ('전남 목포시 중동1가 1-17','한식','12493269','061-244-8880','장터 본점','http://place.map.kakao.com/12493269','전남 목포시 영산로40번길 23','126.3834086162','34.7848744820571',0),
+    ('전남 광양시 광양읍 칠성리 959-11','한식','8401833','061-762-9250','삼대광양불고기집','http://place.map.kakao.com/8401833','전남 광양시 광양읍 서천1길 52','127.578805698386','34.9701577495637',0),
+    ('전남 순천시 덕월동 24-2','한식','19387014','061-743-5569','벽오동','http://place.map.kakao.com/19387014','전남 순천시 상사호길 73','127.48182866245298','34.92038155983606',0),
+    ('전남 여수시 중앙동 779','간식','2085896456','061-661-0222','여수당','http://place.map.kakao.com/2085896456','전남 여수시 중앙로 72','127.73534852194733','34.73989892574248',0),
+
+    ('전북특별자치도 전주시 완산구 다가동3가 68','술집','1544371560','063-231-5210','다가양조장','http://place.map.kakao.com/1544371560','전북특별자치도 전주시 완산구 전주객사1길 5','127.140366942663','35.8168760098398',0),
+    ('전북특별자치도 전주시 완산구 전동 100','간식','26808763','063-231-3366','풍년제과 본점','http://place.map.kakao.com/26808763','전북특별자치도 전주시 완산구 팔달로 141','127.14790236648302','35.815023896863046',0),
+
+    ('경북 경주시 황남동 328-1','한식','11906339','054-773-3322','교동쌈밥 경주','http://place.map.kakao.com/11906339','경북 경주시 첨성로 77','129.21054720570814','35.83323166031086',0),
+    ('경북 경주시 서부동 76','한식','11892180','054-771-2626','영양숯불갈비','http://place.map.kakao.com/11892180','경북 경주시 봉황로 79','129.2099804183253','35.84658116473407',0),
+    ('경북 경주시 황남동 221-11','일식','822374476','0507-1409-7477','료코','http://place.map.kakao.com/822374476','경북 경주시 첨성로99번길 24','129.21273757585004','35.835284462400665',0),
+    ('경북 청도군 청도읍 고수리 857-7','한식','10783699','054-371-0222','청도가마솥국밥','http://place.map.kakao.com/10783699','경북 청도군 청도읍 청화로 235','128.748271544088','35.6385131901474',0),
+
+    ('경남 진주시 이현동 1191','한식','17801000','055-746-0525','하연옥 본점','http://place.map.kakao.com/17801000','경남 진주시 진주대로 1317-20','128.0606861973364','35.19390013643081',0),
+    ('경남 함안군 함안면 북촌리 957-16','한식','10262460','055-583-4026','대구식당','http://place.map.kakao.com/10262460','경남 함안군 함안면 북촌2길 50-27','128.422879097567','35.2420837491468',0),
+
+    ('강원특별자치도 속초시 조양동 1442-11','한식','24893945','033-635-4488','속초항아리물회','http://place.map.kakao.com/24893945','강원특별자치도 속초시 해오름로188번길 11','128.601247028514','38.191551141240005',0),
+    ('강원특별자치도 강릉시 포남동 1155','술집','1280103068','033-642-0178','엄지네포장마차 본점','http://place.map.kakao.com/1280103068','강원특별자치도 강릉시 경강로2255번길 21','128.907013317207','37.7663212182933',0),
+    ('강원특별자치도 속초시 중앙동 471-4','간식','25046636','1577-9042','만석닭강정 시장1호점','http://place.map.kakao.com/25046636','강원특별자치도 속초시 중앙로147번길 16','128.59017982106522','38.20471388115614',0),
+    ('강원특별자치도 춘천시 신북읍 천전리 90-12','한식','12882096','033-241-5392','토담숯불닭갈비','http://place.map.kakao.com/12882096','강원특별자치도 춘천시 신북읍 신샘밭로 662','127.783145476862','37.9294166765494',0),
+    ('강원특별자치도 강릉시 초당동 354-4','간식','3222543','','순두부젤라또 1호점','http://place.map.kakao.com/3222543','강원특별자치도 강릉시 초당순두부길 95-5','128.9154797999827','37.79168654379332',0),
+    ('강원특별자치도 강릉시 옥천동 62-3','간식','1895412800','033-922-6387','만동제과','http://place.map.kakao.com/1895412800','강원특별자치도 강릉시 금성로 6','128.899506131307','37.7551639732905',0),
+    ('강원특별자치도 강릉시 교동 162-126','중식','8773810','033-646-3833','원조강릉교동반점 본점','http://place.map.kakao.com/8773810','강원특별자치도 강릉시 강릉대로 205','128.89294978619063','37.758302633497415',0);
 
 
 /* 리뷰 */
-INSERT INTO REVIEW (AVERAGE_RATING, CONTENT, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, USER_ID, CREATED_AT, UPDATED_AT)
+INSERT INTO REVIEW (AVERAGE_RATING, HYGIENE_RATING, KINDNESS_RATING, TASTE_RATING, KAKAO_PLACE_ID, CONTENT, USER_ID, CREATED_AT, UPDATED_AT)
 VALUES
-    (3.3, '정말 맛있는 내장탕과 해장국집', 2.0, 3.0, 5.0, 27531028, 1,'2024-04-30 16:42:28.464849',  '2024-04-30 16:42:28.464849'),
-    (5, '한우 양선지 해장국이랑 한우 내장탕 먹었어요>< 잡내없고 맛도링', 5, 5, 5, 27531028, 2,'2024-04-30 16:40:28.11',  '2024-04-30 16:40:28.11'),
-    (3.7, '역시 중앙해장 간만에 오니 좋으네요. 근데 웨이팅이 생김', 5, 3, 3, 27531028, 4,'2024-04-29 11:20:01.11', '2024-04-29 11:20:01.11'),
-    (5, '하 평양냉면 1티어 진미', 5, 5, 5, 27584230, 1,'2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03'),
-    (4.3, '디진다돈까쓰!!!', 5, 4, 4, 27508076, 2, '2024-04-27 17:55:05.55', '2024-04-27 17:55:05.55'),
-    (4, '진짜 마성의 맛. 조금 맵긴 하지만 ㅎ', 4, 4, 4, 1954563179, 4, '2024-04-26 19:30:05.55', '2024-04-26 19:30:05.55');
+    (4, 4, 4, 4, 9466320, '깔끔하고 매장넓고 좋아요. 가격은 일반적인 빵집과 비슷합니다.', 1, '2024-05-01 08:13:10.03', '2024-05-01 08:13:10.03'),
+    (4, 5, 3, 4, 9466320, '예전에 먹었던 새우바게뜨가 맛있어서 목포 지나는길에 들러서 샀어요. 근데 예전 그 맛은 아니고 ㅜㅜ 그래도 맛있어요.', 5, '2024-05-01 07:13:10.03', '2024-05-01 07:13:10.03'),
+    (4, 3, 3, 5, 16380488, '옛날 돈가스 그 맛. 정성 가득한 함박 스테이크.', 2, '2024-05-01 11:13:10.03', '2024-05-01 11:13:10.03'),
+    (5, 5, 5, 5, 16380488, '맛있습니다. 6000원에 곱배기 해서 1500원 추가. 7500원에 이정도 퀄이라니.', 3, '2024-05-01 12:13:10.03', '2024-05-01 12:13:10.03'),
+    (4, 5, 3, 5, 83147987, '이 주변 막국수 원탑. 가는길 상태가 영 좋진 않지만 맛있어요. 꾸준히 찾는 곳.', 4, '2024-05-02 12:13:10.03', '2024-05-02 12:13:10.03'),
+
+    (4, 3, 5, 5, 83147987, '몇년을 다녀도 질이 절대로 떨어지지않는 맛집! 혼밥러 클리어 하고 나왔습니다! 조만간 친구들이랑 다시 간다.', 6, '2024-05-02 13:13:10.03', '2024-05-02 13:13:10.03'),
+    (5, 5, 5, 5, 83147987, '여기는 감칠맛을 잘냄. 손님이 그렇게 많은데도 매장관리도 착실하다', 7, '2024-05-02 14:13:10.03', '2024-05-02 14:13:10.03'),
+    (5, 5, 5, 5, 83147987, '들기름, 비빔 다 좋다영!', 1, '2024-05-02 15:13:10.03', '2024-05-02 15:13:10.03'),
+    (3, 3, 3, 3, 21315532, '밥 미리 시켜두고 식혀서 마지막에 비벼먹어야함', 8, '2024-05-02 16:13:10.03', '2024-05-02 16:13:10.03'),
+    (4, 4, 4, 4, 3222543, '맛나요 딱 먹자마자 순두부 맛이 나서 웃기면서도 맛있게 먹음 ㅋㅋ', 2, '2024-05-02 17:13:10.03', '2024-05-02 17:13:10.03'),
+
+    (3, 4, 4, 1, 3222543, '진짜 두부 맛이 나요.. 아이스크림 맛을 원한다면 불호;;', 1, '2024-05-03 17:13:10.03', '2024-05-03 17:13:10.03'),
+    (5, 4, 5, 5, 18310200, '밥알 찹살떡이 이리도 맛있다니요~^^ 늘 잘먹고 있네요~!', 3, '2024-05-04 17:13:10.03', '2024-05-04 17:13:10.03'),
+    (3, 4, 3, 3, 16507806, '음 현지인들이 왜 많이 오는지 모르겠다 맛은 평범', 6, '2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03'),
+    (3, 4, 4, 4, 11057071, '고기 양이 좀 적고 가게가 오래되서 지저분하다 느꼈는데 맛있긴함 ', 4, '2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03'),
+    (5, 5, 5, 5, 27531028, '해장와러 왔다가 술마심', 1, '2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03'),
+
+    (5, 5, 5, 5, 27531028, '꼭 와보고 싶었던 블루리본 맛집', 2, '2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03'),
+    (5, 5, 5, 5, 27531028, '웨이팅 안좋아하지만 웨이팅해서 먹는집', 3, '2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03'),
+    (5, 5, 5, 5, 1544371560, '계속 안주가 나오는집;;; 전주 막걸리 맛집', 4, '2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03'),
+    (5, 5, 5, 5, 1544371560, '아 ㅋㅋㅋ진짜 소문대로 안주가 미친듯이 나와요 배터질것같아서 도망쳤어요', 7, '2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03'),
+    (4, 4, 4, 3, 1580065362, '정원이 넓어 시원하고 산책하기도 좋네요', 2, '2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03'),
+
+    (5, 5, 4, 5, 1580065362, '비가와서 만끽하진 못했지만 야외공간이 너무 멋집니다 커피도 번도 맛있돠~~', 1, '2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03'),
+    (4, 4, 4, 4, 267054429, '부모님께서 너무나 좋아하시니!!!', 8, '2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03'),
+    (5, 4, 5, 5, 18208683, '그렇게 맛있다고 들었는데 의심했으나.. 진짜 존맛이네 ㅋㅋ', 2, '2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03'),
+    (5, 5, 5, 5, 18208683, '육즙좔좔', 3, '2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03'),
+    (5, 5, 5, 5, 1226420399, '바로 집 앞인데 이사가기 전에 자주 갈 걸 그그랬습니다...', 3, '2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03'),
+
+    (5, 5, 5, 5, 1226420399, '망원동 3대 돈가스', 4, '2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03'),
+    (5, 5, 5, 5, 1226420399, '맛있어요 부들부들', 5, '2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03'),
+    (4, 4, 4, 4, 16993977, '플랜인테리어 너무 좋고 아주 맛있고!', 5, '2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03');
+
 
 
 /* 리뷰 이미지 */
 INSERT INTO REVIEW_IMAGE(CREATED_AT, UPDATED_AT, REVIEW_ID, USER_ID, FILE_NAME, FILE_PATH)
 VALUES
-    ('2024-04-30 16:40:28.11', '2024-04-30 16:40:28.11', 2, 2, '한우내장탕', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%92%E1%85%A1%E1%86%AB%E1%84%8B%E1%85%AE%E1%84%82%E1%85%A2%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A1%E1%86%BC.jpeg'),
-    ('2024-04-30 16:42:28.46', '2024-04-30 16:42:28.46', 1, 1, '한우내장탕', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%92%E1%85%A1%E1%86%AB%E1%84%8B%E1%85%AE%E1%84%82%E1%85%A2%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A1%E1%86%BC.jpeg'),
-    ('2024-04-29 11:20:01.11', '2024-04-29 11:20:01.11', 3, 4, '한우내장탕', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%92%E1%85%A1%E1%86%AB%E1%84%8B%E1%85%AE%E1%84%82%E1%85%A2%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A1%E1%86%BC.jpeg'),
-    ('2024-04-29 08:13:10.03', '2024-04-29 08:13:10.03', 4, 1, '평양냉면', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%91%E1%85%A7%E1%86%BC%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%82%E1%85%A2%E1%86%BC%E1%84%86%E1%85%A7%E1%86%AB.jpeg'),
-    ('2024-04-27 17:55:05.55', '2024-04-27 17:55:05.55', 5, 2, '디진다돈까스', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%B5%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%84%83%E1%85%A9%E1%86%AB%E1%84%80%E1%85%A1%E1%84%89%E1%85%B3.jpeg'),
-    ('2024-04-26 19:30:05.55', '2024-04-26 19:30:05.55', 6, 4, '디진다돈까스', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%B5%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%84%83%E1%85%A9%E1%86%AB%E1%84%80%E1%85%A1%E1%84%89%E1%85%B3.jpeg');
+    ('2024-05-01 08:13:10.03', '2024-05-01 08:13:10.03', 1, 1, '코롬방제과점1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%8F%E1%85%A9%E1%84%85%E1%85%A9%E1%86%B7%E1%84%87%E1%85%A1%E1%86%BC%E1%84%8C%E1%85%A6%E1%84%80%E1%85%AA%E1%84%8C%E1%85%A5%E1%86%B71.png'),
+    ('2024-05-01 07:13:10.03', '2024-05-01 07:13:10.03', 2, 5, '코롬방제과점2', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%8F%E1%85%A9%E1%84%85%E1%85%A9%E1%86%B7%E1%84%87%E1%85%A1%E1%86%BC%E1%84%8C%E1%85%A6%E1%84%80%E1%85%AA%E1%84%8C%E1%85%A5%E1%86%B72.png'),
+    ('2024-05-01 11:13:10.03', '2024-05-01 11:13:10.03', 3, 2, '다래함박스텍1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%A1%E1%84%85%E1%85%A2%E1%84%92%E1%85%A1%E1%86%B7%E1%84%87%E1%85%A1%E1%86%A8%E1%84%89%E1%85%B3%E1%84%90%E1%85%A6%E1%86%A81.png'),
+    ('2024-05-01 11:13:10.03', '2024-05-01 11:13:10.03', 3, 2, '다래함박스텍2', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%A1%E1%84%85%E1%85%A2%E1%84%92%E1%85%A1%E1%86%B7%E1%84%87%E1%85%A1%E1%86%A8%E1%84%89%E1%85%B3%E1%84%90%E1%85%A6%E1%86%A82.png'),
+    ('2024-05-01 12:13:10.03', '2024-05-01 12:13:10.03', 4, 3, '다래함박스텍4', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%A1%E1%84%85%E1%85%A2%E1%84%92%E1%85%A1%E1%86%B7%E1%84%87%E1%85%A1%E1%86%A8%E1%84%89%E1%85%B3%E1%84%90%E1%85%A6%E1%86%A84.png'),
+
+    ('2024-05-02 12:13:10.03', '2024-05-02 12:13:10.03', 5, 4, '고기리막국수1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%80%E1%85%A9%E1%84%80%E1%85%B5%E1%84%85%E1%85%B5%E1%84%86%E1%85%A1%E1%86%A8%E1%84%80%E1%85%AE%E1%86%A8%E1%84%89%E1%85%AE1.png'),
+    ('2024-05-02 12:13:10.03', '2024-05-02 12:13:10.03', 5, 4, '고기리막국수2', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%80%E1%85%A9%E1%84%80%E1%85%B5%E1%84%85%E1%85%B5%E1%84%86%E1%85%A1%E1%86%A8%E1%84%80%E1%85%AE%E1%86%A8%E1%84%89%E1%85%AE2.png'),
+    ('2024-05-02 13:13:10.03', '2024-05-02 12:13:10.03', 6, 6, '고기리막국수3', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%80%E1%85%A9%E1%84%80%E1%85%B5%E1%84%85%E1%85%B5%E1%84%86%E1%85%A1%E1%86%A8%E1%84%80%E1%85%AE%E1%86%A8%E1%84%89%E1%85%AE3.png'),
+    ('2024-05-02 14:13:10.03', '2024-05-02 14:13:10.03', 7, 7, '고기리막국수4', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%80%E1%85%A9%E1%84%80%E1%85%B5%E1%84%85%E1%85%B5%E1%84%86%E1%85%A1%E1%86%A8%E1%84%80%E1%85%AE%E1%86%A8%E1%84%89%E1%85%AE4.png'),
+    ('2024-05-02 15:13:10.03', '2024-05-02 15:13:10.03', 8, 1, '고기리막국수5', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%80%E1%85%A9%E1%84%80%E1%85%B5%E1%84%85%E1%85%B5%E1%84%86%E1%85%A1%E1%86%A8%E1%84%80%E1%85%AE%E1%86%A8%E1%84%89%E1%85%AE5.png'),
+
+    ('2024-05-02 16:13:10.03', '2024-05-02 16:13:10.03', 9, 8, '푸른회식당1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%91%E1%85%AE%E1%84%85%E1%85%B3%E1%86%AB%E1%84%92%E1%85%AC%E1%84%89%E1%85%B5%E1%86%A8%E1%84%83%E1%85%A1%E1%86%BC1.png'),
+    ('2024-05-02 17:13:10.03', '2024-05-02 17:13:10.03', 10, 2, '순두부젤라또1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%89%E1%85%AE%E1%86%AB%E1%84%83%E1%85%AE%E1%84%87%E1%85%AE%E1%84%8C%E1%85%A6%E1%86%AF%E1%84%85%E1%85%A1%E1%84%84%E1%85%A91.png'),
+    ('2024-05-03 17:13:10.03', '2024-05-03 17:13:10.03', 11, 1, '순두부젤라또2', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%89%E1%85%AE%E1%86%AB%E1%84%83%E1%85%AE%E1%84%87%E1%85%AE%E1%84%8C%E1%85%A6%E1%86%AF%E1%84%85%E1%85%A1%E1%84%84%E1%85%A92.png'),
+    ('2024-05-04 17:13:10.03', '2024-05-04 17:13:10.03', 12, 3, '백년화편1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%87%E1%85%A2%E1%86%A8%E1%84%82%E1%85%A7%E1%86%AB%E1%84%92%E1%85%AA%E1%84%91%E1%85%A7%E1%86%AB1.png'),
+    ('2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03', 13, 6, '봉용불고기3', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%87%E1%85%A9%E1%86%BC%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%87%E1%85%AE%E1%86%AF%E1%84%80%E1%85%A9%E1%84%80%E1%85%B53.png'),
+
+    ('2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03', 14, 4, '부암갈비1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%87%E1%85%AE%E1%84%8B%E1%85%A1%E1%86%B7%E1%84%80%E1%85%A1%E1%86%AF%E1%84%87%E1%85%B51.png'),
+    ('2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03', 14, 4, '부암갈비2', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%87%E1%85%AE%E1%84%8B%E1%85%A1%E1%86%B7%E1%84%80%E1%85%A1%E1%86%AF%E1%84%87%E1%85%B52.png'),
+    ('2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03', 15, 1, '중앙해장1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%8C%E1%85%AE%E1%86%BC%E1%84%8B%E1%85%A1%E1%86%BC%E1%84%92%E1%85%A2%E1%84%8C%E1%85%A1%E1%86%BC1.jpeg'),
+    ('2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03', 16, 2, '중앙해장2', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%8C%E1%85%AE%E1%86%BC%E1%84%8B%E1%85%A1%E1%86%BC%E1%84%92%E1%85%A2%E1%84%8C%E1%85%A1%E1%86%BC2.jpeg'),
+    ('2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03', 17, 3, '중앙해장3', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%8C%E1%85%AE%E1%86%BC%E1%84%8B%E1%85%A1%E1%86%BC%E1%84%92%E1%85%A2%E1%84%8C%E1%85%A1%E1%86%BC3.jpeg'),
+
+    ('2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03', 18, 4, '다가양조장4', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%A1%E1%84%80%E1%85%A1%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%8C%E1%85%A9%E1%84%8C%E1%85%A1%E1%86%BC4.jpeg'),
+    ('2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03', 18, 4, '다가양조장3', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%A1%E1%84%80%E1%85%A1%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%8C%E1%85%A9%E1%84%8C%E1%85%A1%E1%86%BC3.jpeg'),
+    ('2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03', 18, 4, '다가양조장2', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%A1%E1%84%80%E1%85%A1%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%8C%E1%85%A9%E1%84%8C%E1%85%A1%E1%86%BC2.jpeg'),
+    ('2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03', 19, 7, '다가양조장1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%83%E1%85%A1%E1%84%80%E1%85%A1%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%8C%E1%85%A9%E1%84%8C%E1%85%A1%E1%86%BC1.jpeg'),
+    ('2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03', 20, 2, '파크프리베1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%91%E1%85%A1%E1%84%8F%E1%85%B3%E1%84%91%E1%85%B3%E1%84%85%E1%85%B5%E1%84%87%E1%85%A61.jpeg'),
+
+    ('2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03', 21, 1, '파크프리베2', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%91%E1%85%A1%E1%84%8F%E1%85%B3%E1%84%91%E1%85%B3%E1%84%85%E1%85%B5%E1%84%87%E1%85%A62.jpeg'),
+    ('2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03', 22, 8, '산으로간고등어1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%89%E1%85%A1%E1%86%AB%E1%84%8B%E1%85%B3%E1%84%85%E1%85%A9%E1%84%80%E1%85%A1%E1%86%AB%E1%84%80%E1%85%A9%E1%84%83%E1%85%B3%E1%86%BC%E1%84%8B%E1%85%A51.jpeg'),
+    ('2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03', 23, 2, '고기도국수면1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%80%E1%85%A9%E1%84%80%E1%85%B5%E1%84%83%E1%85%A9%E1%84%80%E1%85%AE%E1%86%A8%E1%84%89%E1%85%AE%E1%84%86%E1%85%A7%E1%86%AB1.jpeg'),
+    ('2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03', 23, 2, '고기도국수면2', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%80%E1%85%A9%E1%84%80%E1%85%B5%E1%84%83%E1%85%A9%E1%84%80%E1%85%AE%E1%86%A8%E1%84%89%E1%85%AE%E1%84%86%E1%85%A7%E1%86%AB2.jpeg'),
+    ('2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03', 24, 3, '고기도국수면3', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%80%E1%85%A9%E1%84%80%E1%85%B5%E1%84%83%E1%85%A9%E1%84%80%E1%85%AE%E1%86%A8%E1%84%89%E1%85%AE%E1%84%86%E1%85%A7%E1%86%AB3.jpeg'),
+
+    ('2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03', 25, 3, '헤키1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%92%E1%85%A6%E1%84%8F%E1%85%B51.jpeg'),
+    ('2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03', 26, 4, '헤키2', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%92%E1%85%A6%E1%84%8F%E1%85%B52.jpeg'),
+    ('2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03', 27, 5, '헤키3', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%92%E1%85%A6%E1%84%8F%E1%85%B53.jpeg'),
+    ('2024-05-06 17:13:10.03', '2024-05-06 17:13:10.03', 28, 5, '따식1', 'https://daedongmap-bucket.s3.ap-northeast-2.amazonaws.com/review/%E1%84%84%E1%85%A1%E1%84%89%E1%85%B5%E1%86%A81.jpeg');
 
 /* 댓글 */
 INSERT INTO COMMENT(CREATED_AT, UPDATED_AT, CONTENT, PARENT_ID, REVIEW_ID, USER_ID)
 VALUES
-    (NOW(), NOW(), '와 침나온다', null, 1, 2),
-    (NOW(), NOW(), 'ㄹㅇ', 1, 1, 3),
-    (NOW(), NOW(), '가고싶넹', 1, 1, 5),
-    (NOW(), NOW(), '역시 형님 맛잘알', null, 2, 1),
-    (NOW(), NOW(), '뜬끈한 국밥 하나~', null, 3, 5),
-    (NOW(), NOW(), '슴슴한게 존맛', null, 4, 3);
+    ('2024-05-05 17:13:10.03', '2024-05-05 17:13:10.03', '으악 빵먹고싶어!!!!', null, 1, 10),
+    ('2024-05-05 18:13:10.03', '2024-05-05 18:13:10.03', '나도!!!!', 1, 1, 9),
+    ('2024-05-05 19:13:10.03', '2024-05-05 19:13:10.03', '빵값은 어때요?', null, 1, 2),
+    ('2024-05-05 19:13:10.03', '2024-05-05 19:13:10.03', '비싸지 않나요?', null, 1, 3),
+    ('2024-05-05 19:13:10.03', '2024-05-05 19:13:10.03', '오오 새우바겟~뜨!', null, 2, 2),
+
+    ('2024-05-02 12:13:11.03', '2024-05-02 12:13:11.03', '아 막국수 괜히 밤에 봤다 감칠맛 쩔겠다', null, 5, 2),
+    ('2024-05-02 12:13:12.03', '2024-05-02 12:13:12.03', '막국수랑 수육 존맛일듯 하하', null, 5, 3),
+    ('2024-05-02 12:13:12.03', '2024-05-02 12:13:12.03', '또 조만간 혼밥하러 간다', null, 6, 1),
+    ('2024-05-02 12:13:12.03', '2024-05-02 12:13:12.03', '이야~', null, 7, 2),
+    ('2024-05-07 12:13:12.03', '2024-05-07 12:13:12.03', '존나 맛있긴 하더라 ㅋㅋㅋ', null, 23, 1),
+
+    ('2024-05-07 12:13:12.03', '2024-05-07 12:13:12.03', '육즙 실화?', null, 24, 9),
+    ('2024-05-07 12:13:12.03', '2024-05-07 12:13:12.03', '헤키 두고봐라 곧 간다', null, 25, 1);
+
 
 
 /* 좋아요 */
 INSERT INTO LIKES(REVIEW_ID, USER_ID)
 VALUES
-    (4, 2),
-    (4, 3),
-    (4, 5),
+    (1, 2),
+    (1, 10),
+    (1, 5),
+    (1, 3),
+    (2, 3),
+    (2, 1),
+
+    (3, 5),
+    (3, 6),
+    (3, 7),
+    (4, 1),
+    (4, 8),
     (5, 1),
-    (6, 1),
-    (6, 2);
+    (6, 7),
+    (7, 9),
+
+    (7, 4),
+    (8, 2),
+    (8, 5),
+    (11, 2),
+    (11, 3),
+
+    (13, 2),
+    (13, 4),
+
+    (20, 1),
+    (20, 10),
+
+    (25, 1),
+    (25, 6);
+
 
 
 /* 팔로우 */
 INSERT INTO FOLLOW(FOLLOWER_ID, FOLLOWING_ID)
 VALUES
-    (1, 4),
-    (4, 1),
-    (2, 1),
-    (3, 1),
-    (5, 2),
-    (2, 5),
-    (5, 4),
-    (4, 3);
+   (1, 2),
+   (1, 3),
+   (1, 9),
+
+   (2, 1),
+   (2, 7),
+
+   (3, 2),
+   (3, 5),
+   (3, 6),
+   (3, 7),
+   (3, 10),
+
+   (4, 1),
+   (5, 3),
+   (6, 7),
+
+   (7, 1),
+   (7, 9),
+
+   (8, 2),
+   (9, 3),
+   (10, 1);

@@ -7,7 +7,6 @@ import com.daedongmap.daedongmap.user.domain.RefreshTokens;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.service.TokenService;
-import com.daedongmap.daedongmap.user.service.UserDetailService;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,9 +28,12 @@ public class TokenProvider {
     // 영어 한단어당 8bit, 32글자 이상이어야 에러가 발생하지 않는다
     // 배포 단계에서는 노출되지 않도록 환경변수로 등록할 것
     @Value("${jwt.encoder}")
-    private String secretKey;
+    private String SECRET_KEY;
 
-    private static final long validTime = 30 * 60 * 1000L;
+    // 30분 리프레시 access 토큰 유효시간
+    private static final long EXPIRE_IN = 30 * 60 * 1000L;
+    // 1주 간의 리프레시 토큰 유효시간
+    private static final long REFRESH_EXPIRE_IN = 7 * 24 * 60 * 60 * 1000L;
 
     private final TokenService tokenService;
     private String accessToken;
@@ -41,14 +43,14 @@ public class TokenProvider {
     // secretKey 인코딩
     @PostConstruct
     protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        SECRET_KEY = Base64.getEncoder().encodeToString(SECRET_KEY.getBytes());
     }
 
     public JwtTokenDto createToken(Users user, List<Authority> roles) {
 
         String refreshToken;
-        Date now = new Date();
-        accessExpire = new Date(now.getTime() + validTime);
+        Date issuedAt = new Date();
+        accessExpire = new Date(issuedAt.getTime() + EXPIRE_IN);
 
         try{
             Claims claims = Jwts.claims();
@@ -59,14 +61,14 @@ public class TokenProvider {
             accessToken = Jwts.builder()
                     .setSubject(user.getEmail())
                     .setClaims(claims)
-                    .setIssuedAt(now) // 토큰 발행 시간 정보
+                    .setIssuedAt(issuedAt) // 토큰 발행 시간 정보
                     .setExpiration(accessExpire) // 토큰 유효시각 설정
-                    .signWith(SignatureAlgorithm.HS256, secretKey)  // 암호화 알고리즘과, secret 값
+                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY)  // 암호화 알고리즘과, secret 값
                     .compact();
 
             refreshToken = Jwts.builder()
-                    .setExpiration(new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000L))
-                    .signWith(SignatureAlgorithm.HS256, secretKey)
+                    .setExpiration(new Date(issuedAt.getTime() + REFRESH_EXPIRE_IN))
+                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                     .compact();
 
             RefreshTokens toSaveToken = RefreshTokens.builder()
@@ -94,7 +96,7 @@ public class TokenProvider {
     public JwtTokenDto createNewAccessToken(Users user, List<Authority> roles) {
 
         Date now = new Date();
-        accessExpire = new Date(now.getTime() + validTime);
+        accessExpire = new Date(now.getTime() + EXPIRE_IN);
 
         try {
             Claims claims = Jwts.claims();
@@ -107,7 +109,7 @@ public class TokenProvider {
                     .setClaims(claims)
                     .setIssuedAt(now) // 토큰 발행 시간 정보
                     .setExpiration(accessExpire) // 토큰 유효시각 설정
-                    .signWith(SignatureAlgorithm.HS256, secretKey)  // 암호화 알고리즘과, secret 값
+                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY)  // 암호화 알고리즘과, secret 값
                     .compact();
         } catch (Exception e) {
             throw new CustomException(ErrorCode.TOKEN_ERROR);
@@ -125,7 +127,7 @@ public class TokenProvider {
 
     public HttpServletRequest validateToken(String token, HttpServletRequest request) {
         try {
-            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
         } catch(MalformedJwtException e) {
             log.info("인증되지 않은 토큰");
             request.setAttribute("exception", ErrorCode.UNAUTHORIZED_TOKEN);
@@ -144,7 +146,7 @@ public class TokenProvider {
 
     public Claims parseJwt(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
+                .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

@@ -49,9 +49,7 @@ public class OauthService {
 
         switch (TYPE) {
             case "naver" -> {
-//                clientId = NAVER_CLIENT_ID;
                 clientId = naverConfig.getClientId();
-//                redirectUri = NAVER_REDIRECT;
                 redirectUri = naverConfig.getRedirectUri();
             }
             case "kakao" -> {
@@ -64,13 +62,10 @@ public class OauthService {
             }
         }
 
-        OAuthTokenResponseDto token = getToken(code);
-
-        OAuthUserInfoDto profile = getUserProfile(token);
-
+        OAuthUserInfoDto profile = getUserProfile(getToken(code));
         Users user = userService.findUserByEmail(profile.getEmail());
 
-        if(user != null) {
+        if(user != null && !user.getIsMember()) {
             return tokenProvider.createToken(user, user.getRoles());
         }
 
@@ -81,11 +76,8 @@ public class OauthService {
                 .profileImage(profile.getProfileImage())
                 .build();
 
-        userService.registerUser(newUser);
-
-        Users foundUser = userService.findUserByEmail(profile.getEmail());
-
-        return tokenProvider.createToken(foundUser, foundUser.getRoles());
+        Users createdUser = userService.registerUser(newUser).getUser();
+        return tokenProvider.createToken(createdUser, createdUser.getRoles());
     }
 
     @Transactional
@@ -175,7 +167,7 @@ public class OauthService {
         HttpEntity<MultiValueMap<String, String>> googleRequest = new HttpEntity<>(httpHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = null;
+        ResponseEntity<String> response;
 
         if(TYPE.equals("google")) {
             response = restTemplate.exchange(
@@ -201,23 +193,26 @@ public class OauthService {
                         .phoneNumber(String.valueOf(jsonNode.get("response").get("mobile")).replaceAll("\"", ""))
                         .profileImage(String.valueOf(jsonNode.get("response").get("profile_image")).replaceAll("\"", ""))
                         .build();
-            } else if(TYPE.equals("kakao")) {
+            }
+
+            if(TYPE.equals("kakao")) {
                 return OAuthUserInfoDto.builder()
                         .email(String.valueOf(jsonNode.get("kakao_account").get("email")).replaceAll("\"", ""))
                         .nickName(String.valueOf(jsonNode.get("kakao_account").get("profile").get("nickname")).replaceAll("\"", ""))
                         .profileImage(String.valueOf(jsonNode.get("properties").get("profile_image")).replaceAll("\"", ""))
                         .build();
-            } else if(TYPE.equals("google")) {
+            }
+
+            if(TYPE.equals("google")) {
                 return OAuthUserInfoDto.builder()
                         .email(String.valueOf(jsonNode.get("email")).replaceAll("\"", ""))
                         .nickName(String.valueOf(jsonNode.get("name")).replaceAll("\"", ""))
                         .profileImage(String.valueOf(jsonNode.get("picture")).replaceAll("\"", ""))
                         .build();
-            } else {
-                throw new CustomException(ErrorCode.INVALID_TOKEN);
             }
         } catch(Exception e) {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
+        return null;
     }
 }

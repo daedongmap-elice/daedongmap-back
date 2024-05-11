@@ -17,19 +17,21 @@ public class ReviewDto {
 
     private Long id;
     private Long kakaoPlaceId;
-    private UserBasicInfoDto user;
+    private String placeName;
     private String content;
-    private List<ReviewImageDto> reviewImageDtoList;
     private float tasteRating;
     private float hygieneRating;
     private float kindnessRating;
     private float averageRating;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private UserBasicInfoDto user;
+    private List<ReviewImageDto> reviewImageDtoList;
 
     public ReviewDto(Review review) {
         this.id = review.getId();
         this.kakaoPlaceId = review.getPlace().getKakaoPlaceId();
+        this.placeName = review.getPlace().getPlaceName();
         this.user = new UserBasicInfoDto(review.getUser());
         this.content = review.getContent();
         this.reviewImageDtoList = review.getReviewImageList().stream()

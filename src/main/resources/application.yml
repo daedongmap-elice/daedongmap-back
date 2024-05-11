@@ -6,23 +6,23 @@ spring:
     #        H2
     url: jdbc:h2:mem:daedongmap-db
     username: sa
-
-  #        MySQL
-  #        driver-class-name: com.mysql.cj.jdbc.Driver
-  #        url: jdbc:mysql://localhost:3306/daedongmap
-  #        username: ${USER}
-  #        password: ${PASSWORD}
-
   h2:
     console:
       enabled: true
+
+  #        MySQL
+  #    driver-class-name: com.mysql.cj.jdbc.Driver
+  #    url: jdbc:mysql://localhost:3306/daedongmap?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+  #    username: root
+  #    password: 1234
 
   jpa:
     show-sql: true
     generate-ddl: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
+      dialect: org.hibernate.dialect.MySQL8Dialect
       hibernate:
         format-sql: true
     defer-datasource-initialization: true
@@ -31,6 +31,6 @@ spring:
     init:
       mode: always
   
-#  설정 파일 생성 시 까먹지 말고 include 하기
+  #  설정 파일 생성 시 까먹지 말고 include 하기
   profiles:
     include: aws, oauth, secret

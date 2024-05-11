@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class Review extends BaseTimeEntity {
 
     @JoinColumn(name="user_id")
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Users user;
 
     @JoinColumn(name="kakao_place_id", referencedColumnName="kakaoPlaceId")
@@ -67,6 +70,11 @@ public class Review extends BaseTimeEntity {
         if (reviewImage != null) {
             reviewImageList.add(reviewImage);
         }
+    }
+
+    public void setReviewImageList(List<ReviewImage> reviewImageList) {
+        this.reviewImageList.clear();
+        this.reviewImageList.addAll(reviewImageList);
     }
 
 }

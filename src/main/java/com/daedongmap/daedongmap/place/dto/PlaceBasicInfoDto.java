@@ -1,13 +1,12 @@
 package com.daedongmap.daedongmap.place.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 @Getter
 @Setter
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Builder
 public class PlaceBasicInfoDto {
     private Long id;
@@ -25,4 +24,5 @@ public class PlaceBasicInfoDto {
     private float averageRating;
 
     private String reviewImagePath;
+    private String reviewCnt;
 }

@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -17,10 +19,12 @@ public class Follow {
 
     @ManyToOne
     @JoinColumn(name="follower_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Users follower; // 팔로우 하는 유저
 
     @ManyToOne
     @JoinColumn(name="following_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Users following; // 팔로우 받는 유저
 
     @Builder

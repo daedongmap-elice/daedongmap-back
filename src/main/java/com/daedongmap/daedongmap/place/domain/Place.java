@@ -7,14 +7,17 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @RequiredArgsConstructor
-public class Place extends BaseTimeEntity {
+public class Place {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, unique = true)
     private Long kakaoPlaceId;
     private String placeName;
     private String placeUrl;
@@ -27,6 +30,10 @@ public class Place extends BaseTimeEntity {
     private Double y;
 
     private float averageRating;
+    @Column(nullable = true, unique = true)
+    private String reviewImagePath;
+    @Column(nullable = true, unique = true)
+    private String reviewCnt;
 
     @Builder
     public Place(Long id, Long kakaoPlaceId, String placeName, String placeUrl, String categoryName, String addressName, String roadAddressName, String phone, Double x, Double y, float averageRating) {
