@@ -1,5 +1,6 @@
 package com.daedongmap.daedongmap.follow.controller;
 
+import com.daedongmap.daedongmap.alarm.service.AlarmService;
 import com.daedongmap.daedongmap.follow.dto.FollowerDto;
 import com.daedongmap.daedongmap.follow.dto.FollowingDto;
 import com.daedongmap.daedongmap.follow.service.FollowService;
@@ -20,6 +21,7 @@ import java.util.List;
 public class FollowController {
 
     private final FollowService followService;
+    private final AlarmService alarmService;
 
     @PostMapping("/api/follows")
     @Operation(summary = "팔로우하기", description = "상대방을 팔로우 합니다.")
@@ -29,6 +31,10 @@ public class FollowController {
         log.info("팔로우하기 api 호출 - 팔로잉 상대 : " + followingId);
 
         followService.doFollow(followerId, followingId);
+
+        // 팔로우 했을 때, 알람 보내기
+        alarmService.sendAlarmToFollowee(followerId, followingId);
+
         return ResponseEntity.ok().build();
     }
 
