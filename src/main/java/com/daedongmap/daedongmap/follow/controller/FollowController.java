@@ -32,8 +32,9 @@ public class FollowController {
 
         followService.doFollow(followerId, followingId);
 
+        Object data = "You have a new follower - " + followerId;
         // 팔로우 했을 때, 알람 보내기
-        alarmService.sendAlarmToFollowee(followerId, followingId);
+        alarmService.sendToClient(followingId, data);
 
         return ResponseEntity.ok().build();
     }

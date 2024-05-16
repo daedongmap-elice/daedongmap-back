@@ -64,7 +64,7 @@ public class AlarmService {
      * @param id   - 데이터를 받을 사용자의 아이디
      * @param data - 전송할 데이터
      */
-    private void sendToClient(Long id, Object data) {
+    public void sendToClient(Long id, Object data) {
         SseEmitter emitter = emitterRepository.get(id);
         if (emitter != null) {
             try {
