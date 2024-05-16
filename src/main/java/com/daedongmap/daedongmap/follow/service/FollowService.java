@@ -1,5 +1,6 @@
 package com.daedongmap.daedongmap.follow.service;
 
+import com.daedongmap.daedongmap.alarm.service.AlarmService;
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.follow.dto.FollowerDto;
@@ -24,6 +25,7 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final AlarmService alarmService;
 
     @Transactional
     public void doFollow(Long followerId, Long followingId) {
@@ -46,6 +48,7 @@ public class FollowService {
                 .build();
 
         followRepository.save(follow);
+        alarmService.sendToClient(followingId, "You have a new follower - " + followerId);
     }
 
     @Transactional

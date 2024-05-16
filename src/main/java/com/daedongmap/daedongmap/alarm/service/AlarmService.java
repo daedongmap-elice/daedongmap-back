@@ -7,10 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Slf4j
@@ -19,7 +15,6 @@ import java.util.Set;
 public class AlarmService {
 
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
-    private Map<Long, Set<SseEmitter>> container = new HashMap<>();
     private final EmitterRepository emitterRepository;
 
 
@@ -77,21 +72,6 @@ public class AlarmService {
                 emitter.completeWithError(exception);
             }
         }
-    }
-
-    // 팔로우 했을 때, 알람 보내기
-    public void sendAlarmToFollowee(Long followerId, Long followingId) {
-        log.info("sendAlarmToFollowee : " + followingId);
-        Set<SseEmitter> sseEmitters = container.getOrDefault(followingId, new HashSet<>());
-        sseEmitters.forEach(emitter -> {
-            try {
-                emitter.send(SseEmitter.event()
-                        .name("follow")
-                        .data("You have a new follower: " + followerId));
-            } catch (IOException e) {
-                log.error("Error sending notification to followee", e);
-            }
-        });
     }
 
 }
