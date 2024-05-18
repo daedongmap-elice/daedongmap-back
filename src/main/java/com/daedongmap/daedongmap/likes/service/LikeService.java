@@ -1,5 +1,6 @@
 package com.daedongmap.daedongmap.likes.service;
 
+import com.daedongmap.daedongmap.alarm.service.AlarmService;
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.likes.domain.Likes;
@@ -23,6 +24,7 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
+    private final AlarmService alarmService;
 
     @Transactional
     public void likeReview(Long userId, Long reviewId) {
@@ -35,6 +37,10 @@ public class LikeService {
         }
 
         likeRepository.save(new Likes(user, review));
+
+        Long reviewOwnerId = review.getUser().getId();
+        log.info("likeReview - reviewOwnerId : " + reviewOwnerId);
+        alarmService.sendToClient(reviewOwnerId, "Your review got a Like by user - " + userId);
     }
 
     @Transactional
