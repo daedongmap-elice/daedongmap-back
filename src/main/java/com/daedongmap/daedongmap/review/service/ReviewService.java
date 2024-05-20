@@ -118,18 +118,18 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewDto> findReviewsByUser(Long userId) {
+    public List<ReviewDetailDto> findReviewsByUser(Long userId) {
         List<Review> reviews = reviewRepository.findAllByUserId(userId);
         return reviews.stream()
-                .map(ReviewDto::new)
+                .map(ReviewDetailDto::new)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public List<ReviewDto> findReviewsByKakaoPlaceId(Long kakaoPlaceId) {
+    public List<ReviewDetailDto> findReviewsByKakaoPlaceId(Long kakaoPlaceId) {
         List<Review> reviews = reviewRepository.findAllByPlace_KakaoPlaceId(kakaoPlaceId);
         return reviews.stream()
-                .map(ReviewDto::new)
+                .map(ReviewDetailDto::new)
                 .collect(Collectors.toList());
     }
 

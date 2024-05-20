@@ -61,27 +61,27 @@ public class ReviewController {
 
     @GetMapping("/api/reviews/users/{userId}")
     @Operation(summary = "사용자별 리뷰 조회", description = "사용자별 리뷰를 모두 조회합니다.")
-    public ResponseEntity<List<ReviewDto>> getReviewsByUser(@PathVariable Long userId) {
+    public ResponseEntity<List<ReviewDetailDto>> getReviewsByUser(@PathVariable Long userId) {
         log.info("사용자별 리뷰 조회 api 호출");
-        List<ReviewDto> findReviewDtoList = reviewService.findReviewsByUser(userId);
+        List<ReviewDetailDto> findReviewDtoList = reviewService.findReviewsByUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(findReviewDtoList);
     }
 
     @GetMapping("/api/reviews/places/{kakaoPlaceId}")
     @Operation(summary = "음식점별 리뷰 조회", description = "음식점별 리뷰를 모두 조회합니다.")
-    public ResponseEntity<List<ReviewDto>> getReviewsByKakaoPlaceId(@PathVariable Long kakaoPlaceId) {
+    public ResponseEntity<List<ReviewDetailDto>> getReviewsByKakaoPlaceId(@PathVariable Long kakaoPlaceId) {
         log.info("음식점별 리뷰 조회 api 호출 - kakaoPlaceId : " + kakaoPlaceId);
-        List<ReviewDto> findReviewDtoList = reviewService.findReviewsByKakaoPlaceId(kakaoPlaceId);
+        List<ReviewDetailDto> findReviewDtoList = reviewService.findReviewsByKakaoPlaceId(kakaoPlaceId);
         return ResponseEntity.status(HttpStatus.OK).body(findReviewDtoList);
     }
 
     @GetMapping("/api/reviews/users/me")
     @Operation(summary = "내 리뷰 조회", description = "내가 작성한 리뷰를 모두 조회합니다.")
-    public ResponseEntity<List<ReviewDto>> getReviewsByMe(@AuthenticationPrincipal CustomUserDetails tokenUser) {
+    public ResponseEntity<List<ReviewDetailDto>> getReviewsByMe(@AuthenticationPrincipal CustomUserDetails tokenUser) {
         Long userId = tokenUser.getUser().getId();
         log.info("내 리뷰 조회 api 호출 - userId : " + userId);
 
-        List<ReviewDto> findReviewDtoList = reviewService.findReviewsByUser(userId);
+        List<ReviewDetailDto> findReviewDtoList = reviewService.findReviewsByUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(findReviewDtoList);
     }
 
