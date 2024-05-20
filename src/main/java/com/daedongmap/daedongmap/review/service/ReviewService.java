@@ -227,7 +227,7 @@ public class ReviewService {
         List<ReviewImage> reviewImages = new ArrayList<>();
 
         for (MultipartFile multipartFile : multipartFileList) {
-            String filePath = s3Service.uploadImage(multipartFile);
+            String filePath = s3Service.uploadImage(multipartFile, "review");
 
             ReviewImage reviewImage = ReviewImage.builder()
                     .user(user)

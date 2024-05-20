@@ -26,7 +26,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String uploadImage(MultipartFile multipartFile) {
+    public String uploadImage(MultipartFile multipartFile, String folder) {
         log.info("uploadImage 실행");
         String s3FileName = createS3FileName(multipartFile.getOriginalFilename());
 
@@ -35,20 +35,20 @@ public class S3Service {
             objectMetadata.setContentLength(inputStream.available());
             objectMetadata.setContentType(multipartFile.getContentType());
 
-            amazonS3.putObject(new PutObjectRequest(bucket + "/review", s3FileName, inputStream, objectMetadata)
+            amazonS3.putObject(new PutObjectRequest(bucket + "/" + folder, s3FileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
             log.error(e.getMessage());
             throw new CustomException(ErrorCode.FAILED_FILE_UPLOAD);
         }
 
-        return amazonS3.getUrl(bucket + "/review", s3FileName).toString();
+        return amazonS3.getUrl(bucket + "/" + folder, s3FileName).toString();
     }
 
-    public void deleteImage(String filePath) {
+    public void deleteImage(String filePath, String folder) {
         log.info("deleteImage 실행");
         try {
-            amazonS3.deleteObject(bucket + "/review", filePath);
+            amazonS3.deleteObject(bucket + "/" + folder, filePath);
             log.info("파일 삭제 성공: " + filePath);
         } catch (Exception e) {
             log.error("파일 삭제 실패: " + filePath, e);
