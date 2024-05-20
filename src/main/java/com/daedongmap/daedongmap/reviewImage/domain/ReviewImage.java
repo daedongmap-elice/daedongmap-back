@@ -35,7 +35,7 @@ public class ReviewImage extends BaseTimeEntity {
     private String filePath;
 
     @Builder
-    public ReviewImage(Users user, Review review, String filePath, String fileName) {
+    public ReviewImage(Long id, Users user, Review review, String filePath, String fileName) {
         this.user = user;
         this.review = review;
         this.fileName = fileName;
