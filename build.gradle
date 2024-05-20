@@ -48,6 +48,9 @@ dependencies {
 
 	// websocket
 //	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	// mockito
+	testImplementation 'org.mockito:mockito-junit-jupiter:5.2.0'
 }
 
 tasks.named('test') {

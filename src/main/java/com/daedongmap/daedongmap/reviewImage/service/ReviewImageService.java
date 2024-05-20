@@ -4,11 +4,13 @@ package com.daedongmap.daedongmap.reviewImage.service;
 import com.daedongmap.daedongmap.reviewImage.dto.ReviewImageDto;
 import com.daedongmap.daedongmap.reviewImage.domain.ReviewImage;
 import com.daedongmap.daedongmap.reviewImage.repository.ReviewImageRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class ReviewImageService implements ImageFileService {
+@Service
+public class ReviewImageService {
 
     private final ReviewImageRepository reviewImageRepository;
 

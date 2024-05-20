@@ -14,6 +14,7 @@ import com.daedongmap.daedongmap.review.repository.ReviewRepository;
 import com.daedongmap.daedongmap.reviewImage.domain.ReviewImage;
 import com.daedongmap.daedongmap.reviewImage.repository.ReviewImageRepository;
 import com.daedongmap.daedongmap.reviewImage.service.ReviewImageService;
+import com.daedongmap.daedongmap.s3.S3Service;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class ReviewService {
     private final PlaceRepository placeRepository;
     private final LikeRepository likeRepository;
     private final ReviewImageService reviewImageService;
+    private final S3Service s3Service;
     private final PlaceService placeService;
 
     @Transactional
@@ -180,7 +182,7 @@ public class ReviewService {
     }
 
     private List<ReviewImage> updateReviewImages(Review review, List<MultipartFile> multipartFileList) throws IOException {
-        reviewImageService.deleteReviewImage(review.getId());
+//        reviewImageService.deleteReviewImage(review.getId());
         return saveReviewImages(review.getUser(), review, multipartFileList);
     }
 
@@ -225,13 +227,12 @@ public class ReviewService {
         List<ReviewImage> reviewImages = new ArrayList<>();
 
         for (MultipartFile multipartFile : multipartFileList) {
-            String fileName = multipartFile.getOriginalFilename() + "_" + UUID.randomUUID();
-            String filePath = reviewImageService.uploadReviewImage(multipartFile, fileName);
+            String filePath = s3Service.uploadImage(multipartFile);
 
             ReviewImage reviewImage = ReviewImage.builder()
                     .user(user)
                     .review(review)
-                    .fileName(fileName)
+                    .fileName(multipartFile.getOriginalFilename())
                     .filePath(filePath)
                     .build();
 
