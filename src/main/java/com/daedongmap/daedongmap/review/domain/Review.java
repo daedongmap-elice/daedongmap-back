@@ -48,7 +48,8 @@ public class Review extends BaseTimeEntity {
     private List<ReviewImage> reviewImageList = new ArrayList<>();
 
     @Builder
-    public Review(Users user, Place place, String content, float hygieneRating, float tasteRating, float kindnessRating, float averageRating) {
+    public Review(Long id, Users user, Place place, String content, float hygieneRating, float tasteRating, float kindnessRating, float averageRating) {
+        this.id = id;
         this.user = user;
         this.place = place;
         this.content = content;

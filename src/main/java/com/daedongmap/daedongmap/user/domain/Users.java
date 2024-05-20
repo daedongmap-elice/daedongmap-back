@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
@@ -59,7 +59,8 @@ public class Users extends BaseTimeEntity {
     @Builder
     public Users(String nickName, String status, String email,
                  String webSite, String phoneNumber, String profileImage,
-                 String password, Boolean isMember, List<Authority> role) {
+                 String password, Boolean isMember, List<Authority> role, Long id) {
+        this.id = id;
         this.nickName = nickName;
         this.status = status;
         this.email = email;
