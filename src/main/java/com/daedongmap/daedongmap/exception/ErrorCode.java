@@ -42,7 +42,14 @@ public enum ErrorCode {
 
     /* Place */
     PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 장소입니다."),
-    PLACE_KAKAO_ID_IN_USE(HttpStatus.CONFLICT, "등록된 장소입니다.");
+    PLACE_KAKAO_ID_IN_USE(HttpStatus.CONFLICT, "등록된 장소입니다."),
+
+    /* File */
+    FAILED_FILE_UPLOAD(HttpStatus.BAD_REQUEST, "파일 업로드에 실패했습니다."),
+    FAILED_FILE_DELETE(HttpStatus.BAD_REQUEST, "파일 삭제에 실패했습니다."),
+
+    /* Alarm */
+    ALARM_CONNECTION_ERROR(HttpStatus.BAD_REQUEST, "알람 구독에 실패하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

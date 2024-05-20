@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
+import com.daedongmap.daedongmap.s3.S3Service;
 import com.daedongmap.daedongmap.security.jwt.TokenProvider;
 import com.daedongmap.daedongmap.user.domain.Authority;
 import com.daedongmap.daedongmap.user.domain.Users;
@@ -36,6 +37,7 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final AmazonS3Client amazonS3Client;
+    private final S3Service s3Service;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -151,18 +153,25 @@ public class UserService {
         Users foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        if(profileImage != null) {
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(profileImage.getSize());
-            metadata.setContentType(profileImage.getContentType());
+//        if(profileImage != null) {
+//            ObjectMetadata metadata = new ObjectMetadata();
+//            metadata.setContentLength(profileImage.getSize());
+//            metadata.setContentType(profileImage.getContentType());
+//
+//            amazonS3Client.putObject(
+//                    bucket + "/profile",
+//                    foundUser.getEmail(),
+//                    profileImage.getInputStream(), metadata
+//            );
+//
+//            String imageUrl = amazonS3Client.getUrl(bucket + "/profile", foundUser.getEmail()).toString();
+//            userUpdateDto.setProfileImageLink(imageUrl);
+//        } else {
+//            userUpdateDto.setProfileImageLink(foundUser.getProfileImage());
+//        }
 
-            amazonS3Client.putObject(
-                    bucket + "/profile",
-                    foundUser.getEmail(),
-                    profileImage.getInputStream(), metadata
-            );
-
-            String imageUrl = amazonS3Client.getUrl(bucket + "/profile", foundUser.getEmail()).toString();
+        if (profileImage != null) {
+            String imageUrl = s3Service.uploadImage(profileImage, "profile");
             userUpdateDto.setProfileImageLink(imageUrl);
         } else {
             userUpdateDto.setProfileImageLink(foundUser.getProfileImage());

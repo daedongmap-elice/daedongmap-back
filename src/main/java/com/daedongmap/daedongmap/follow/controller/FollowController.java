@@ -1,5 +1,6 @@
 package com.daedongmap.daedongmap.follow.controller;
 
+import com.daedongmap.daedongmap.alarm.service.AlarmService;
 import com.daedongmap.daedongmap.follow.dto.FollowerDto;
 import com.daedongmap.daedongmap.follow.dto.FollowingDto;
 import com.daedongmap.daedongmap.follow.service.FollowService;
@@ -27,8 +28,8 @@ public class FollowController {
                                       @RequestParam Long followingId) {
         Long followerId = tokenUser.getUser().getId();
         log.info("팔로우하기 api 호출 - 팔로잉 상대 : " + followingId);
-
         followService.doFollow(followerId, followingId);
+
         return ResponseEntity.ok().build();
     }
 
