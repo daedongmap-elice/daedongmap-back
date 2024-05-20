@@ -1,8 +1,10 @@
 package com.daedongmap.daedongmap.review.service;
 
 import com.daedongmap.daedongmap.place.domain.Place;
+import com.daedongmap.daedongmap.place.dto.PlaceBasicInfoDto;
 import com.daedongmap.daedongmap.place.dto.PlaceCreateDto;
 import com.daedongmap.daedongmap.place.repository.PlaceRepository;
+import com.daedongmap.daedongmap.place.service.PlaceService;
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.dto.ReviewCreateDto;
 import com.daedongmap.daedongmap.review.dto.ReviewDto;
@@ -32,8 +34,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceTest {
@@ -50,12 +51,15 @@ class ReviewServiceTest {
     private S3Service s3Service;
     @Mock
     private ReviewImageService reviewImageService;
+    @Mock
+    private PlaceService placeService;
     @InjectMocks
     private ReviewService reviewService;
 
+    // todo : 장소가 있을 때 없을 때 둘 다 테스트해야함
     @Test
-    @DisplayName("장소 새로 저장하면서 리뷰 작성 (성공)")
-    void createReviewWithNewPlace_success() throws IOException {
+    @DisplayName("리뷰 작성 (성공)")
+    void createReview_success() throws IOException {
         // given
         MultipartFile multipartFile = new MockMultipartFile("file", "fileContent".getBytes());
         List<MultipartFile> multipartFileList = new ArrayList<>();
@@ -120,10 +124,41 @@ class ReviewServiceTest {
         assertNotNull(reviewDto);
         assertEquals("testReview", reviewDto.getContent());
         assertEquals(4.5f, reviewDto.getAverageRating());
+        assertEquals(1L, reviewDto.getKakaoPlaceId());
 
         assertNotNull(reviewDto.getReviewImageDtoList());
         assertEquals(1, reviewDto.getReviewImageDtoList().size());
         assertEquals("filePath", reviewDto.getReviewImageDtoList().get(0).getFilePath());
+    }
+
+    @Test
+    @DisplayName("모든 리뷰 조회 (성공)")
+    void getAllReviews_success() {
+        // given
+        Place mockPlace = Place.builder()
+                .kakaoPlaceId(1L)
+                .build();
+
+        Users mockUser = Users.builder()
+                .id(1L)
+                .isMember(true)
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+
+        List<Review> mockReviewList = new ArrayList<>();
+        mockReviewList.add(Review.builder()
+                .place(mockPlace)
+                .user(mockUser)
+                .build());
+
+        // when
+        when(reviewRepository.findAll()).thenReturn(mockReviewList);
+        List<ReviewDto> reviewDtoList = reviewService.findAllReviews();
+
+        // then
+        verify(reviewRepository, times(1)).findAll();
+
+        assertEquals(mockReviewList.size(), reviewDtoList.size());
     }
 
 }
