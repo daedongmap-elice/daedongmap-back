@@ -1,14 +1,15 @@
 package com.daedongmap.daedongmap.user;
 
-import com.daedongmap.daedongmap.DaedongmapApplication;
 import com.daedongmap.daedongmap.user.controller.UserController;
 import com.daedongmap.daedongmap.user.domain.Authority;
 import com.daedongmap.daedongmap.user.domain.Users;
+import com.daedongmap.daedongmap.user.dto.request.UserLoginDto;
 import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
+import com.daedongmap.daedongmap.user.dto.response.JwtTokenDto;
 import com.daedongmap.daedongmap.user.service.UserService;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 //@ContextConfiguration(classes = DaedongmapApplication.class)
-public class UserServiceTests {
+public class UserControllerTests {
 
     @InjectMocks
     UserController userController;
@@ -72,6 +72,7 @@ public class UserServiceTests {
         // given
         String json = objectMapper.writeValueAsString(userRegisterDto);
 
+        // when
         MvcResult result = mockMvc.perform(post("/api/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
@@ -84,58 +85,21 @@ public class UserServiceTests {
         assertEquals(testUser.getNickName(), response);
     }
 
-    // 개선 필요
 //    @Test
 //    @DisplayName("사용자 로그인 테스트")
-//    public void loginUser() {
+//    public void loginUser() throws Exception {
 //        // given
-//        UserLoginDto expect = new UserLoginDto(user.getEmail(), user.getPassword());
+//        UserLoginDto dto = new UserLoginDto(testUser.getEmail(), testUser.getPassword());
+//        String json = objectMapper.writeValueAsString(dto);
 //
 //        // when
-//        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.ofNullable(user));
+//        MvcResult result = mockMvc.perform(post("/api/login")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(json))
+//                .andExpect(status().isAccepted())
+//                .andReturn();
 //
 //        // then
-//        assertEquals(expect.getPassword(), user.getPassword());
-//    }
-//
-//    @Test
-//    @DisplayName("사용자 아이디 찾기")
-//    public void retrieveUserId() {
-//        // given
-//        String expect = user.getEmail();
-//
-//        // when
-//        when(userRepository.findByPhoneNumber(user.getPhoneNumber().replaceAll("-", "")))
-//                .thenReturn(Optional.ofNullable(user));
-//
-//        // then
-//        assertEquals(expect, user.getEmail());
-//    }
-//
-//    @Test
-//    @DisplayName("사용자 정보 업데이트")
-//    public void updateUser() throws IOException {
-//        // given
-//        UserResponseDto expect = UserResponseDto.builder()
-//                .user(user)
-//                .build();
-//
-//        expect.setStatus("changed status");
-//        expect.setNickName("changed nickname");
-//        expect.setWebSite("changed website");
-//
-//        UserUpdateDto userUpdateDto = new UserUpdateDto(
-//                "changed nickname",
-//                "changed status",
-//                "changed website",
-//                null
-//                );
-//
-//        // when
-//        userService.updateUser(1L, null, userUpdateDto);
-//        Users foundUser = userService.findUserByEmail(user.getEmail());
-//
-//        // then
-//        assertEquals(expect.getNickName(), foundUser.getNickName());
+//        assertEquals(result.getResponse().getContentAsString(), JwtTokenDto.class.toString());
 //    }
 }

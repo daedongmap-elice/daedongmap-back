@@ -108,7 +108,13 @@ public class UserService {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
 
-        return tokenProvider.createToken(foundUser, foundUser.getRoles());
+        JwtTokenDto dto = tokenProvider.createToken(foundUser, foundUser.getRoles());
+
+        return JwtTokenDto.builder()
+                .accessToken(dto.getAccessToken())
+                .refreshToken(dto.getRefreshToken())
+                .userId(foundUser.getId())
+                .build();
     }
 
     public String retrieveUserId(String phoneNumber) {
