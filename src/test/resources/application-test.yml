@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: daedongmap-test
+
+  datasource:
+    url: jdbc:h2:mem:test
+    username: sa
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      dialect: org.hibernate.dialect.MySQL8Dialect
+      hibernate:
+        format-sql: true
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always

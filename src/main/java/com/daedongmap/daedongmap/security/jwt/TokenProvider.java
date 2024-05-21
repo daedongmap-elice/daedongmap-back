@@ -89,7 +89,6 @@ public class TokenProvider {
         return JwtTokenDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .accessTokenExpire(accessExpire)
                 .build();
     }
 
@@ -117,7 +116,6 @@ public class TokenProvider {
 
         return JwtTokenDto.builder()
                 .accessToken(accessToken)
-                .accessTokenExpire(accessExpire)
                 .build();
     }
 
