@@ -167,8 +167,70 @@ class ReviewServiceTest {
         assertEquals(mockReview.getPlace().getKakaoPlaceId(), reviewDto.getKakaoPlaceId());
 
         assertNotNull(reviewDto.getReviewImageDtoList());
-        assertEquals(1, reviewDto.getReviewImageDtoList().size());
+        assertEquals(mockReviewList.size(), reviewDto.getReviewImageDtoList().size());
         assertEquals(mockReviewImage.getFilePath(), reviewDto.getReviewImageDtoList().get(0).getFilePath());
+    }
+
+    @Test
+    @DisplayName("리뷰 작성 (실패 - 존재하지 않는 사용자)")
+    void createReview_userNotFound_failure() {
+        // given
+        MultipartFile multipartFile = new MockMultipartFile("file", "fileContent".getBytes());
+        List<MultipartFile> multipartFileList = new ArrayList<>();
+        multipartFileList.add(multipartFile);
+
+        PlaceCreateDto placeCreateDto = PlaceCreateDto.builder()
+                .kakaoPlaceId(mockPlace.getKakaoPlaceId())
+                .placeName(mockPlace.getPlaceName())
+                .build();
+
+        ReviewCreateDto reviewCreateDto = ReviewCreateDto.builder()
+                .content(mockReview.getContent())
+                .hygieneRating(mockReview.getHygieneRating())
+                .tasteRating(mockReview.getTasteRating())
+                .kindnessRating(mockReview.getKindnessRating())
+                .averageRating(mockReview.getAverageRating())
+                .build();
+
+        given(userRepository.findById(USER_ID)).willReturn(Optional.empty());
+
+        // when & then
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            reviewService.createReview(USER_ID, multipartFileList, reviewCreateDto, placeCreateDto);
+        });
+        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("리뷰 작성 (실패 - 이미지 업로드 실패)")
+    void createReview_failedFileUpload_failure() {
+        // given
+        MultipartFile multipartFile = new MockMultipartFile("file", "fileContent".getBytes());
+        List<MultipartFile> multipartFileList = new ArrayList<>();
+        multipartFileList.add(multipartFile);
+
+        PlaceCreateDto placeCreateDto = PlaceCreateDto.builder()
+                .kakaoPlaceId(mockPlace.getKakaoPlaceId())
+                .placeName(mockPlace.getPlaceName())
+                .build();
+
+        ReviewCreateDto reviewCreateDto = ReviewCreateDto.builder()
+                .content(mockReview.getContent())
+                .hygieneRating(mockReview.getHygieneRating())
+                .tasteRating(mockReview.getTasteRating())
+                .kindnessRating(mockReview.getKindnessRating())
+                .averageRating(mockReview.getAverageRating())
+                .build();
+
+        given(userRepository.findById(USER_ID)).willReturn(Optional.of(mockUser));
+        given(placeRepository.findByKakaoPlaceId(KAKAO_PLACE_ID)).willReturn(Optional.of(mockPlace));
+        given(s3Service.uploadImage(multipartFile, "review")).willThrow(new CustomException(ErrorCode.FAILED_FILE_UPLOAD));
+
+        // when & then
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            reviewService.createReview(USER_ID, multipartFileList, reviewCreateDto, placeCreateDto);
+        });
+        assertEquals(ErrorCode.FAILED_FILE_UPLOAD, exception.getErrorCode());
     }
 
     @Test
@@ -223,7 +285,7 @@ class ReviewServiceTest {
     }
 
     @Test
-    @DisplayName("사용자별 작성한 리뷰 조회 (실패 - 존재하지 않는 사용자 ID)")
+    @DisplayName("사용자별 작성한 리뷰 조회 (실패 - 존재하지 않는 사용자)")
     void getReviewsByUser_userNotFound_failure() {
         // given
         when(reviewRepository.findAllByUserId(USER_ID)).thenReturn(Collections.emptyList());
@@ -260,7 +322,7 @@ class ReviewServiceTest {
     }
 
     @Test
-    @DisplayName("음식점별 리뷰 조회 (실패 - 존재하지 않는 음식점 ID)")
+    @DisplayName("음식점별 리뷰 조회 (실패 - 존재하지 않는 음식점)")
     void getReviewsByKakaoPlace_placeNotFound_failure() {
         // given
         when(reviewRepository.findAllByPlace_KakaoPlaceId(KAKAO_PLACE_ID)).thenReturn(Collections.emptyList());
