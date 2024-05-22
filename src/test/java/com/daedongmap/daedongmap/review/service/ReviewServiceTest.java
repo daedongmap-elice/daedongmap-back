@@ -237,7 +237,7 @@ class ReviewServiceTest {
     }
 
     @Test
-    @DisplayName("사용자별 작성한 리뷰 조회 (실패)")
+    @DisplayName("사용자별 작성한 리뷰 조회 (실패 - 존재하지 않는 사용자 ID)")
     void getReviewsByUser_failure() {
         // given
         Long userId = 1L;
@@ -248,6 +248,63 @@ class ReviewServiceTest {
 
         // then
         verify(reviewRepository, times(1)).findAllByUserId(userId);
+        assertTrue(reviewDetailDtoList.isEmpty());
+    }
+
+    @Test
+    @DisplayName("음식점별 리뷰 조회 (성공)")
+    void getReviewsByKakaoPlace_success() {
+        // given
+        Users mockUser = Users.builder()
+                .id(1L)
+                .isMember(true)
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+
+        Long kakaoPlaceId = 1L;
+        Place mockPlace = Place.builder()
+                .kakaoPlaceId(kakaoPlaceId)
+                .placeName("mockPlace")
+                .build();
+
+        List<Review> mockReviewList = new ArrayList<>();
+        mockReviewList.add(Review.builder()
+                .id(1L)
+                .place(mockPlace)
+                .user(mockUser)
+                .content("Great place!")
+                .build());
+
+        // when
+        when(reviewRepository.findAllByPlace_KakaoPlaceId(kakaoPlaceId)).thenReturn(mockReviewList);
+        List<ReviewDetailDto> reviewDetailDtoList = reviewService.findReviewsByKakaoPlaceId(kakaoPlaceId);
+
+        // then
+        verify(reviewRepository, times(1)).findAllByPlace_KakaoPlaceId(kakaoPlaceId);
+        assertEquals(mockReviewList.size(), reviewDetailDtoList.size());
+
+        for (int i = 0; i < mockReviewList.size(); i++) {
+            Review review = mockReviewList.get(i);
+            ReviewDetailDto reviewDetailDto = reviewDetailDtoList.get(i);
+
+            assertEquals(review.getId(), reviewDetailDto.getId());
+            assertEquals(review.getPlace().getKakaoPlaceId(), reviewDetailDto.getKakaoPlaceId());
+            assertEquals(review.getUser().getId(), reviewDetailDto.getUser().getId());
+        }
+    }
+
+    @Test
+    @DisplayName("음식점별 리뷰 조회 (실패 - 존재하지 않는 음식점 ID)")
+    void getReviewsByKakaoPlace_failure() {
+        // given
+        Long kakaoPlaceId = 1L;
+
+        // when
+        when(reviewRepository.findAllByPlace_KakaoPlaceId(kakaoPlaceId)).thenReturn(Collections.emptyList());
+        List<ReviewDetailDto> reviewDetailDtoList = reviewService.findReviewsByKakaoPlaceId(kakaoPlaceId);
+
+        // then
+        verify(reviewRepository, times(1)).findAllByPlace_KakaoPlaceId(kakaoPlaceId);
         assertTrue(reviewDetailDtoList.isEmpty());
     }
 
