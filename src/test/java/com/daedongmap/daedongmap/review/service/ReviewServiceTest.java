@@ -335,4 +335,34 @@ class ReviewServiceTest {
         assertTrue(reviewDetailDtoList.isEmpty());
     }
 
+    @Test
+    @DisplayName("리뷰 삭제 (성공)")
+    void deleteReview_success() {
+        // given
+        given(reviewRepository.findById(REVIEW_ID)).willReturn(Optional.of(mockReview));
+
+        // when
+        reviewService.deleteReview(USER_ID, REVIEW_ID);
+
+        // then
+        verify(reviewRepository, times(1)).deleteById(REVIEW_ID);
+    }
+
+    @Test
+    @DisplayName("리뷰 삭제 (실패 - 리뷰 작성자가 아닌 경우)")
+    void deleteReview_notReviewOwner_failure() {
+        // given
+        Long notOwnerUserId = 2L;
+        given(reviewRepository.findById(REVIEW_ID)).willReturn(Optional.of(mockReview));
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            reviewService.deleteReview(notOwnerUserId, REVIEW_ID);
+        });
+
+        // then
+        verify(reviewRepository, never()).deleteById(REVIEW_ID);
+        assertEquals(ErrorCode.REVIEW_NOT_MINE, exception.getErrorCode());
+    }
+
 }
