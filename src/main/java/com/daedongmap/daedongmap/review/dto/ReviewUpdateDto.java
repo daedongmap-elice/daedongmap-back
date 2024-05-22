@@ -1,8 +1,10 @@
 package com.daedongmap.daedongmap.review.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class ReviewUpdateDto {
 
     private String content;
