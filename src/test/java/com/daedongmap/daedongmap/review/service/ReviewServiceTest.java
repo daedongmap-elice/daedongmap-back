@@ -19,6 +19,7 @@ import com.daedongmap.daedongmap.s3.S3Service;
 import com.daedongmap.daedongmap.user.domain.Authority;
 import com.daedongmap.daedongmap.user.domain.Users;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,12 +53,75 @@ class ReviewServiceTest {
     private PlaceRepository placeRepository;
     @Mock
     private S3Service s3Service;
-    @Mock
-    private ReviewImageService reviewImageService;
-    @Mock
-    private PlaceService placeService;
     @InjectMocks
     private ReviewService reviewService;
+
+    private static final Long USER_ID = 1L;
+    private static final Long KAKAO_PLACE_ID = 1L;
+    private static final Long REVIEW_ID = 1L;
+    private static final Long REVIEW_IMAGE_ID = 1L;
+
+    private Users mockUser;
+    private Place mockPlace;
+    private Review mockReview;
+    private ReviewImage mockReviewImage;
+    private List<Review> mockReviewList;
+
+
+    @BeforeEach
+    void setUp() {
+        mockUser = createMockUser();
+        mockPlace = createMockPlace();
+        mockReview = createMockReview();
+        mockReviewImage = createMockReviewImage();
+        mockReviewList = createMockReviewList();
+    }
+
+    private Users createMockUser() {
+        return Users.builder()
+                .id(USER_ID)
+                .nickName("mockUser")
+                .isMember(true)
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+    }
+
+    private Place createMockPlace() {
+        return Place.builder()
+                .kakaoPlaceId(KAKAO_PLACE_ID)
+                .placeName("mockPlace")
+                .categoryName("한식")
+                .build();
+    }
+
+    private Review createMockReview() {
+        return Review.builder()
+                .id(REVIEW_ID)
+                .place(mockPlace)
+                .user(mockUser)
+                .content("mockReview")
+                .hygieneRating(4.0f)
+                .tasteRating(4.5f)
+                .kindnessRating(5.0f)
+                .averageRating(4.5f)
+                .build();
+    }
+
+    private ReviewImage createMockReviewImage() {
+        return ReviewImage.builder()
+                .id(REVIEW_IMAGE_ID)
+                .user(mockUser)
+                .review(mockReview)
+                .fileName("mockFileName")
+                .filePath("mockFilaPath")
+                .build();
+    }
+
+    private List<Review> createMockReviewList() {
+        List<Review> reviews = new ArrayList<>();
+        reviews.add(mockReview);
+        return reviews;
+    }
 
     // todo : 장소가 있을 때 없을 때 둘 다 테스트해야함
     @Test
@@ -68,95 +132,52 @@ class ReviewServiceTest {
         List<MultipartFile> multipartFileList = new ArrayList<>();
         multipartFileList.add(multipartFile);
 
-        Users user = Users.builder()
-                .id(1L)
-                .isMember(true)
-                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
-                .build();
-
         PlaceCreateDto placeCreateDto = PlaceCreateDto.builder()
-                .kakaoPlaceId(1L)
-                .placeName("testPlace")
+                .kakaoPlaceId(mockPlace.getKakaoPlaceId())
+                .placeName(mockPlace.getPlaceName())
                 .build();
 
         ReviewCreateDto reviewCreateDto = ReviewCreateDto.builder()
-                .content("testReview")
-                .hygieneRating(4.0f)
-                .tasteRating(4.5f)
-                .kindnessRating(5.0f)
-                .averageRating(4.5f)
+                .content(mockReview.getContent())
+                .hygieneRating(mockReview.getHygieneRating())
+                .tasteRating(mockReview.getTasteRating())
+                .kindnessRating(mockReview.getKindnessRating())
+                .averageRating(mockReview.getAverageRating())
                 .build();
 
-        Place place = Place.builder().kakaoPlaceId(1L).build();
-
-        Review review = Review.builder()
-                .id(1L)
-                .user(user)
-                .place(place)
-                .content(reviewCreateDto.getContent())
-                .hygieneRating(reviewCreateDto.getHygieneRating())
-                .tasteRating(reviewCreateDto.getTasteRating())
-                .kindnessRating(reviewCreateDto.getKindnessRating())
-                .averageRating(reviewCreateDto.getAverageRating())
-                .build();
-
-        ReviewImage reviewImage = ReviewImage.builder()
-                .id(1L)
-                .user(user)
-                .review(review)
-                .fileName("file")
-                .filePath("filePath")
-                .build();
-
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
-        given(placeRepository.findByKakaoPlaceId(1L)).willReturn(Optional.of(place));
+        given(userRepository.findById(USER_ID)).willReturn(Optional.of(mockUser));
+        given(placeRepository.findByKakaoPlaceId(KAKAO_PLACE_ID)).willReturn(Optional.of(mockPlace));
         given(s3Service.uploadImage(multipartFile, "review")).willReturn("filePath");
-        given(reviewImageRepository.save(any(ReviewImage.class))).willReturn(reviewImage);
-        given(reviewRepository.save(any())).willReturn(review);
+        given(reviewImageRepository.save(any(ReviewImage.class))).willReturn(mockReviewImage);
+        given(reviewRepository.save(any())).willReturn(mockReview);
 
         // when
-        ReviewDto reviewDto = reviewService.createReview(1L, multipartFileList, reviewCreateDto, placeCreateDto);
+        ReviewDto reviewDto = reviewService.createReview(USER_ID, multipartFileList, reviewCreateDto, placeCreateDto);
 
         // then
-        verify(userRepository, times(1)).findById(1L);
-        verify(placeRepository, times(1)).findByKakaoPlaceId(1L);
+        verify(userRepository, times(1)).findById(USER_ID);
+        verify(placeRepository, times(1)).findByKakaoPlaceId(KAKAO_PLACE_ID);
         verify(s3Service, times(1)).uploadImage(multipartFile, "review");
         verify(reviewImageRepository, times(1)).save(any(ReviewImage.class));
         verify(reviewRepository, times(1)).save(any(Review.class));
 
         assertNotNull(reviewDto);
-        assertEquals("testReview", reviewDto.getContent());
-        assertEquals(4.5f, reviewDto.getAverageRating());
-        assertEquals(1L, reviewDto.getKakaoPlaceId());
+        assertEquals(mockReview.getContent(), reviewDto.getContent());
+        assertEquals(mockReview.getAverageRating(), reviewDto.getAverageRating());
+        assertEquals(mockReview.getPlace().getKakaoPlaceId(), reviewDto.getKakaoPlaceId());
 
         assertNotNull(reviewDto.getReviewImageDtoList());
         assertEquals(1, reviewDto.getReviewImageDtoList().size());
-        assertEquals("filePath", reviewDto.getReviewImageDtoList().get(0).getFilePath());
+        assertEquals(mockReviewImage.getFilePath(), reviewDto.getReviewImageDtoList().get(0).getFilePath());
     }
 
     @Test
     @DisplayName("모든 리뷰 조회 (성공)")
     void getAllReviews_success() {
         // given
-        Place mockPlace = Place.builder()
-                .kakaoPlaceId(1L)
-                .build();
-
-        Users mockUser = Users.builder()
-                .id(1L)
-                .isMember(true)
-                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
-                .build();
-
-        List<Review> mockReviewList = new ArrayList<>();
-        mockReviewList.add(Review.builder()
-                .id(1L)
-                .place(mockPlace)
-                .user(mockUser)
-                .build());
+        when(reviewRepository.findAll()).thenReturn(mockReviewList);
 
         // when
-        when(reviewRepository.findAll()).thenReturn(mockReviewList);
         List<ReviewDto> reviewDtoList = reviewService.findAllReviews();
 
         // then
@@ -168,25 +189,9 @@ class ReviewServiceTest {
     @DisplayName("모든 리뷰 조회 (실패)")
     void getAllReviews_failure() {
         // given
-        Place mockPlace = Place.builder()
-                .kakaoPlaceId(1L)
-                .build();
-
-        Users mockUser = Users.builder()
-                .id(1L)
-                .isMember(true)
-                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
-                .build();
-
-        List<Review> mockReviewList = new ArrayList<>();
-        mockReviewList.add(Review.builder()
-                .id(1L)
-                .place(mockPlace)
-                .user(mockUser)
-                .build());
+        when(reviewRepository.findAll()).thenReturn(Collections.emptyList());
 
         // when
-        when(reviewRepository.findAll()).thenReturn(Collections.emptyList());
         List<ReviewDto> reviewDtoList = reviewService.findAllReviews();
 
         // then
@@ -198,32 +203,13 @@ class ReviewServiceTest {
     @DisplayName("사용자별 작성한 리뷰 조회 (성공)")
     void getReviewsByUser_success() {
         // given
-        Long userId = 1L;
-        Place mockPlace = Place.builder()
-                .kakaoPlaceId(1L)
-                .placeName("mockPlace")
-                .build();
-
-        Users mockUser = Users.builder()
-                .id(userId)
-                .isMember(true)
-                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
-                .build();
-
-        List<Review> mockReviewList = new ArrayList<>();
-        mockReviewList.add(Review.builder()
-                .id(1L)
-                .place(mockPlace)
-                .user(mockUser)
-                .content("Great place!")
-                .build());
+        when(reviewRepository.findAllByUserId(USER_ID)).thenReturn(mockReviewList);
 
         // when
-        when(reviewRepository.findAllByUserId(userId)).thenReturn(mockReviewList);
-        List<ReviewDetailDto> reviewDetailDtoList = reviewService.findReviewsByUser(userId);
+        List<ReviewDetailDto> reviewDetailDtoList = reviewService.findReviewsByUser(USER_ID);
 
         // then
-        verify(reviewRepository, times(1)).findAllByUserId(userId);
+        verify(reviewRepository, times(1)).findAllByUserId(USER_ID);
         assertEquals(mockReviewList.size(), reviewDetailDtoList.size());
 
         for (int i = 0; i < mockReviewList.size(); i++) {
@@ -231,23 +217,22 @@ class ReviewServiceTest {
             ReviewDetailDto reviewDetailDto = reviewDetailDtoList.get(i);
 
             assertEquals(review.getId(), reviewDetailDto.getId());
-            assertEquals(review.getPlace().getKakaoPlaceId(), reviewDetailDto.getKakaoPlaceId());
             assertEquals(review.getUser().getId(), reviewDetailDto.getUser().getId());
+            assertEquals(review.getUser().getNickName(), reviewDetailDto.getUser().getNickName());
         }
     }
 
     @Test
     @DisplayName("사용자별 작성한 리뷰 조회 (실패 - 존재하지 않는 사용자 ID)")
-    void getReviewsByUser_failure() {
+    void getReviewsByUser_userNotFound_failure() {
         // given
-        Long userId = 1L;
+        when(reviewRepository.findAllByUserId(USER_ID)).thenReturn(Collections.emptyList());
 
         // when
-        when(reviewRepository.findAllByUserId(userId)).thenReturn(Collections.emptyList());
-        List<ReviewDetailDto> reviewDetailDtoList = reviewService.findReviewsByUser(userId);
+        List<ReviewDetailDto> reviewDetailDtoList = reviewService.findReviewsByUser(USER_ID);
 
         // then
-        verify(reviewRepository, times(1)).findAllByUserId(userId);
+        verify(reviewRepository, times(1)).findAllByUserId(USER_ID);
         assertTrue(reviewDetailDtoList.isEmpty());
     }
 
@@ -255,32 +240,13 @@ class ReviewServiceTest {
     @DisplayName("음식점별 리뷰 조회 (성공)")
     void getReviewsByKakaoPlace_success() {
         // given
-        Users mockUser = Users.builder()
-                .id(1L)
-                .isMember(true)
-                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
-                .build();
-
-        Long kakaoPlaceId = 1L;
-        Place mockPlace = Place.builder()
-                .kakaoPlaceId(kakaoPlaceId)
-                .placeName("mockPlace")
-                .build();
-
-        List<Review> mockReviewList = new ArrayList<>();
-        mockReviewList.add(Review.builder()
-                .id(1L)
-                .place(mockPlace)
-                .user(mockUser)
-                .content("Great place!")
-                .build());
+        when(reviewRepository.findAllByPlace_KakaoPlaceId(KAKAO_PLACE_ID)).thenReturn(mockReviewList);
 
         // when
-        when(reviewRepository.findAllByPlace_KakaoPlaceId(kakaoPlaceId)).thenReturn(mockReviewList);
-        List<ReviewDetailDto> reviewDetailDtoList = reviewService.findReviewsByKakaoPlaceId(kakaoPlaceId);
+        List<ReviewDetailDto> reviewDetailDtoList = reviewService.findReviewsByKakaoPlaceId(KAKAO_PLACE_ID);
 
         // then
-        verify(reviewRepository, times(1)).findAllByPlace_KakaoPlaceId(kakaoPlaceId);
+        verify(reviewRepository, times(1)).findAllByPlace_KakaoPlaceId(KAKAO_PLACE_ID);
         assertEquals(mockReviewList.size(), reviewDetailDtoList.size());
 
         for (int i = 0; i < mockReviewList.size(); i++) {
@@ -289,22 +255,21 @@ class ReviewServiceTest {
 
             assertEquals(review.getId(), reviewDetailDto.getId());
             assertEquals(review.getPlace().getKakaoPlaceId(), reviewDetailDto.getKakaoPlaceId());
-            assertEquals(review.getUser().getId(), reviewDetailDto.getUser().getId());
+            assertEquals(review.getPlace().getPlaceName(), reviewDetailDto.getPlaceName());
         }
     }
 
     @Test
     @DisplayName("음식점별 리뷰 조회 (실패 - 존재하지 않는 음식점 ID)")
-    void getReviewsByKakaoPlace_failure() {
+    void getReviewsByKakaoPlace_placeNotFound_failure() {
         // given
-        Long kakaoPlaceId = 1L;
+        when(reviewRepository.findAllByPlace_KakaoPlaceId(KAKAO_PLACE_ID)).thenReturn(Collections.emptyList());
 
         // when
-        when(reviewRepository.findAllByPlace_KakaoPlaceId(kakaoPlaceId)).thenReturn(Collections.emptyList());
-        List<ReviewDetailDto> reviewDetailDtoList = reviewService.findReviewsByKakaoPlaceId(kakaoPlaceId);
+        List<ReviewDetailDto> reviewDetailDtoList = reviewService.findReviewsByKakaoPlaceId(KAKAO_PLACE_ID);
 
         // then
-        verify(reviewRepository, times(1)).findAllByPlace_KakaoPlaceId(kakaoPlaceId);
+        verify(reviewRepository, times(1)).findAllByPlace_KakaoPlaceId(KAKAO_PLACE_ID);
         assertTrue(reviewDetailDtoList.isEmpty());
     }
 
