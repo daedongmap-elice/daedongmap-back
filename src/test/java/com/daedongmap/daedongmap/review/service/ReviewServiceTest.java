@@ -9,6 +9,7 @@ import com.daedongmap.daedongmap.place.repository.PlaceRepository;
 import com.daedongmap.daedongmap.place.service.PlaceService;
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.dto.ReviewCreateDto;
+import com.daedongmap.daedongmap.review.dto.ReviewDetailDto;
 import com.daedongmap.daedongmap.review.dto.ReviewDto;
 import com.daedongmap.daedongmap.review.repository.ReviewRepository;
 import com.daedongmap.daedongmap.reviewImage.domain.ReviewImage;
@@ -191,6 +192,63 @@ class ReviewServiceTest {
         // then
         verify(reviewRepository, times(1)).findAll();
         assertNotEquals(mockReviewList.size(), reviewDtoList.size(), "기대했던 사이즈와 다릅니다.");
+    }
+
+    @Test
+    @DisplayName("사용자별 작성한 리뷰 조회 (성공)")
+    void getReviewsByUser_success() {
+        // given
+        Long userId = 1L;
+        Place mockPlace = Place.builder()
+                .kakaoPlaceId(1L)
+                .placeName("mockPlace")
+                .build();
+
+        Users mockUser = Users.builder()
+                .id(userId)
+                .isMember(true)
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+
+        List<Review> mockReviewList = new ArrayList<>();
+        mockReviewList.add(Review.builder()
+                .id(1L)
+                .place(mockPlace)
+                .user(mockUser)
+                .content("Great place!")
+                .build());
+
+        // when
+        when(reviewRepository.findAllByUserId(userId)).thenReturn(mockReviewList);
+        List<ReviewDetailDto> reviewDetailDtoList = reviewService.findReviewsByUser(userId);
+
+        // then
+        verify(reviewRepository, times(1)).findAllByUserId(userId);
+        assertEquals(mockReviewList.size(), reviewDetailDtoList.size());
+
+        for (int i = 0; i < mockReviewList.size(); i++) {
+            Review review = mockReviewList.get(i);
+            ReviewDetailDto reviewDetailDto = reviewDetailDtoList.get(i);
+
+            assertEquals(review.getId(), reviewDetailDto.getId());
+            assertEquals(review.getPlace().getKakaoPlaceId(), reviewDetailDto.getKakaoPlaceId());
+            assertEquals(review.getUser().getId(), reviewDetailDto.getUser().getId());
+        }
+    }
+
+    @Test
+    @DisplayName("사용자별 작성한 리뷰 조회 (실패)")
+    void getReviewsByUser_failure() {
+        // given
+        Long userId = 1L;
+
+        // when
+        when(reviewRepository.findAllByUserId(userId)).thenReturn(Collections.emptyList());
+        List<ReviewDetailDto> reviewDetailDtoList = reviewService.findReviewsByUser(userId);
+
+        // then
+        verify(reviewRepository, times(1)).findAllByUserId(userId);
+        assertTrue(reviewDetailDtoList.isEmpty());
     }
 
 }
