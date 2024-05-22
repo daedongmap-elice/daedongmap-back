@@ -11,6 +11,7 @@ import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.dto.ReviewCreateDto;
 import com.daedongmap.daedongmap.review.dto.ReviewDetailDto;
 import com.daedongmap.daedongmap.review.dto.ReviewDto;
+import com.daedongmap.daedongmap.review.dto.ReviewUpdateDto;
 import com.daedongmap.daedongmap.review.repository.ReviewRepository;
 import com.daedongmap.daedongmap.reviewImage.domain.ReviewImage;
 import com.daedongmap.daedongmap.reviewImage.repository.ReviewImageRepository;
@@ -74,6 +75,7 @@ class ReviewServiceTest {
         mockPlace = createMockPlace();
         mockReview = createMockReview();
         mockReviewImage = createMockReviewImage();
+        mockReview.addReviewImage(mockReviewImage);
         mockReviewList = createMockReviewList();
     }
 
@@ -323,7 +325,7 @@ class ReviewServiceTest {
 
     @Test
     @DisplayName("음식점별 리뷰 조회 (실패 - 존재하지 않는 음식점)")
-    void getReviewsByKakaoPlace_placeNotFound_failure() {
+    void getReviewsByPlace_placeNotFound_failure() {
         // given
         when(reviewRepository.findAllByPlace_KakaoPlaceId(KAKAO_PLACE_ID)).thenReturn(Collections.emptyList());
 
@@ -333,6 +335,39 @@ class ReviewServiceTest {
         // then
         verify(reviewRepository, times(1)).findAllByPlace_KakaoPlaceId(KAKAO_PLACE_ID);
         assertTrue(reviewDetailDtoList.isEmpty());
+    }
+
+    @Test
+    @DisplayName("음식점별 최신 리뷰 조회 (성공)")
+    void getReviewsByPlaceDesc_success() {
+        // given
+        given(reviewRepository.findFirstByKakaoPlaceIdOrderByCreatedAtDesc(KAKAO_PLACE_ID)).willReturn(mockReview);
+        given(reviewImageRepository.findAllByReviewId(mockReview.getId())).willReturn(List.of(mockReviewImage));
+
+        // when
+        String reviewImagePath = reviewService.findReviewByKakaoPlaceIdDesc(KAKAO_PLACE_ID);
+
+        // then
+        verify(reviewRepository, times(1)).findFirstByKakaoPlaceIdOrderByCreatedAtDesc(KAKAO_PLACE_ID);
+        verify(reviewImageRepository, times(1)).findAllByReviewId(mockReview.getId());
+
+        assertEquals(mockReviewImage.getFilePath(), reviewImagePath);
+    }
+
+    @Test
+    @DisplayName("음식점별 최신 리뷰 조회 (성공 - 리뷰가 존재하지 않음)")
+    void getReviewsByPlaceDesc_empty_success() {
+        // given
+        given(reviewRepository.findFirstByKakaoPlaceIdOrderByCreatedAtDesc(KAKAO_PLACE_ID)).willReturn(null);
+
+        // when
+        String reviewImagePath = reviewService.findReviewByKakaoPlaceIdDesc(KAKAO_PLACE_ID);
+
+        // then
+        verify(reviewRepository, times(1)).findFirstByKakaoPlaceIdOrderByCreatedAtDesc(KAKAO_PLACE_ID);
+        verify(reviewImageRepository, never()).findAllByReviewId(anyLong());
+
+        assertEquals("", reviewImagePath);
     }
 
     @Test
@@ -363,6 +398,34 @@ class ReviewServiceTest {
         // then
         verify(reviewRepository, never()).deleteById(REVIEW_ID);
         assertEquals(ErrorCode.REVIEW_NOT_MINE, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("리뷰 업데이트 (성공 - 이미지 수정됨)")
+    void updateReview_imageModified_success() throws IOException {
+        // given
+        Review updateReview = Review.builder()
+                .id(1L)
+                .content("update Review")
+                .hygieneRating(mockReview.getHygieneRating())
+                .kindnessRating(mockReview.getKindnessRating())
+                .tasteRating(mockReview.getHygieneRating())
+                .averageRating(mockReview.getAverageRating())
+                .build();
+
+        ReviewUpdateDto reviewUpdateDto = ReviewUpdateDto.builder()
+                .content(updateReview.getContent())
+                .hygieneRating(updateReview.getHygieneRating())
+                .kindnessRating(updateReview.getKindnessRating())
+                .tasteRating(updateReview.getHygieneRating())
+                .averageRating(updateReview.getAverageRating())
+                .imageModified(true)
+                .build();
+
+        System.out.println(mockReview.getReviewImageList().get(0).getFileName());
+
+//        given(reviewRepository.findById(REVIEW_ID)).willReturn(Optional.of(mockReview));
+//        given(reviewImageRepository.save(any(ReviewImage.class))).willReturn(mockReviewImage);
     }
 
 }
