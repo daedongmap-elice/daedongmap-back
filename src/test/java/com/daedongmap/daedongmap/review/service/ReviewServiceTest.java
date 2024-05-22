@@ -1,5 +1,7 @@
 package com.daedongmap.daedongmap.review.service;
 
+import com.daedongmap.daedongmap.exception.CustomException;
+import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.place.domain.Place;
 import com.daedongmap.daedongmap.place.dto.PlaceBasicInfoDto;
 import com.daedongmap.daedongmap.place.dto.PlaceCreateDto;
@@ -147,6 +149,7 @@ class ReviewServiceTest {
 
         List<Review> mockReviewList = new ArrayList<>();
         mockReviewList.add(Review.builder()
+                .id(1L)
                 .place(mockPlace)
                 .user(mockUser)
                 .build());
@@ -157,8 +160,37 @@ class ReviewServiceTest {
 
         // then
         verify(reviewRepository, times(1)).findAll();
-
         assertEquals(mockReviewList.size(), reviewDtoList.size());
+    }
+
+    @Test
+    @DisplayName("모든 리뷰 조회 (실패)")
+    void getAllReviews_failure() {
+        // given
+        Place mockPlace = Place.builder()
+                .kakaoPlaceId(1L)
+                .build();
+
+        Users mockUser = Users.builder()
+                .id(1L)
+                .isMember(true)
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+
+        List<Review> mockReviewList = new ArrayList<>();
+        mockReviewList.add(Review.builder()
+                .id(1L)
+                .place(mockPlace)
+                .user(mockUser)
+                .build());
+
+        // when
+        when(reviewRepository.findAll()).thenReturn(Collections.emptyList());
+        List<ReviewDto> reviewDtoList = reviewService.findAllReviews();
+
+        // then
+        verify(reviewRepository, times(1)).findAll();
+        assertNotEquals(mockReviewList.size(), reviewDtoList.size(), "기대했던 사이즈와 다릅니다.");
     }
 
 }
