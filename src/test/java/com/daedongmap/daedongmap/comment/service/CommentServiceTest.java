@@ -1,6 +1,7 @@
 package com.daedongmap.daedongmap.comment.service;
 
 import com.daedongmap.daedongmap.comment.domain.Comment;
+import com.daedongmap.daedongmap.comment.dto.CommentCreateDto;
 import com.daedongmap.daedongmap.comment.dto.CommentDto;
 import com.daedongmap.daedongmap.comment.dto.CommentWithRepliesDto;
 import com.daedongmap.daedongmap.comment.repository.CommentRepository;
@@ -81,6 +82,88 @@ class CommentServiceTest {
                 .content(content)
                 .parentId(parentId)
                 .build();
+    }
+
+    @Test
+    @DisplayName("댓글 작성 (성공)")
+    void createComment_success() {
+        // given
+        Users mockUser = createMockUser(1L, "mock User");
+        Place mockPlace = createMockPlace(1000L, "mockPlace", "한식");
+        Review mockReview = createMockReview(1L, mockPlace, mockUser, "Mock review content");
+        Comment mockComment = createMockComment(2L, mockUser, mockReview, "Mock comment content", null);
+
+        CommentCreateDto commentCreateDto = CommentCreateDto.builder()
+                .reviewId(mockReview.getId())
+                .content(mockComment.getContent())
+                .parentId(mockComment.getParentId())
+                .build();
+
+        lenient().when(userRepository.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
+        lenient().when(reviewRepository.findById(mockReview.getId())).thenReturn(Optional.of(mockReview));
+        when(commentRepository.save(any(Comment.class))).thenReturn(mockComment);
+
+        // when
+        CommentDto commentDto = commentService.createComment(mockUser.getId(), commentCreateDto);
+
+        // then
+        assertNotNull(commentDto);
+        assertEquals(mockComment.getId(), commentDto.getId());
+        assertEquals(mockComment.getCreatedAt(), commentDto.getCreatedAt());
+    }
+
+    @Test
+    @DisplayName("댓글 작성 (실패 - 사용자가 존재하지 않는 경우)")
+    void createComment_userNotFound_failure() {
+        // given
+        Users mockUser = createMockUser(1L, "mock User");
+        Place mockPlace = createMockPlace(1000L, "mockPlace", "한식");
+        Review mockReview = createMockReview(1L, mockPlace, mockUser, "Mock review content");
+        Comment mockComment = createMockComment(2L, mockUser, mockReview, "Mock comment content", null);
+
+        CommentCreateDto commentCreateDto = CommentCreateDto.builder()
+                .reviewId(mockReview.getId())
+                .content(mockComment.getContent())
+                .parentId(mockComment.getParentId())
+                .build();
+
+        given(userRepository.findById(mockUser.getId())).willReturn(Optional.empty());
+        lenient().when(reviewRepository.findById(mockReview.getId())).thenReturn(Optional.of(mockReview));
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            commentService.createComment(mockUser.getId(), commentCreateDto);
+        });
+
+        // then
+        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("댓글 작성 (실패 - 리뷰가 존재하지 않는 경우)")
+    void createComment_reviewNotFound_failure() {
+        // given
+        Users mockUser = createMockUser(1L, "mock User");
+        Place mockPlace = createMockPlace(1000L, "mockPlace", "한식");
+        Review mockReview = createMockReview(1L, mockPlace, mockUser, "Mock review content");
+        Comment mockComment = createMockComment(2L, mockUser, mockReview, "Mock comment content", null);
+
+        CommentCreateDto commentCreateDto = CommentCreateDto.builder()
+                .reviewId(mockReview.getId())
+                .content(mockComment.getContent())
+                .parentId(mockComment.getParentId())
+                .build();
+
+        lenient().when(userRepository.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
+        given(reviewRepository.findById(mockReview.getId())).willReturn(Optional.empty());
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            commentService.createComment(mockUser.getId(), commentCreateDto);
+        });
+
+        // then
+        assertEquals(ErrorCode.REVIEW_NOT_FOUND, exception.getErrorCode());
     }
 
     @Test
