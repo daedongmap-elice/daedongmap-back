@@ -34,7 +34,8 @@ public class Comment extends BaseTimeEntity {
     private Long parentId = null;
 
     @Builder
-    public Comment(Users user, Review review, String content, Long parentId) {
+    public Comment(Long id, Users user, Review review, String content, Long parentId) {
+        this.id = id;
         this.user = user;
         this.review = review;
         this.content = content;
