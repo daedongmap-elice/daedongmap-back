@@ -58,7 +58,7 @@ public class FollowService {
 
         // 자기 자신은 팔로우 할 수 없음
         if (followerId.equals(followingId)) {
-            throw new CustomException(ErrorCode.FOLLOW_MYSELF_NOW_ALLOWED);
+            throw new CustomException(ErrorCode.UNFOLLOW_MYSELF_NOW_ALLOWED);
         }
 
         Follow follow = followRepository.findByFollowerAndFollowing(follower, following);

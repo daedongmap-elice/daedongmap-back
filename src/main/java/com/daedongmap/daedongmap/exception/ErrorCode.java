@@ -38,6 +38,7 @@ public enum ErrorCode {
     /* Follow */
     FOLLOW_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사용자를 팔로우한 적이 없습니다."),
     FOLLOW_MYSELF_NOW_ALLOWED(HttpStatus.BAD_REQUEST, "본인에게는 팔로우할 수 없습니다."),
+    UNFOLLOW_MYSELF_NOW_ALLOWED(HttpStatus.BAD_REQUEST, "본인에게는 언팔로우할 수 없습니다."),
     FOLLOW_DUPLICATED(HttpStatus.BAD_REQUEST, "이미 팔로우했습니다."),
 
     /* Place */

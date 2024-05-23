@@ -32,15 +32,9 @@ class FollowServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private ReviewRepository reviewRepository;
-    @Mock
-    private LikeRepository likeRepository;
-    @Mock
     private FollowRepository followRepository;
     @Mock
     private AlarmService alarmService;
-    @Mock
-    private LikeService likeService;
     @InjectMocks
     private FollowService followService;
 
@@ -133,4 +127,88 @@ class FollowServiceTest {
         verify(alarmService, never()).sendToClient(anyLong(), anyString());
         assertEquals(ErrorCode.FOLLOW_MYSELF_NOW_ALLOWED, exception.getErrorCode());
     }
+
+    @Test
+    @DisplayName("팔로우 취소 (성공)")
+    void unFollow_success() {
+        // given
+        Users mockUser1 = Users.builder()
+                .id(1L)
+                .nickName("mock-user-1")
+                .isMember(true)
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+
+        Users mockUser2 = Users.builder()
+                .id(2L)
+                .nickName("mock-user-2")
+                .isMember(true)
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+
+        Follow mockFollow = new Follow(mockUser1, mockUser2);
+
+        when(userRepository.findById(mockUser1.getId())).thenReturn(Optional.of(mockUser1));
+        when(userRepository.findById(mockUser2.getId())).thenReturn(Optional.of(mockUser2));
+        when(followRepository.findByFollowerAndFollowing(mockUser1, mockUser2)).thenReturn(mockFollow);
+
+        // when
+        followService.unFollow(mockUser1.getId(), mockUser2.getId());
+
+        // then
+        verify(followRepository, times(1)).delete(mockFollow);
+        assertFalse(followRepository.existsByFollowerAndFollowing(mockUser1, mockUser2));
+    }
+
+    @Test
+    @DisplayName("팔로우 취소 (실패 - 팔로우한 적이 없는 경우)")
+    void unFollow_followNotFound_failure() {
+        // given
+        Users mockUser1 = Users.builder()
+                .id(1L)
+                .nickName("mock-user-1")
+                .isMember(true)
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+
+        Users mockUser2 = Users.builder()
+                .id(2L)
+                .nickName("mock-user-2")
+                .isMember(true)
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+
+        when(userRepository.findById(mockUser1.getId())).thenReturn(Optional.of(mockUser1));
+        when(userRepository.findById(mockUser2.getId())).thenReturn(Optional.of(mockUser2));
+        when(followRepository.findByFollowerAndFollowing(mockUser1, mockUser2)).thenReturn(null);
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () -> followService.unFollow(mockUser1.getId(), mockUser2.getId()));
+
+        // then
+        verify(followRepository, never()).delete(any(Follow.class));
+        assertEquals(ErrorCode.FOLLOW_NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("팔로우 취소 (실패 - 본인을 팔로우 취소하려는 경우)")
+    void unFollow_myself_failure() {
+        // given
+        Users mockUser1 = Users.builder()
+                .id(1L)
+                .nickName("mock-user-1")
+                .isMember(true)
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+
+        when(userRepository.findById(mockUser1.getId())).thenReturn(Optional.of(mockUser1));
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () -> followService.unFollow(mockUser1.getId(), mockUser1.getId()));
+
+        // then
+        verify(followRepository, never()).delete(any(Follow.class));
+        assertEquals(ErrorCode.UNFOLLOW_MYSELF_NOW_ALLOWED, exception.getErrorCode());
+    }
+
 }
