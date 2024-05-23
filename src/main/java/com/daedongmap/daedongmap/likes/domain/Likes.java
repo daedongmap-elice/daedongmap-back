@@ -3,6 +3,7 @@ package com.daedongmap.daedongmap.likes.domain;
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.user.domain.Users;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
