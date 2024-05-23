@@ -2,6 +2,7 @@ package com.daedongmap.daedongmap.comment.service;
 
 import com.daedongmap.daedongmap.comment.domain.Comment;
 import com.daedongmap.daedongmap.comment.dto.CommentDto;
+import com.daedongmap.daedongmap.comment.dto.CommentWithRepliesDto;
 import com.daedongmap.daedongmap.comment.repository.CommentRepository;
 import com.daedongmap.daedongmap.exception.CustomException;
 import com.daedongmap.daedongmap.exception.ErrorCode;
@@ -108,7 +109,7 @@ class CommentServiceTest {
     }
 
     @Test
-    @DisplayName("내가 작성한 댓글 조회 (성공 - 댓글이 존재하지 않 경우)")
+    @DisplayName("내가 작성한 댓글 조회 (성공 - 댓글이 존재하지 않는 경우)")
     void getCommentsByMe_empty_success() {
         // given
         Users mockUser = createMockUser(1L, "mock User");
@@ -126,6 +127,71 @@ class CommentServiceTest {
 
         assertNotNull(commentDtoList);
         assertEquals(0, commentDtoList.size());
+    }
+
+    @Test
+    @DisplayName("리뷰별 댓글 조회 (성공 - 본댓글만 있는 경우)")
+    void getCommentsByReview_parentComment_success() {
+        // given
+        Users mockUser = createMockUser(1L, "mock User");
+        Place mockPlace = createMockPlace(1000L, "mockPlace", "한식");
+        Review mockReview = createMockReview(1L, mockPlace, mockUser, "Mock review content");
+
+        List<Comment> mockCommentList = new ArrayList<>();
+        mockCommentList.add(createMockComment(1L, mockUser, mockReview, "Mock comment content", null));
+        mockCommentList.add(createMockComment(2L, mockUser, mockReview, "Mock comment content", null));
+
+        when(commentRepository.findAllByReviewId(mockReview.getId())).thenReturn(mockCommentList);
+
+        // when
+        List<CommentWithRepliesDto> result = commentService.findCommentsByReview(mockReview.getId());
+
+        // then
+        assertNotNull(result);
+        assertEquals(mockCommentList.size(), result.size());
+
+        for (int i = 0; i < mockCommentList.size(); i++) {
+            assertEquals(mockCommentList.get(i).getId(), result.get(i).getId());
+        }
+    }
+
+    @Test
+    @DisplayName("리뷰별 댓글 조회 (성공 - 대댓글도 있는 경우)")
+    void getCommentsByReview_withReplies_success() {
+        // given
+        Users mockUser = createMockUser(1L, "mock User");
+        Place mockPlace = createMockPlace(1000L, "mockPlace", "한식");
+        Review mockReview = createMockReview(1L, mockPlace, mockUser, "Mock review content");
+
+        List<Comment> mockCommentList = new ArrayList<>();
+        mockCommentList.add(createMockComment(1L, mockUser, mockReview, "Mock parent comment content", null));
+        mockCommentList.add(createMockComment(2L, mockUser, mockReview, "Mock child comment content", 1L));
+
+        when(commentRepository.findAllByReviewId(mockReview.getId())).thenReturn(mockCommentList);
+
+        // when
+        List<CommentWithRepliesDto> result = commentService.findCommentsByReview(mockReview.getId());
+
+        // then
+        assertNotNull(result);
+        assertEquals(mockCommentList.get(0).getContent(), result.get(0).getContent());
+        assertEquals(mockCommentList.get(1).getContent(), result.get(0).getReplies().get(0).getContent());
+    }
+
+    @Test
+    @DisplayName("리뷰별 댓글 조회 (성공 - 댓글이 존재하지 않는 경우)")
+    void getCommentsByReview_empty_success() {
+        // given
+        Long reviewId = 1L;
+
+        when(commentRepository.findAllByReviewId(reviewId)).thenReturn(new ArrayList<>());
+
+        // when
+        List<CommentWithRepliesDto> result = commentService.findCommentsByReview(reviewId);
+
+        // then
+        assertNotNull(result);
+        assertEquals(0, result.size());
     }
 
     @Test
