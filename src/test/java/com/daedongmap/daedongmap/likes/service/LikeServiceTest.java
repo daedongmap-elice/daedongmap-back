@@ -139,4 +139,94 @@ class LikeServiceTest {
         verify(alarmService, never()).sendToClient(anyLong(), anyString());
     }
 
+    @Test
+    @DisplayName("좋아요 취소 (성공)")
+    void unLikeReview_success() {
+        // given
+        Users mockUser1 = Users.builder()
+                .id(1L)
+                .nickName("mock-user-1")
+                .isMember(true)
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+
+        Users mockUser2 = Users.builder()
+                .id(2L)
+                .nickName("mock-user-2")
+                .isMember(true)
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+
+        Place mockPlace = Place.builder()
+                .kakaoPlaceId(1000L)
+                .placeName("mock-place")
+                .categoryName("일식")
+                .build();
+
+        Review mockReview = Review.builder()
+                .id(1L)
+                .place(mockPlace)
+                .user(mockUser1)
+                .content("content")
+                .hygieneRating(4.0f)
+                .tasteRating(4.0f)
+                .kindnessRating(5.0f)
+                .averageRating(4.2f)
+                .build();
+
+        Likes mockLike = new Likes(mockUser2, mockReview);
+
+        lenient().when(userRepository.findById(mockUser1.getId())).thenReturn(Optional.of(mockUser1));
+        lenient().when(userRepository.findById(mockUser2.getId())).thenReturn(Optional.of(mockUser2));
+        lenient().when(reviewRepository.findById(mockReview.getId())).thenReturn(Optional.of(mockReview));
+        lenient().when(likeRepository.findByUserAndReview(mockUser2, mockReview)).thenReturn(mockLike);
+
+        // when
+        likeService.unlikeReview(mockUser2.getId(), mockReview.getId());
+
+        // then
+        verify(likeRepository, times(1)).findByUserAndReview(mockUser2, mockReview);
+        verify(likeRepository, times(1)).delete(mockLike);
+    }
+
+    @Test
+    @DisplayName("좋아요 취소 (실패- 좋아요가 존재하지 않는 경우)")
+    void unlikeReview_likeNotFound_failure() {
+        // given
+        Users mockUser = Users.builder()
+                .id(1L)
+                .nickName("mock-user")
+                .isMember(true)
+                .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
+                .build();
+
+        Place mockPlace = Place.builder()
+                .kakaoPlaceId(1000L)
+                .placeName("mock-place")
+                .categoryName("일식")
+                .build();
+
+        Review mockReview = Review.builder()
+                .id(1L)
+                .place(mockPlace)
+                .user(mockUser)
+                .content("content")
+                .hygieneRating(4.0f)
+                .tasteRating(4.0f)
+                .kindnessRating(5.0f)
+                .averageRating(4.2f)
+                .build();
+
+        when(userRepository.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
+        when(reviewRepository.findById(mockReview.getId())).thenReturn(Optional.of(mockReview));
+        when(likeRepository.findByUserAndReview(mockUser, mockReview)).thenReturn(null);
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () -> likeService.unlikeReview(mockUser.getId(), mockReview.getId()));
+
+        // then
+        assertEquals(ErrorCode.LIKE_NOT_FOUND, exception.getErrorCode());
+        verify(likeRepository, times(1)).findByUserAndReview(mockUser, mockReview);
+    }
+
 }
