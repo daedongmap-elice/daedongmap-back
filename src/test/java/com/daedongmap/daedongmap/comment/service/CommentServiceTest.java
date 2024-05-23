@@ -3,6 +3,8 @@ package com.daedongmap.daedongmap.comment.service;
 import com.daedongmap.daedongmap.comment.domain.Comment;
 import com.daedongmap.daedongmap.comment.dto.CommentDto;
 import com.daedongmap.daedongmap.comment.repository.CommentRepository;
+import com.daedongmap.daedongmap.exception.CustomException;
+import com.daedongmap.daedongmap.exception.ErrorCode;
 import com.daedongmap.daedongmap.place.domain.Place;
 import com.daedongmap.daedongmap.review.domain.Review;
 import com.daedongmap.daedongmap.review.repository.ReviewRepository;
@@ -22,8 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -125,6 +126,62 @@ class CommentServiceTest {
 
         assertNotNull(commentDtoList);
         assertEquals(0, commentDtoList.size());
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 (성공)")
+    void deleteComment_success() {
+        // given
+        Users mockUser = createMockUser(2L, "mock User");
+        Place mockPlace = createMockPlace(2000L, "mockPlace", "한식");
+        Review mockReview = createMockReview(2L, mockPlace, mockUser, "Mock review content");
+        Comment mockComment = createMockComment(2L, mockUser, mockReview,"mock comment", null);
+
+        when(commentRepository.findById(mockComment.getId())).thenReturn(Optional.of(mockComment));
+
+        // when
+        commentService.deleteComment(mockComment.getId(), mockUser.getId());
+
+        // then
+        verify(commentRepository, times(1)).deleteById(mockComment.getId());
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 - (실패 - 댓글이 존재하지 않는 경우)")
+    void deleteComment_notFound_failure() {
+        // given
+        Long commentId = 3L;
+        Long userId = 1L;
+
+        // when
+        when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            commentService.deleteComment(commentId, userId);
+        });
+
+        // then
+        assertEquals(ErrorCode.COMMENT_NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 (실패 - 댓글의 작성자가 아닌 경우)")
+    void deleteComment_notCommentOwner_failure() {
+        // given
+        Users mockOwner = createMockUser(1L, "mock User");
+        Users mockUser = createMockUser(2L, "mock User");
+        Place mockPlace = createMockPlace(1000L, "mockPlace", "한식");
+        Review mockReview = createMockReview(1L, mockPlace, mockUser, "Mock review content");
+        Comment mockComment = createMockComment(1L, mockOwner, mockReview,"mock comment", null);
+
+        when(commentRepository.findById(mockComment.getId())).thenReturn(Optional.of(mockComment));
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            commentService.deleteComment(mockComment.getId(), mockUser.getId());
+        });
+
+        // then
+        assertEquals(ErrorCode.COMMENT_NOT_MINE, exception.getErrorCode());
     }
 
 }
