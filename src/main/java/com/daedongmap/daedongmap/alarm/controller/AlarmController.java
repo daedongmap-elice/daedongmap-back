@@ -1,10 +1,12 @@
 package com.daedongmap.daedongmap.alarm.controller;
 
 import com.daedongmap.daedongmap.alarm.service.AlarmService;
+import com.daedongmap.daedongmap.user.domain.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -19,7 +21,8 @@ public class AlarmController {
 
     @GetMapping(value="/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Operation(summary = "알림 구독", description = "실시간 알림을 구독합니다.")
-    public SseEmitter subscribe(@RequestParam("userId") Long userId) {
+    public SseEmitter subscribe(@AuthenticationPrincipal CustomUserDetails tokenUser) {
+        Long userId = tokenUser.getUser().getId();
         log.info("알림 구독 api 호출 - userId : " + userId);
         return alarmService.subscribe(userId);
     }
