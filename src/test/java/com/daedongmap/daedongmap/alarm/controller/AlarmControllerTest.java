@@ -65,7 +65,7 @@ class AlarmControllerTest {
         boolean isClosed = false;
         boolean onFailureCalled = false;
 
-        public EventSourceWrapper() {
+       public EventSourceWrapper() {
             this.listener = new EventSourceListener() {
                 @Override
                 public void onOpen(EventSource eventSource, Response response) {
