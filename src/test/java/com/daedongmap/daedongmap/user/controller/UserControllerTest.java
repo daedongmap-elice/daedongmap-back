@@ -7,6 +7,7 @@ import com.daedongmap.daedongmap.user.dto.request.UserFindIdDto;
 import com.daedongmap.daedongmap.user.dto.request.UserLoginDto;
 import com.daedongmap.daedongmap.user.dto.request.UserRegisterDto;
 import com.daedongmap.daedongmap.user.dto.request.UserUpdateDto;
+import com.daedongmap.daedongmap.user.repository.TokenRepository;
 import com.daedongmap.daedongmap.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
@@ -43,6 +44,9 @@ class UserControllerTest {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    TokenRepository tokenRepository;
+
     ObjectMapper objectMapper = new ObjectMapper();
 
     UserRegisterDto userRegisterDto = UserRegisterDto.builder()
@@ -65,6 +69,8 @@ class UserControllerTest {
             .isMember(true)
             .role(Collections.singletonList(Authority.builder().role("ROLE_USER").build()))
             .build();
+
+    UserLoginDto loginDto = new UserLoginDto(userRegisterDto.getEmail(), userRegisterDto.getPassword());
 
 
     @Test
@@ -137,7 +143,6 @@ class UserControllerTest {
         // 로그인만 테스트할 경우 주석을 풀고 진행, 순서대로 할 경우 등록 테스트에서 테스트 유저를 등록
 //        userRepository.save(testUser);
 
-        UserLoginDto loginDto = new UserLoginDto(userRegisterDto.getEmail(), userRegisterDto.getPassword());
         String json = objectMapper.writeValueAsString(loginDto);
 
         // when
@@ -154,12 +159,33 @@ class UserControllerTest {
 
     @Test
     @Order(4)
+    @DisplayName("사용자 로그인 테스트 (비밀번호 에러)")
+    void loginFail() throws Exception {
+        // given
+        loginDto.setPassword("10011001");
+        String json = objectMapper.writeValueAsString(loginDto);
+
+        // when
+        MvcResult result = mockMvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+        // then
+        assertEquals(ErrorCode.INVALID_PASSWORD.getMessage(), result.getResponse().getContentAsString());
+
+        loginDto.setPassword("12345678");
+    }
+
+    @Test
+    @Order(5)
     @DisplayName("사용자 로그아웃 테스트")
     void logoutUser() throws Exception {
         // given
 //        userRepository.save(testUser);
 
-        String json = objectMapper.writeValueAsString(new UserLoginDto(userRegisterDto.getEmail(), userRegisterDto.getPassword()));
+        String json = objectMapper.writeValueAsString(loginDto);
         MvcResult result = mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -183,13 +209,47 @@ class UserControllerTest {
         assertEquals("안전하게 로그아웃 하셨습니다.", response.getResponse().getContentAsString());
     }
 
+    // 수정 필요
+//    @Test
+//    @Order(6)
+//    @DisplayName("사용자 로그아웃 테스트 (사용자 실패)")
+//    void logoutUserFail() throws Exception {
+//        // when
+//        String json = objectMapper.writeValueAsString(loginDto);
+//        MvcResult result = mockMvc.perform(post("/api/login")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(json))
+//                .andExpect(status().isAccepted())
+//                .andReturn();
+//
+//        String token = objectMapper.writeValueAsString(
+//                JsonPath.read(
+//                        result.getResponse().getContentAsString(),
+//                        "$.accessToken"));
+//
+//        token = "Bearer " + token.replaceAll("\"", "");
+//
+//
+//
+//        // given
+//        tokenRepository.deleteByUserId(11L);
+//
+//        MvcResult response = mockMvc.perform(post("/api/user/logout")
+//                        .header("Authorization", token)
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().is4xxClientError())
+//                .andReturn();
+//
+//        // then
+//        assertEquals(ErrorCode.TOKEN_ERROR.getMessage(), response.getResponse().getContentAsString());
+//    }
+
     @Test
-    @Order(5)
+    @Order(7)
     @DisplayName("사용자 아이디 찾기")
     void retrieveUserId() throws Exception {
         // given
 //        userRepository.save(testUser);
-
         UserFindIdDto userFindIdDto = new UserFindIdDto("01015771577");
         String json = objectMapper.writeValueAsString(userFindIdDto);
 
@@ -205,13 +265,32 @@ class UserControllerTest {
     }
 
     @Test
-    @Order(6)
+    @Order(8)
+    @DisplayName("사용자 아이디 찾기 (실패)")
+    void retrieveUserFail() throws Exception {
+        // given
+        UserFindIdDto userFindIdDto = new UserFindIdDto("01092837182");
+        String json = objectMapper.writeValueAsString(userFindIdDto);
+
+        // when
+        MvcResult result = mockMvc.perform(post("/api/accountId")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+        // then
+        assertEquals(ErrorCode.USER_NOT_FOUND.getMessage(), result.getResponse().getContentAsString());
+    }
+
+    @Test
+    @Order(9)
     @DisplayName("현재 로그인한 유저 아이디 반환")
     void returnLoggedInUserId() throws Exception {
         // given
 //        userRepository.save(testUser);
 
-        String json = objectMapper.writeValueAsString(new UserLoginDto(userRegisterDto.getEmail(), userRegisterDto.getPassword()));
+        String json = objectMapper.writeValueAsString(loginDto);
         MvcResult result = mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -237,13 +316,31 @@ class UserControllerTest {
     }
 
     @Test
-    @Order(7)
+    @Order(10)
+    @DisplayName("현재 로그인한 유저 아이디 반환 (실패)")
+    void returnLoggedInUserIdFail() throws Exception {
+        // given
+        String token = "fake token";
+
+        // when
+        MvcResult response = mockMvc.perform(post("/api/user")
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+        // then
+        assertEquals(ErrorCode.INVALID_TOKEN.getMessage(), JsonPath.read(response.getResponse().getContentAsString(), "$.message"));
+    }
+
+    @Test
+    @Order(11)
     @DisplayName("다른 사용자의 정보 조회")
     void findOtherUserById() throws Exception {
         // given
 //        userRepository.save(testUser);
 
-        String json = objectMapper.writeValueAsString(new UserLoginDto(userRegisterDto.getEmail(), userRegisterDto.getPassword()));
+        String json = objectMapper.writeValueAsString(loginDto);
         MvcResult result = mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -270,13 +367,61 @@ class UserControllerTest {
     }
 
     @Test
-    @Order(8)
+    @Order(12)
+    @DisplayName("다른 사용자의 정보 조회 (유효하지 않은 토큰 실패)")
+    void findOtherUserByIdFail() throws Exception {
+        // given
+        String token = "wrong token";
+
+        // when
+        MvcResult response = mockMvc.perform(get("/api/user/1")
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+        // then
+        assertEquals(ErrorCode.INVALID_TOKEN.getMessage(), JsonPath.read(response.getResponse().getContentAsString(), "$.message"));
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("다른 사용자의 정보 조회 (존재하지 않는 사용자 실패)")
+    void findCurrentByIdFailByUser() throws Exception {
+        // given
+        String json = objectMapper.writeValueAsString(loginDto);
+        MvcResult result = mockMvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isAccepted())
+                .andReturn();
+
+        String token = objectMapper.writeValueAsString(
+                JsonPath.read(
+                        result.getResponse().getContentAsString(),
+                        "$.accessToken"));
+
+        token = "Bearer " + token.replaceAll("\"", "");
+
+        // when
+        MvcResult response = mockMvc.perform(get("/api/user/20")
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+        // then
+        assertEquals(ErrorCode.USER_NOT_FOUND.getMessage(), response.getResponse().getContentAsString());
+    }
+
+    @Test
+    @Order(14)
     @DisplayName("현재 로그인한 사용자 정보 조회")
     void findCurrentById() throws Exception {
         // given
 //        userRepository.save(testUser);
 
-        String json = objectMapper.writeValueAsString(new UserLoginDto(userRegisterDto.getEmail(), userRegisterDto.getPassword()));
+        String json = objectMapper.writeValueAsString(loginDto);
         MvcResult result = mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -302,13 +447,31 @@ class UserControllerTest {
     }
 
     @Test
-    @Order(9)
+    @Order(15)
+    @DisplayName("현재 로그인한 사용자 정보 조회 (유효하지 않은 토큰 실패)")
+    void findCurrentByIdFail() throws Exception {
+        // given
+        String token = "wrong token";
+
+        // when
+        MvcResult response = mockMvc.perform(get("/api/user/1")
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+        // then
+        assertEquals(ErrorCode.INVALID_TOKEN.getMessage(), JsonPath.read(response.getResponse().getContentAsString(), "$.message"));
+    }
+
+    @Test
+    @Order(16)
     @DisplayName("사용자 업데이트")
     void updateUser() throws Exception {
         // given
 //        userRepository.save(testUser);
 
-        String json = objectMapper.writeValueAsString(new UserLoginDto(userRegisterDto.getEmail(), userRegisterDto.getPassword()));
+        String json = objectMapper.writeValueAsString(loginDto);
         MvcResult result = mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -357,13 +520,13 @@ class UserControllerTest {
     }
 
     @Test
-    @Order(10)
+    @Order(17)
     @DisplayName("사용자 삭제")
     void deleteUser() throws Exception {
         // given
 //        userRepository.save(testUser);
 
-        String json = objectMapper.writeValueAsString(new UserLoginDto(userRegisterDto.getEmail(), userRegisterDto.getPassword()));
+        String json = objectMapper.writeValueAsString(loginDto);
         MvcResult result = mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
