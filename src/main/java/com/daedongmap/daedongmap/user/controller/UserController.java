@@ -37,10 +37,11 @@ public class UserController {
     public ResponseEntity<String> register(@RequestBody @Valid UserRegisterDto userRegisterDto) {
 
         AuthResponseDto authResponseDto = userService.registerUser(userRegisterDto);
+        String nickName = authResponseDto.getNickName();
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(authResponseDto.getNickName());
+                .body(nickName);
     }
 
     @PostMapping("/login")
