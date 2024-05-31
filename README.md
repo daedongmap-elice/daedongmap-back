@@ -26,14 +26,15 @@
 
 ## ERD
 - - -
-### 사용자
-![사용자](./markdown-images/users.png)
+![대동맛지도 ERD](./markdown-images/dbdiagram.png)
 
-### 리뷰, 댓글, MediaFile
-![리뷰ERD](./markdown-images/post.png)
+## 플로우차트
+- - -
+![대동맛지도 플로우차트](./markdown-images/대동맛지도%20플로우차트.PNG)
 
-### 음식점, 분류
-![음식점ERD](./markdown-images/restaurants.png)
+## 배포 아키텍쳐
+- - -
+![대동맛지도 배포](./markdown-images/배포%20아키텍쳐.PNG)
 
 ## 와이어프레임
 - - -
@@ -49,7 +50,6 @@
     - 회원가입, 수정, 탈퇴
         - 이메일, 닉네임 중복 확인
     - jwt + refresh token
-    - <span style="color:gray"> 뱃지, 등급 기능 (게시글, 팔로우가 많은 사람 등)</span>
 - 지도 연동 API
     - 핀 찍기
     - 자기 위치 자동 등록 기능
